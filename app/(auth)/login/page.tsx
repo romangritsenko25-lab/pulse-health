@@ -1,50 +1,337 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+// ── Quiz data ──────────────────────────────────────────────────────────────
+const EMOTIONS = ['Тревожно', 'Подавленно', 'Раздражённо', 'Устало', 'Нормально', 'Хорошо']
+const DURATIONS = ['Сегодня', 'Несколько дней', 'Больше недели', 'Давно']
+const SUPPORTS = ['Да', 'Не всегда', 'Нет']
+
+function getInsight(emotion: string, duration: string, support: string): string {
+  const negative = ['Тревожно', 'Подавленно', 'Раздражённо'].includes(emotion)
+  const longDuration = ['Больше недели', 'Давно'].includes(duration)
+  const noSupport = support === 'Нет'
+  const positive = ['Нормально', 'Хорошо'].includes(emotion)
+
+  if (positive) {
+    return 'Хорошо, что сейчас неплохо. Даже в спокойные периоды полезно лучше понять себя — это помогает когда становится тяжелее. Metanoia AI поможет составить карту своего состояния.'
+  }
+  if (emotion === 'Тревожно' && longDuration && noSupport) {
+    return 'Длительная тревога без поддержки — это сигнал который стоит обсудить со специалистом. Metanoia AI поможет сформулировать что именно происходит перед первой встречей.'
+  }
+  if (emotion === 'Подавленно' && longDuration) {
+    return 'Длительное подавленное состояние заслуживает внимания. Metanoia AI поможет структурировать твои мысли и чувства так, чтобы разговор со специалистом сразу шёл в глубину.'
+  }
+  if (emotion === 'Раздражённо' && longDuration) {
+    return 'Хроническое раздражение часто сигнализирует о накопленном стрессе или неудовлетворённой потребности. Разобраться с этим поможет структурированный анализ.'
+  }
+  if (emotion === 'Устало' && longDuration) {
+    return 'Хроническая усталость часто маскирует более глубокие процессы. Структурированный опрос поможет понять откуда она берётся и что за ней стоит.'
+  }
+  if (negative && noSupport) {
+    return 'Переживать сложное состояние в одиночку тяжело. Первый шаг — назвать что именно происходит. Именно это делает Metanoia AI перед встречей со специалистом.'
+  }
+  if (negative) {
+    return 'Эти ощущения — сигнал на который стоит обратить внимание. Metanoia AI поможет структурировать то что сложно выразить словами и подготовиться к разговору со специалистом.'
+  }
+  return 'Усталость может быть первым признаком что что-то требует внимания. Metanoia AI поможет исследовать своё состояние глубже и понять что за ней стоит.'
+}
+
+// ── Reusable chip button ───────────────────────────────────────────────────
+function Chip({
+  label, selected, onClick,
+}: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${
+        selected
+          ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200'
+          : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-300 hover:text-indigo-700'
+      }`}
+    >
+      {label}
+    </button>
+  )
+}
+
+// ── Value card ─────────────────────────────────────────────────────────────
+function ValueCard({ icon, title, body }: { icon: string; title: string; body: string }) {
+  return (
+    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-2">
+      <span className="text-3xl">{icon}</span>
+      <p className="font-semibold text-slate-800 text-sm">{title}</p>
+      <p className="text-slate-500 text-sm leading-relaxed">{body}</p>
+    </div>
+  )
+}
+
+// ── Psychology card ────────────────────────────────────────────────────────
+function PsychCard({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5">
+      <p className="font-semibold text-slate-800 text-sm mb-2">{title}</p>
+      <p className="text-slate-500 text-sm leading-relaxed">{body}</p>
+    </div>
+  )
+}
+
+// ── Main page ──────────────────────────────────────────────────────────────
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
+  const [emotion, setEmotion] = useState<string | null>(null)
+  const [duration, setDuration] = useState<string | null>(null)
+  const [support, setSupport] = useState<string | null>(null)
+  const [insightVisible, setInsightVisible] = useState(false)
+  const loginRef = useRef<HTMLDivElement>(null)
+
+  const allAnswered = !!(emotion && duration && support)
+
+  useEffect(() => {
+    if (allAnswered) {
+      const t = setTimeout(() => setInsightVisible(true), 60)
+      return () => clearTimeout(t)
+    } else {
+      setInsightVisible(false)
+    }
+  }, [allAnswered])
+
+  function scrollToLogin() {
+    loginRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   async function handleGoogleLogin() {
     setLoading(true)
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="w-full max-w-sm flex flex-col items-center">
+    <div className="bg-white min-h-screen">
+      {/* ── CSS animations ─────────────────────────────────────────── */}
+      <style>{`
+        @keyframes pulse-ring {
+          0%, 100% { opacity: 0.14; transform: translate(-50%, -50%) scale(1); }
+          50%       { opacity: 0.06; transform: translate(-50%, -50%) scale(1.07); }
+        }
+        .pr1 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 0s; }
+        .pr2 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 1.2s; }
+        .pr3 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 2.4s; }
+        .pr4 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 3.6s; }
+        .pr5 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 4.8s; }
+        @keyframes fade-up {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fade-up 0.6s ease-out forwards; }
+        .fade-up-d1 { animation: fade-up 0.6s 0.15s ease-out forwards; opacity: 0; }
+        .fade-up-d2 { animation: fade-up 0.6s 0.30s ease-out forwards; opacity: 0; }
+        .fade-up-d3 { animation: fade-up 0.6s 0.45s ease-out forwards; opacity: 0; }
+      `}</style>
 
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-10 select-none">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mb-5">
-            <span className="text-3xl">🧠</span>
-          </div>
-          <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Metanoia AI</h1>
-          <p className="text-slate-400 mt-2 text-sm text-center leading-snug">
-            Подготовься к приёму у психолога за 10 минут
-          </p>
+      {/* ── 1. HERO ────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-white pt-20 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
+        {/* Concentric animated rings */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[
+            { size: 220, cls: 'pr1' },
+            { size: 380, cls: 'pr2' },
+            { size: 540, cls: 'pr3' },
+            { size: 700, cls: 'pr4' },
+            { size: 860, cls: 'pr5' },
+          ].map(({ size, cls }) => (
+            <div
+              key={size}
+              className={cls}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: size,
+                height: size,
+                borderRadius: '50%',
+                border: '1.5px solid rgba(99,102,241,0.25)',
+                backgroundColor: 'rgba(99,102,241,0.03)',
+              }}
+            />
+          ))}
         </div>
 
-        {/* Card */}
-        <div className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-7 flex flex-col gap-5">
-          <p className="text-slate-500 text-sm text-center leading-relaxed">
-            Пройди глубокий AI-опрос и получи структурированный анализ для разговора со специалистом
+        {/* Hero content */}
+        <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
+          <div className="fade-up flex flex-col items-center gap-3">
+            <div className="w-16 h-16 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center">
+              <span className="text-3xl">🧠</span>
+            </div>
+            <span className="text-sm font-bold text-indigo-600 tracking-widest uppercase">Metanoia AI</span>
+          </div>
+
+          <h1 className="fade-up-d1 text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
+            Что-то не так,<br />но сложно объяснить<br />даже себе?
+          </h1>
+
+          <p className="fade-up-d2 text-slate-500 text-base leading-relaxed max-w-sm">
+            Пройди глубокий AI-опрос и получи структурированный анализ своего состояния. Подготовься к встрече со специалистом за 10 минут.
           </p>
+
+          <div className="fade-up-d3 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
+            <button
+              onClick={scrollToLogin}
+              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-indigo-200 text-sm"
+            >
+              Попробовать бесплатно
+            </button>
+          </div>
+
+          <p className="fade-up-d3 text-slate-400 text-xs">Без кредитной карты · Бесплатно навсегда для первых опросов</p>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-300">
+          <div className="w-px h-8 bg-gradient-to-b from-transparent to-slate-200" />
+          <span className="text-xs">↓</span>
+        </div>
+      </section>
+
+      {/* ── 2. МИНИ-ОПРОС ─────────────────────────────────────────── */}
+      <section className="bg-slate-50 py-16 px-4">
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Мини-опрос</p>
+            <h2 className="text-2xl font-bold text-slate-800">Как ты себя чувствуешь прямо сейчас?</h2>
+          </div>
+
+          <div className="flex flex-col gap-8">
+            {/* Q1 */}
+            <div className="bg-white rounded-2xl border border-slate-100 p-6">
+              <p className="text-sm font-semibold text-slate-700 mb-4">Выбери одно из состояний</p>
+              <div className="flex flex-wrap gap-2">
+                {EMOTIONS.map((e) => (
+                  <Chip key={e} label={e} selected={emotion === e} onClick={() => setEmotion(e)} />
+                ))}
+              </div>
+            </div>
+
+            {/* Q2 — appears after Q1 */}
+            <div
+              className="bg-white rounded-2xl border border-slate-100 p-6 transition-all duration-300"
+              style={{ opacity: emotion ? 1 : 0.35, pointerEvents: emotion ? 'auto' : 'none' }}
+            >
+              <p className="text-sm font-semibold text-slate-700 mb-4">Как давно это состояние?</p>
+              <div className="flex flex-wrap gap-2">
+                {DURATIONS.map((d) => (
+                  <Chip key={d} label={d} selected={duration === d} onClick={() => setDuration(d)} />
+                ))}
+              </div>
+            </div>
+
+            {/* Q3 — appears after Q2 */}
+            <div
+              className="bg-white rounded-2xl border border-slate-100 p-6 transition-all duration-300"
+              style={{ opacity: duration ? 1 : 0.35, pointerEvents: duration ? 'auto' : 'none' }}
+            >
+              <p className="text-sm font-semibold text-slate-700 mb-4">Есть ли рядом кто-то с кем можно поговорить?</p>
+              <div className="flex flex-wrap gap-2">
+                {SUPPORTS.map((s) => (
+                  <Chip key={s} label={s} selected={support === s} onClick={() => setSupport(s)} />
+                ))}
+              </div>
+            </div>
+
+            {/* Insight */}
+            {allAnswered && (
+              <div
+                className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 transition-all duration-400"
+                style={{ opacity: insightVisible ? 1 : 0, transform: insightVisible ? 'translateY(0)' : 'translateY(8px)' }}
+              >
+                <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-3">Metanoia AI</p>
+                <p className="text-slate-800 text-sm leading-relaxed mb-5">
+                  {getInsight(emotion!, duration!, support!)}
+                </p>
+                <button
+                  onClick={scrollToLogin}
+                  className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition text-sm"
+                >
+                  Получить полный анализ →
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 3. КАРТОЧКИ ЦЕННОСТИ ─────────────────────────────────── */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Что ты получишь</p>
+            <h2 className="text-2xl font-bold text-slate-800">Не просто опрос</h2>
+          </div>
+          <div className="flex flex-col gap-4">
+            <ValueCard
+              icon="🔍"
+              title="Глубокий AI-опрос"
+              body="4 блока вопросов о теле, эмоциях, контексте и свободный рассказ. AI находит связи которые сложно увидеть самому."
+            />
+            <ValueCard
+              icon="📋"
+              title="PDF для специалиста"
+              body="Структурированный документ с анализом и темами для обсуждения. Принеси на первую сессию — сэкономит 30–40 минут."
+            />
+            <ValueCard
+              icon="🔒"
+              title="Только твои данные"
+              body="Всё зашифровано. Никакой рекламы, никакой передачи данным третьим лицам — никогда."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. ПСИХОЛОГИЯ ─────────────────────────────────────────── */}
+      <section className="py-16 px-4 bg-slate-50">
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Почему это работает</p>
+            <h2 className="text-2xl font-bold text-slate-800">Немного психологии</h2>
+          </div>
+          <div className="flex flex-col gap-4">
+            <PsychCard
+              title="Почему сложно объяснить своё состояние"
+              body="Около 70% людей испытывают затруднения с называнием своих эмоций — это называется алекситимия. AI-опрос помогает структурировать то что сложно выразить словами через конкретные вопросы о теле и контексте."
+            />
+            <PsychCard
+              title="Как подготовка меняет эффективность терапии"
+              body="Первые 2–3 сессии часто уходят на сбор истории. Клиенты которые приходят с подготовленным резюме состояния начинают работу быстрее и получают больше от каждой встречи."
+            />
+            <PsychCard
+              title="Что такое алекситимия и почему это нормально"
+              body="Неспособность распознать и описать свои эмоции — распространённая особенность. Структурированный опрос обходит этот барьер через конкретные вопросы о теле, контексте и поведении."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. ФОРМА ВХОДА ────────────────────────────────────────── */}
+      <section ref={loginRef} className="py-20 px-4 bg-white">
+        <div className="max-w-sm mx-auto flex flex-col items-center gap-6">
+          <div className="text-center">
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Начать</p>
+            <h2 className="text-2xl font-bold text-slate-800">Начни прямо сейчас — бесплатно</h2>
+            <p className="text-slate-400 text-sm mt-2">Первые опросы бесплатно. Без кредитной карты.</p>
+          </div>
 
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed text-gray-700 font-semibold py-3.5 rounded-2xl transition border border-slate-200 shadow-sm text-sm"
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 disabled:opacity-60 text-slate-700 font-semibold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition text-sm"
           >
             {loading ? (
-              <span className="inline-block animate-spin text-xl">⏳</span>
+              <span className="animate-spin text-xl inline-block">⏳</span>
             ) : (
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -56,29 +343,17 @@ export default function LoginPage() {
             {loading ? 'Перенаправление…' : 'Войти через Google'}
           </button>
 
-          <p className="text-center text-xs text-slate-400 leading-relaxed">
+          <p className="text-slate-400 text-xs text-center leading-relaxed">
             Твои данные зашифрованы и видны только тебе.<br />
-            Мы никогда не продаём личную информацию.
+            Мы никогда не передаём личную информацию третьим лицам.
           </p>
         </div>
+      </section>
 
-        {/* Feature hints */}
-        <div className="mt-8 grid grid-cols-3 gap-3 w-full">
-          {[
-            { icon: '🔍', label: 'Глубокий AI-опрос' },
-            { icon: '📋', label: 'PDF для специалиста' },
-            { icon: '🔒', label: 'Только твои данные' },
-          ].map((f) => (
-            <div
-              key={f.label}
-              className="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-center"
-            >
-              <div className="text-2xl mb-1">{f.icon}</div>
-              <div className="text-slate-400 text-xs leading-tight">{f.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* ── Footer ─────────────────────────────────────────────────── */}
+      <footer className="py-6 px-4 border-t border-slate-100 text-center">
+        <p className="text-slate-300 text-xs">© 2025 Metanoia AI · Не является медицинским сервисом</p>
+      </footer>
     </div>
   )
 }
