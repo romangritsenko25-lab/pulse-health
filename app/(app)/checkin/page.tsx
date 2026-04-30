@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -126,6 +126,23 @@ function PillSelect({ options, value, onChange }: {
   )
 }
 
+function TagHints({ tags, onSelect }: { tags: string[]; onSelect: (t: string) => void }) {
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-2">
+      {tags.map((tag) => (
+        <button
+          key={tag}
+          type="button"
+          onClick={() => onSelect(tag)}
+          className="px-2.5 py-1 rounded-lg text-xs border border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition"
+        >
+          + {tag}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 // ── Block components ───────────────────────────────────────────────────────
 function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof DeepFormData>(k: K, v: DeepFormData[K]) => void }) {
   function togglePain(pain: string) {
@@ -157,6 +174,10 @@ function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof D
           placeholder="Почему именно эта цифра? (необязательно)"
           rows={2}
           className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+        />
+        <TagHints
+          tags={['болит голова', 'напряжение в плечах', 'тяжесть в груди']}
+          onSelect={(t) => set('wellbeingReason', form.wellbeingReason ? `${form.wellbeingReason}, ${t}` : t)}
         />
       </section>
 
@@ -262,6 +283,10 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
           placeholder="О чём тревога? (необязательно)"
           rows={2}
           className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+        />
+        <TagHints
+          tags={['из-за работы', 'в отношениях', 'без причины']}
+          onSelect={(t) => set('anxietyAbout', form.anxietyAbout ? `${form.anxietyAbout}, ${t}` : t)}
         />
       </section>
 
@@ -449,6 +474,7 @@ const defaultForm: DeepFormData = {
 export default function CheckinPage() {
   const router = useRouter()
   const [block, setBlock] = useState(1)
+  const [visible, setVisible] = useState(true)
   const [form, setForm] = useState<DeepFormData>(defaultForm)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -457,6 +483,13 @@ export default function CheckinPage() {
   function set<K extends keyof DeepFormData>(key: K, value: DeepFormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
+
+  const goToBlock = useCallback(async (next: number) => {
+    setVisible(false)
+    await new Promise((r) => setTimeout(r, 180))
+    setBlock(next)
+    setVisible(true)
+  }, [])
 
   function canGoNext(): boolean {
     if (block === 2 && form.selfHarm === null) return false
@@ -541,16 +574,22 @@ export default function CheckinPage() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-4 py-6">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-slate-800">{meta.title}</h2>
-          <p className="text-slate-500 text-sm mt-0.5">{meta.subtitle}</p>
-        </div>
+        <div
+          className={`transition-all duration-200 ease-out ${
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+          }`}
+        >
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-slate-800">{meta.title}</h2>
+            <p className="text-slate-500 text-sm mt-0.5">{meta.subtitle}</p>
+          </div>
 
-        <div className="flex-1">
-          {block === 1 && <Block1Body form={form} set={set} />}
-          {block === 2 && <Block2Emotions form={form} set={set} onCrisis={() => setShowCrisis(true)} />}
-          {block === 3 && <Block3Context form={form} set={set} />}
-          {block === 4 && <Block4Narrative form={form} set={set} />}
+          <div>
+            {block === 1 && <Block1Body form={form} set={set} />}
+            {block === 2 && <Block2Emotions form={form} set={set} onCrisis={() => setShowCrisis(true)} />}
+            {block === 3 && <Block3Context form={form} set={set} />}
+            {block === 4 && <Block4Narrative form={form} set={set} />}
+          </div>
         </div>
 
         {error && (
@@ -564,7 +603,7 @@ export default function CheckinPage() {
           {block > 1 && (
             <button
               type="button"
-              onClick={() => setBlock((b) => b - 1)}
+              onClick={() => goToBlock(block - 1)}
               className="flex-1 py-3.5 rounded-2xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition font-medium text-sm"
             >
               ← Назад
@@ -574,7 +613,7 @@ export default function CheckinPage() {
           {block < TOTAL_BLOCKS ? (
             <button
               type="button"
-              onClick={() => setBlock((b) => b + 1)}
+              onClick={() => goToBlock(block + 1)}
               disabled={!canGoNext()}
               className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition text-sm"
             >

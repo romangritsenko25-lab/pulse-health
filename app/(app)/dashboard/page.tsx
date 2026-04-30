@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   LineChart,
@@ -35,6 +35,16 @@ const MOCK_DATA: CheckinEntry[] = [
 export default function DashboardPage() {
   const router = useRouter()
   const [data] = useState<CheckinEntry[]>(MOCK_DATA)
+  const [trendInsight, setTrendInsight] = useState<string | null>(null)
+  const [trendLoading, setTrendLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/trend')
+      .then((r) => r.json())
+      .then((d) => setTrendInsight(d.insight ?? null))
+      .catch(() => setTrendInsight(null))
+      .finally(() => setTrendLoading(false))
+  }, [])
 
   const avgScore = Math.round(data.reduce((a, b) => a + b.score, 0) / data.length)
   const avgMood = (data.reduce((a, b) => a + b.mood, 0) / data.length).toFixed(1)
@@ -83,6 +93,18 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
+
+        {/* AI trend insight */}
+        {(trendLoading || trendInsight) && (
+          <div className="bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-4 mb-4 flex items-start gap-3">
+            <span className="text-lg mt-0.5">🧠</span>
+            {trendLoading ? (
+              <p className="text-sm text-indigo-400 animate-pulse">Анализирую твои данные…</p>
+            ) : (
+              <p className="text-sm text-indigo-800 leading-relaxed">{trendInsight}</p>
+            )}
+          </div>
+        )}
 
         {/* Line chart */}
         <div className="bg-white border border-slate-100 rounded-2xl p-6 mb-4">
