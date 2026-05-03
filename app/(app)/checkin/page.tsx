@@ -507,6 +507,26 @@ export default function CheckinPage() {
         return
       }
 
+      // Paywall: free plan = 3 checkins
+      const { data: sub } = await supabase
+        .from('subscriptions')
+        .select('status, plan')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle()
+
+      const isPro = !!sub
+      if (!isPro) {
+        const { count } = await supabase
+          .from('checkins')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+        if ((count ?? 0) >= 3) {
+          router.push('/upgrade?reason=limit')
+          return
+        }
+      }
+
       const { data: checkin, error: insertError } = await supabase
         .from('checkins')
         .insert({
