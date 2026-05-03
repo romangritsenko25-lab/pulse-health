@@ -16,7 +16,7 @@ interface AnalysisData {
 
 // ── PDF generation (client-side, no server needed) ─────────────────────────
 async function generatePdf(data: AnalysisData) {
-  const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+  const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
     import('jspdf'),
     import('html2canvas'),
   ])
