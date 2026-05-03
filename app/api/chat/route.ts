@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
+import Groq from 'groq-sdk'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -31,7 +31,7 @@ function buildSystemPrompt(analysis: ChatRequest['analysis']): string {
 
 ${sections.length ? sections.join('\n\n') : '(анализ не передан)'}
 
-Отвечай: на русском, тепло, коротко (2-4 предложения), без диагнозов.`
+Отвечай: только на русском языке, тепло и принимающе, коротко (2-4 предложения), без диагнозов. Опирайся на анализ выше.`
 }
 
 export async function POST(req: NextRequest) {
@@ -43,7 +43,6 @@ export async function POST(req: NextRequest) {
   }
 
   const { messages, analysis } = body
-
   if (!messages?.length || !analysis) {
     return NextResponse.json({ error: 'bad_request' }, { status: 400 })
   }
@@ -56,29 +55,23 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // Create client inline to avoid module-level singleton issues
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-
   try {
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 300,
-      system: buildSystemPrompt(analysis),
-      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      messages: [
+        { role: 'system', content: buildSystemPrompt(analysis) },
+        ...messages.map((m) => ({ role: m.role, content: m.content })),
+      ],
     })
 
-    const reply = response.content[0].type === 'text'
-      ? response.content[0].text.trim()
-      : 'Не удалось получить ответ.'
-
+    const reply = completion.choices[0]?.message?.content?.trim() ?? 'Не удалось получить ответ.'
     return NextResponse.json({ reply })
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err)
-    console.error('Chat API error:', detail)
-    // Return detail in dev / return generic in prod
-    return NextResponse.json(
-      { error: 'server_error', detail },
-      { status: 500 }
-    )
+    console.error('Chat (Groq) error:', detail)
+    return NextResponse.json({ error: 'server_error', detail }, { status: 500 })
   }
 }
