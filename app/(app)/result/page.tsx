@@ -186,7 +186,9 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
         }),
       })
       const data = await res.json()
-      const reply = res.ok && data.reply ? data.reply : 'Не удалось получить ответ. Попробуй ещё раз.'
+      const reply = res.ok && data.reply
+        ? data.reply
+        : `Ошибка: ${data.detail ?? data.error ?? 'server_error'}`
       const assistantMsg: ChatMessage = { role: 'assistant', content: reply }
       setApiMessages((prev) => [...prev, assistantMsg])
       setDisplayMessages((prev) => [...prev, assistantMsg])
