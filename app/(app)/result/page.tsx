@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+
+const FREE_MSG_LIMIT = 3
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface AnalysisData {
@@ -14,7 +16,12 @@ interface AnalysisData {
   support?: string
 }
 
-// ── PDF generation (client-side, no server needed) ─────────────────────────
+interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+// ── PDF generation (client-side) ───────────────────────────────────────────
 async function generatePdf(data: AnalysisData) {
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
     import('jspdf'),
@@ -35,43 +42,16 @@ async function generatePdf(data: AnalysisData) {
 
   const html = `
     <div style="width:794px;padding:56px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
-
       <div style="border-bottom:2px solid #e2e8f0;padding-bottom:20px;margin-bottom:32px;">
         <p style="font-size:10px;font-weight:700;color:#6366f1;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
         <h1 style="font-size:22px;font-weight:700;color:#0f172a;margin:0 0 6px;line-height:1.3;">Подготовка к приёму у специалиста</h1>
         <p style="font-size:12px;color:#94a3b8;margin:0;">${date}</p>
       </div>
-
-      ${data.reflection ? `
-      <div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;">
-        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">01 · Отражение</p>
-        <p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;">${data.reflection}</p>
-      </div>` : ''}
-
-      ${data.patterns ? `
-      <div style="margin-bottom:22px;padding:18px 20px;background:#f0fdfa;border-radius:8px;border-left:4px solid #14b8a6;">
-        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 · Паттерны</p>
-        <p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p>
-      </div>` : ''}
-
-      ${data.hypothesis ? `
-      <div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;">
-        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p>
-        <p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p>
-      </div>` : ''}
-
-      ${specialist ? `
-      <div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;">
-        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 · Темы для специалиста</p>
-        ${specialist}
-      </div>` : ''}
-
-      ${data.support ? `
-      <div style="margin-bottom:32px;padding:18px 20px;background:#6366f1;border-radius:8px;">
-        <p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p>
-        <p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p>
-      </div>` : ''}
-
+      ${data.reflection ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">01 · Отражение</p><p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;">${data.reflection}</p></div>` : ''}
+      ${data.patterns ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f0fdfa;border-radius:8px;border-left:4px solid #14b8a6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 · Паттерны</p><p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p></div>` : ''}
+      ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
+      ${specialist ? `<div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 · Темы для специалиста</p>${specialist}</div>` : ''}
+      ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#6366f1;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
       <div style="border-top:1px solid #e2e8f0;padding-top:14px;">
         <p style="font-size:10px;color:#94a3b8;line-height:1.6;margin:0;">Составлено AI-ассистентом Metanoia AI. Не является медицинским заключением и не заменяет консультацию специалиста.</p>
       </div>
@@ -83,10 +63,7 @@ async function generatePdf(data: AnalysisData) {
   document.body.appendChild(wrapper)
 
   const canvas = await html2canvas(wrapper.firstElementChild as HTMLElement, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#ffffff',
-    logging: false,
+    scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false,
   })
   document.body.removeChild(wrapper)
 
@@ -111,10 +88,8 @@ async function generatePdf(data: AnalysisData) {
   pdf.save(`metanoia-${new Date().toISOString().slice(0, 10)}.pdf`)
 }
 
-// ── Section component ──────────────────────────────────────────────────────
-function Section({
-  badge, title, color, children,
-}: {
+// ── Section ────────────────────────────────────────────────────────────────
+function Section({ badge, title, color, children }: {
   badge: string; title: string; color: string; children: React.ReactNode
 }) {
   return (
@@ -158,6 +133,140 @@ function CrisisView({ onBack }: { onBack: () => void }) {
       <button onClick={onBack} className="text-slate-400 text-sm text-center hover:text-slate-600 transition">
         ← Вернуться
       </button>
+    </div>
+  )
+}
+
+// ── AI Chat component ──────────────────────────────────────────────────────
+function AiChat({ analysis }: { analysis: AnalysisData }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  const userMsgCount = messages.filter((m) => m.role === 'user').length
+  const limitReached = userMsgCount >= FREE_MSG_LIMIT
+
+  useEffect(() => {
+    if (open && messages.length === 0) {
+      setMessages([{
+        role: 'assistant',
+        content: 'Есть вопросы по анализу? Я готов разобраться вместе — задавай.',
+      }])
+    }
+  }, [open, messages.length])
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, loading])
+
+  async function sendMessage() {
+    const text = input.trim()
+    if (!text || loading || limitReached) return
+
+    const updated: ChatMessage[] = [...messages, { role: 'user', content: text }]
+    setMessages(updated)
+    setInput('')
+    setLoading(true)
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: updated,
+          analysis: {
+            reflection: analysis.reflection,
+            patterns: analysis.patterns,
+            hypothesis: analysis.hypothesis,
+            forSpecialist: analysis.forSpecialist,
+            support: analysis.support,
+          },
+        }),
+      })
+      const data = await res.json()
+      setMessages((prev) => [...prev, { role: 'assistant', content: data.reply || 'Что-то пошло не так.' }])
+    } catch {
+      setMessages((prev) => [...prev, { role: 'assistant', content: 'Не удалось получить ответ. Попробуй ещё раз.' }])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition flex items-center justify-center gap-2"
+      >
+        <span>💬</span> Задать вопрос по анализу
+      </button>
+    )
+  }
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-slate-800">Уточняющий диалог</span>
+          <span className="text-xs text-slate-400">·</span>
+          <span className={`text-xs font-medium ${limitReached ? 'text-red-400' : 'text-slate-400'}`}>
+            {limitReached ? 'Лимит исчерпан' : `${FREE_MSG_LIMIT - userMsgCount} из ${FREE_MSG_LIMIT}`}
+          </span>
+        </div>
+        <button onClick={() => setOpen(false)} className="text-slate-300 hover:text-slate-500 text-lg transition">×</button>
+      </div>
+
+      {/* Messages */}
+      <div className="flex flex-col gap-3 px-4 py-4 max-h-80 overflow-y-auto">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+              m.role === 'user'
+                ? 'bg-indigo-600 text-white rounded-br-sm'
+                : 'bg-slate-100 text-slate-800 rounded-bl-sm'
+            }`}>
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div className="flex justify-start">
+            <div className="bg-slate-100 text-slate-400 px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm">
+              <span className="animate-pulse">Думаю…</span>
+            </div>
+          </div>
+        )}
+        {limitReached && !loading && (
+          <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-center">
+            <p className="text-xs text-indigo-600 font-medium mb-1">Лимит бесплатных сообщений</p>
+            <p className="text-xs text-slate-500">Обновись до Pro для безлимитного диалога</p>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-slate-100 px-3 py-3 flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+          placeholder={limitReached ? 'Лимит исчерпан' : 'Задай вопрос…'}
+          disabled={limitReached || loading}
+          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+        />
+        <button
+          onClick={sendMessage}
+          disabled={!input.trim() || loading || limitReached}
+          className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+        >
+          →
+        </button>
+      </div>
     </div>
   )
 }
@@ -223,28 +332,24 @@ function ResultContent() {
           </button>
         </div>
 
-        {/* Reflection */}
         {data.reflection && (
           <Section badge="01" title="Отражение" color="bg-blue-50 border-blue-100 text-blue-900">
             <p className="text-sm leading-relaxed">{data.reflection}</p>
           </Section>
         )}
 
-        {/* Patterns */}
         {data.patterns && (
           <Section badge="02" title="Паттерны" color="bg-teal-50 border-teal-100 text-teal-900">
             <p className="text-sm leading-relaxed">{data.patterns}</p>
           </Section>
         )}
 
-        {/* Hypothesis */}
         {data.hypothesis && (
           <Section badge="03" title="Гипотеза" color="bg-violet-50 border-violet-100 text-violet-900">
             <p className="text-sm leading-relaxed italic">{data.hypothesis}</p>
           </Section>
         )}
 
-        {/* For Specialist */}
         {data.forSpecialist && data.forSpecialist.length > 0 && (
           <Section badge="04" title="Темы для специалиста" color="bg-amber-50 border-amber-100 text-amber-900">
             <ul className="flex flex-col gap-2">
@@ -260,13 +365,15 @@ function ResultContent() {
           </Section>
         )}
 
-        {/* Support */}
         {data.support && (
           <div className="bg-indigo-600 rounded-2xl p-5 text-white">
             <p className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">05 · Поддержка</p>
             <p className="text-sm leading-relaxed font-medium">{data.support}</p>
           </div>
         )}
+
+        {/* AI Chat */}
+        <AiChat analysis={data} />
 
         {/* PDF Download */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3">

@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/weekly-report",
+      "schedule": "0 10 * * 0"
+    },
+    {
+      "path": "/api/cron/daily-nudge",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/winback",
+      "schedule": "0 11 * * *"
+    }
+  ]
+}
