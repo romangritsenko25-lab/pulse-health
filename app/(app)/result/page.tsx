@@ -139,34 +139,34 @@ function CrisisView({ onBack }: { onBack: () => void }) {
 
 // ── AI Chat component ──────────────────────────────────────────────────────
 function AiChat({ analysis }: { analysis: AnalysisData }) {
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  // apiMessages — только то что летит в Claude (должно начинаться с user)
+  const [apiMessages, setApiMessages] = useState<ChatMessage[]>([])
+  // displayMessages — включает приветствие для отображения
+  const [displayMessages, setDisplayMessages] = useState<ChatMessage[]>([{
+    role: 'assistant',
+    content: 'Есть вопросы по анализу? Я готов разобраться вместе — задавай.',
+  }])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  const userMsgCount = messages.filter((m) => m.role === 'user').length
+  const userMsgCount = apiMessages.filter((m) => m.role === 'user').length
   const limitReached = userMsgCount >= FREE_MSG_LIMIT
 
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([{
-        role: 'assistant',
-        content: 'Есть вопросы по анализу? Я готов разобраться вместе — задавай.',
-      }])
-    }
-  }, [open, messages.length])
-
-  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, loading])
+  }, [displayMessages, loading])
 
   async function sendMessage() {
     const text = input.trim()
     if (!text || loading || limitReached) return
 
-    const updated: ChatMessage[] = [...messages, { role: 'user', content: text }]
-    setMessages(updated)
+    const newUserMsg: ChatMessage = { role: 'user', content: text }
+    const updatedApi: ChatMessage[] = [...apiMessages, newUserMsg]
+
+    setApiMessages(updatedApi)
+    setDisplayMessages((prev) => [...prev, newUserMsg])
     setInput('')
     setLoading(true)
 
@@ -175,7 +175,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: updated,
+          messages: updatedApi,
           analysis: {
             reflection: analysis.reflection,
             patterns: analysis.patterns,
@@ -186,9 +186,12 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
         }),
       })
       const data = await res.json()
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.reply || 'Что-то пошло не так.' }])
+      const reply = res.ok && data.reply ? data.reply : 'Не удалось получить ответ. Попробуй ещё раз.'
+      const assistantMsg: ChatMessage = { role: 'assistant', content: reply }
+      setApiMessages((prev) => [...prev, assistantMsg])
+      setDisplayMessages((prev) => [...prev, assistantMsg])
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', content: 'Не удалось получить ответ. Попробуй ещё раз.' }])
+      setDisplayMessages((prev) => [...prev, { role: 'assistant', content: 'Не удалось получить ответ. Попробуй ещё раз.' }])
     } finally {
       setLoading(false)
     }
@@ -221,7 +224,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
 
       {/* Messages */}
       <div className="flex flex-col gap-3 px-4 py-4 max-h-80 overflow-y-auto">
-        {messages.map((m, i) => (
+        {displayMessages.map((m, i) => (
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
               m.role === 'user'
