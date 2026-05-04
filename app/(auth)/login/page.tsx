@@ -175,7 +175,7 @@ export default function LoginPage() {
       {/* ── 1. HERO ────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
         {/* Concentric animated rings */}
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {[
             { size: 220, cls: 'pr1' },
             { size: 380, cls: 'pr2' },
