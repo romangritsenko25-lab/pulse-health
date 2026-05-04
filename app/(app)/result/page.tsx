@@ -22,7 +22,9 @@ interface ChatMessage {
 }
 
 // ── PDF generation (client-side) ───────────────────────────────────────────
-async function generatePdf(data: AnalysisData, specialistName?: string, specialistSpecialty?: string) {
+type JournalData = { count: number; summary: string | null; themes: string[] }
+
+async function generatePdf(data: AnalysisData, specialistName?: string, specialistSpecialty?: string, journalData?: JournalData) {
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
     import('jspdf'),
     import('html2canvas'),
@@ -63,6 +65,16 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
       ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
       ${specialist ? `<div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 · Темы для специалиста</p>${specialist}</div>` : ''}
       ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#6366f1;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
+      ${journalData && journalData.count > 0 ? `
+      <div style="margin-bottom:22px;padding:18px 20px;background:#f8fafc;border-radius:8px;border-left:4px solid #64748b;">
+        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">Из дневника за 30 дней · ${journalData.count} записей</p>
+        ${journalData.summary ? `<p style="font-size:13px;line-height:1.75;color:#334155;margin:0 0 12px;">${journalData.summary.replace(/\n/g, '<br/>')}</p>` : ''}
+        ${journalData.themes.length > 0 ? `
+        <div>
+          <p style="font-size:11px;font-weight:600;color:#64748b;margin:0 0 8px;">Темы из дневника:</p>
+          ${journalData.themes.slice(0, 3).map((t, i) => `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;"><div style="min-width:18px;height:18px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#64748b;">${i + 1}</div><p style="font-size:12px;line-height:1.5;color:#475569;margin:2px 0 0;flex:1;">${t}</p></div>`).join('')}
+        </div>` : ''}
+      </div>` : ''}
       <div style="border-top:1px solid #e2e8f0;padding-top:14px;">
         <p style="font-size:10px;color:#94a3b8;line-height:1.6;margin:0;">Составлено AI-ассистентом Metanoia AI. Не является медицинским заключением и не заменяет консультацию специалиста.</p>
       </div>
@@ -341,7 +353,26 @@ function ResultContent() {
     setPdfLoading(true)
     setPdfError(false)
     try {
-      await generatePdf(data, specialistName, specialistSpecialty)
+      let journalData: JournalData | undefined
+      try {
+        const res = await fetch('/api/analyze-journal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ period: 30 }),
+        })
+        if (res.ok) {
+          const j = await res.json()
+          const { createClient: mkClient } = await import('@/lib/supabase/client')
+          const supabase = mkClient()
+          const since = new Date(); since.setDate(since.getDate() - 30)
+          const { count } = await supabase
+            .from('journal_entries')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', since.toISOString())
+          journalData = { count: count ?? 0, summary: j.summary, themes: j.themes ?? [] }
+        }
+      } catch { /* journal is optional — don't block PDF */ }
+      await generatePdf(data, specialistName, specialistSpecialty, journalData)
     } catch (err) {
       console.error('PDF error:', err)
       setPdfError(true)
