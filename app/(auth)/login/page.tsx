@@ -87,6 +87,14 @@ export default function LoginPage() {
   const [insightVisible, setInsightVisible] = useState(false)
   const loginRef = useRef<HTMLDivElement>(null)
 
+  // Email/password form
+  const [emailMode, setEmailMode] = useState<'login' | 'register'>('login')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [emailLoading, setEmailLoading] = useState(false)
+  const [emailError, setEmailError] = useState('')
+
   const allAnswered = !!(emotion && duration && support)
 
   useEffect(() => {
@@ -109,6 +117,36 @@ export default function LoginPage() {
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
+  }
+
+  async function handleEmailSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setEmailError('')
+    setEmailLoading(true)
+    const supabase = createClient()
+    if (emailMode === 'login') {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        setEmailError('Неверный email или пароль')
+      } else {
+        window.location.href = '/checkin'
+      }
+    } else {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name } },
+      })
+      if (error) {
+        setEmailError(error.message === 'User already registered' ? 'Этот email уже зарегистрирован' : 'Ошибка регистрации. Попробуй снова.')
+      } else {
+        setEmailError('')
+        setEmailMode('login')
+        setPassword('')
+        setEmailError('Проверь почту — отправили письмо для подтверждения')
+      }
+    }
+    setEmailLoading(false)
   }
 
   return (
@@ -381,6 +419,64 @@ export default function LoginPage() {
               </svg>
             )}
             {loading ? 'Перенаправление…' : 'Войти через Google'}
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 w-full">
+            <div className="flex-1 h-px bg-slate-200" />
+            <span className="text-slate-400 text-xs">или</span>
+            <div className="flex-1 h-px bg-slate-200" />
+          </div>
+
+          {/* Email/password form */}
+          <form onSubmit={handleEmailSubmit} className="w-full flex flex-col gap-3">
+            {emailMode === 'register' && (
+              <input
+                type="text"
+                placeholder="Имя"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm text-slate-800 placeholder:text-slate-400"
+              />
+            )}
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm text-slate-800 placeholder:text-slate-400"
+            />
+            <input
+              type="password"
+              placeholder="Пароль"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm text-slate-800 placeholder:text-slate-400"
+            />
+            {emailError && (
+              <p className={`text-xs text-center ${emailError.includes('Проверь') ? 'text-teal-600' : 'text-red-500'}`}>
+                {emailError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={emailLoading}
+              className="w-full py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
+            >
+              {emailLoading ? '…' : emailMode === 'login' ? 'Войти' : 'Создать аккаунт'}
+            </button>
+          </form>
+
+          <button
+            type="button"
+            onClick={() => { setEmailMode(emailMode === 'login' ? 'register' : 'login'); setEmailError('') }}
+            className="text-slate-400 hover:text-teal-600 text-xs transition"
+          >
+            {emailMode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
           </button>
 
           <p className="text-slate-400 text-xs text-center leading-relaxed">
