@@ -307,6 +307,7 @@ function ResultContent() {
   const [data, setData] = useState<AnalysisData | null>(null)
   const [pdfLoading, setPdfLoading] = useState(false)
   const [pdfError, setPdfError] = useState(false)
+  const [journalLimitReached, setJournalLimitReached] = useState(false)
   const [specialistName, setSpecialistName] = useState<string | undefined>()
   const [specialistSpecialty, setSpecialistSpecialty] = useState<string | undefined>()
 
@@ -370,6 +371,9 @@ function ResultContent() {
             .select('*', { count: 'exact', head: true })
             .gte('created_at', since.toISOString())
           journalData = { count: count ?? 0, summary: j.summary, themes: j.themes ?? [] }
+        } else if (res.status === 429) {
+          const body = await res.json().catch(() => ({}))
+          if (body.error === 'limit_reached') setJournalLimitReached(true)
         }
       } catch { /* journal is optional — don't block PDF */ }
       await generatePdf(data, specialistName, specialistSpecialty, journalData)
@@ -472,6 +476,15 @@ function ResultContent() {
           </button>
           {pdfError && (
             <p className="text-red-500 text-xs text-center">Не удалось создать PDF. Попробуй ещё раз.</p>
+          )}
+          {journalLimitReached && (
+            <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+              <span className="mt-0.5">⚠️</span>
+              <p>
+                <span className="font-semibold">Лимит анализа журнала исчерпан</span> — PDF создан без раздела дневника.{' '}
+                <a href="/upgrade" className="underline font-semibold hover:text-amber-900">Перейти на Pro</a> для безлимитного доступа.
+              </p>
+            </div>
           )}
         </div>
 
