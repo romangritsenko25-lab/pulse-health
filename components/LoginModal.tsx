@@ -28,11 +28,16 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
     const supabase = createClient()
 
     if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error, data } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setError('Неверный email или пароль')
       } else {
-        window.location.href = '/checkin'
+        const { data: isSpecialist } = await supabase
+          .from('specialists')
+          .select('id')
+          .eq('user_id', data.user.id)
+          .maybeSingle()
+        window.location.href = isSpecialist ? '/specialist/dashboard' : '/checkin'
       }
     } else {
       const { error } = await supabase.auth.signUp({

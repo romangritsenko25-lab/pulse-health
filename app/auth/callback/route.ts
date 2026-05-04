@@ -30,6 +30,19 @@ export async function GET(request: NextRequest) {
         }
       }
 
+      // Role-based redirect: specialists go to their dashboard
+      if (next === '/checkin') {
+        const { data: isSpecialist } = await supabase
+          .from('specialists')
+          .select('id')
+          .eq('user_id', data.user.id)
+          .maybeSingle()
+
+        if (isSpecialist) {
+          return NextResponse.redirect(`${origin}/specialist/dashboard`)
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
