@@ -1,0 +1,305 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+
+interface Client {
+  client_id: string
+  name: string | null
+  email: string | null
+  lastCheckin: { created_at: string; wellbeing: number | null; mood: string | null } | null
+  checkinCount: number
+  avgWellbeing: number | null
+  recentScores: number[]
+}
+
+interface SpecialistInfo {
+  name: string
+  specialty: string
+  referral_code: string
+  photo_url: string | null
+}
+
+// Tiny sparkline: 5 dots
+function Sparkline({ scores }: { scores: number[] }) {
+  if (scores.length < 2) return null
+  const max = 10
+  const w = 48
+  const h = 20
+  const step = w / (scores.length - 1)
+  const points = scores
+    .map((s, i) => `${i * step},${h - (s / max) * h}`)
+    .join(' ')
+  return (
+    <svg width={w} height={h} className="overflow-visible">
+      <polyline
+        points={points}
+        fill="none"
+        stroke="#6366f1"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+export default function SpecialistDashboard() {
+  const router = useRouter()
+  const [specialist, setSpecialist] = useState<SpecialistInfo | null>(null)
+  const [clients, setClients] = useState<Client[]>([])
+  const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/login'); return }
+
+      // Check if specialist
+      const { data: spec } = await supabase
+        .from('specialists')
+        .select('name, specialty, referral_code, photo_url')
+        .eq('id', user.id)
+        .single()
+
+      if (!spec) { router.push('/specialist/register'); return }
+      setSpecialist(spec)
+
+      // Load client ids
+      const { data: clientLinks } = await supabase
+        .from('specialist_clients')
+        .select('client_id')
+        .eq('specialist_id', user.id)
+
+      if (!clientLinks?.length) { setLoading(false); return }
+
+      const clientIds = clientLinks.map((c) => c.client_id)
+
+      // Load profiles and checkins in parallel
+      const [profilesRes, checkinsRes] = await Promise.all([
+        supabase.from('profiles').select('id, name, email').in('id', clientIds),
+        supabase
+          .from('checkins')
+          .select('id, user_id, wellbeing, mood, created_at')
+          .in('user_id', clientIds)
+          .order('created_at', { ascending: false }),
+      ])
+
+      const profiles = profilesRes.data ?? []
+      const allCheckins = checkinsRes.data ?? []
+
+      const clientsData: Client[] = clientIds.map((clientId) => {
+        const profile = profiles.find((p) => p.id === clientId)
+        const clientCheckins = allCheckins.filter((c) => c.user_id === clientId)
+        const lastCheckin = clientCheckins[0] ?? null
+        const avg = clientCheckins.length
+          ? clientCheckins.reduce((a, c) => a + (c.wellbeing ?? 5), 0) / clientCheckins.length
+          : null
+        const recentScores = clientCheckins
+          .slice(0, 7)
+          .reverse()
+          .map((c) => c.wellbeing ?? 5)
+
+        return {
+          client_id: clientId,
+          name: profile?.name ?? null,
+          email: profile?.email ?? null,
+          lastCheckin,
+          checkinCount: clientCheckins.length,
+          avgWellbeing: avg ? parseFloat(avg.toFixed(1)) : null,
+          recentScores,
+        }
+      })
+
+      // Sort: clients with most recent checkin first
+      clientsData.sort((a, b) => {
+        const aDate = a.lastCheckin?.created_at ?? ''
+        const bDate = b.lastCheckin?.created_at ?? ''
+        return bDate.localeCompare(aDate)
+      })
+
+      setClients(clientsData)
+      setLoading(false)
+    }
+    load()
+  }, [router])
+
+  function copyLink() {
+    if (!specialist) return
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? origin
+    navigator.clipboard.writeText(`${siteUrl}/join/${specialist.referral_code}`)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
+      </div>
+    )
+  }
+
+  const referralUrl = specialist
+    ? `${process.env.NEXT_PUBLIC_SITE_URL ?? (typeof window !== 'undefined' ? window.location.origin : '')}/join/${specialist.referral_code}`
+    : ''
+
+  const totalCheckins = clients.reduce((a, c) => a + c.checkinCount, 0)
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-2xl mx-auto px-4 py-8">
+
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+            <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
+            {specialist && (
+              <p className="text-slate-500 text-sm mt-0.5">
+                {specialist.name} · {specialist.specialty}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="text-slate-400 hover:text-slate-600 text-xs transition"
+            >
+              Мой дашборд →
+            </button>
+            <button
+              onClick={() => router.push('/specialist/register')}
+              className="text-slate-400 hover:text-slate-600 text-xs transition"
+            >
+              Редактировать профиль
+            </button>
+          </div>
+        </div>
+
+        {/* Referral link */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5">
+          <div className="flex items-center gap-2 mb-1">
+            <span>🔗</span>
+            <p className="font-semibold text-slate-800 text-sm">Реферальная ссылка</p>
+          </div>
+          <p className="text-slate-400 text-xs mb-3">
+            Отправьте клиенту — он увидит ваш профиль и сразу подключится
+          </p>
+          <div className="flex gap-2">
+            <input
+              readOnly
+              value={referralUrl}
+              className="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-500 truncate"
+            />
+            <button
+              onClick={copyLink}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+            >
+              {copied ? '✓ Скопировано' : 'Копировать'}
+            </button>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+            <div className="text-2xl font-bold text-slate-800">{clients.length}</div>
+            <div className="text-xs text-slate-400 mt-0.5">Клиентов</div>
+          </div>
+          <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+            <div className="text-2xl font-bold text-slate-800">{totalCheckins}</div>
+            <div className="text-xs text-slate-400 mt-0.5">Всего опросов</div>
+          </div>
+        </div>
+
+        {/* Client list */}
+        {clients.length === 0 ? (
+          <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+            <p className="text-3xl mb-3">👥</p>
+            <p className="font-semibold text-slate-700 mb-1">Пока нет клиентов</p>
+            <p className="text-slate-400 text-sm">
+              Отправьте реферальную ссылку — клиенты появятся здесь автоматически
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100">
+              <h2 className="text-sm font-semibold text-slate-600">Клиенты</h2>
+            </div>
+
+            <div className="divide-y divide-slate-50">
+              {clients.map((client) => {
+                const displayName = client.name ?? client.email ?? 'Клиент'
+                const initials = displayName
+                  .split(' ')
+                  .map((w) => w[0])
+                  .join('')
+                  .toUpperCase()
+                  .slice(0, 2)
+
+                const wellbeingColor =
+                  client.lastCheckin?.wellbeing !== null && client.lastCheckin?.wellbeing !== undefined
+                    ? client.lastCheckin.wellbeing >= 7
+                      ? 'text-teal-500'
+                      : client.lastCheckin.wellbeing >= 4
+                      ? 'text-amber-500'
+                      : 'text-red-400'
+                    : 'text-slate-400'
+
+                return (
+                  <div key={client.client_id} className="px-5 py-4 flex items-center gap-4">
+                    {/* Avatar */}
+                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
+                      {initials}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-slate-800 text-sm truncate">{displayName}</p>
+                      <p className="text-slate-400 text-xs mt-0.5">
+                        {client.checkinCount}{' '}
+                        {client.checkinCount === 1 ? 'опрос' : client.checkinCount < 5 ? 'опроса' : 'опросов'}
+                        {client.lastCheckin && (
+                          <>
+                            {' · '}
+                            {new Date(client.lastCheckin.created_at).toLocaleDateString('ru-RU', {
+                              day: 'numeric',
+                              month: 'short',
+                            })}
+                          </>
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Sparkline */}
+                    {client.recentScores.length >= 2 && (
+                      <div className="shrink-0">
+                        <Sparkline scores={client.recentScores} />
+                      </div>
+                    )}
+
+                    {/* Last score */}
+                    {client.lastCheckin?.wellbeing !== null &&
+                      client.lastCheckin?.wellbeing !== undefined && (
+                        <div className="text-center shrink-0">
+                          <div className={`text-sm font-bold ${wellbeingColor}`}>
+                            {client.lastCheckin.wellbeing}/10
+                          </div>
+                          <div className="text-xs text-slate-400">сейчас</div>
+                        </div>
+                      )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

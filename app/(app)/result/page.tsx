@@ -22,7 +22,7 @@ interface ChatMessage {
 }
 
 // ── PDF generation (client-side) ───────────────────────────────────────────
-async function generatePdf(data: AnalysisData) {
+async function generatePdf(data: AnalysisData, specialistName?: string, specialistSpecialty?: string) {
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
     import('jspdf'),
     import('html2canvas'),
@@ -40,6 +40,16 @@ async function generatePdf(data: AnalysisData) {
       </div>`)
     .join('')
 
+  const specialistBlock = specialistName
+    ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+        <span style="font-size:20px;">👩‍⚕️</span>
+        <div>
+          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для специалиста</p>
+          <p style="font-size:13px;font-weight:700;color:#166534;margin:0;">${specialistName}${specialistSpecialty ? ` · ${specialistSpecialty}` : ''}</p>
+        </div>
+      </div>`
+    : ''
+
   const html = `
     <div style="width:794px;padding:56px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
       <div style="border-bottom:2px solid #e2e8f0;padding-bottom:20px;margin-bottom:32px;">
@@ -47,6 +57,7 @@ async function generatePdf(data: AnalysisData) {
         <h1 style="font-size:22px;font-weight:700;color:#0f172a;margin:0 0 6px;line-height:1.3;">Подготовка к приёму у специалиста</h1>
         <p style="font-size:12px;color:#94a3b8;margin:0;">${date}</p>
       </div>
+      ${specialistBlock}
       ${data.reflection ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">01 · Отражение</p><p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;">${data.reflection}</p></div>` : ''}
       ${data.patterns ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f0fdfa;border-radius:8px;border-left:4px solid #14b8a6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 · Паттерны</p><p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p></div>` : ''}
       ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
@@ -284,6 +295,8 @@ function ResultContent() {
   const [data, setData] = useState<AnalysisData | null>(null)
   const [pdfLoading, setPdfLoading] = useState(false)
   const [pdfError, setPdfError] = useState(false)
+  const [specialistName, setSpecialistName] = useState<string | undefined>()
+  const [specialistSpecialty, setSpecialistSpecialty] = useState<string | undefined>()
 
   useEffect(() => {
     if (!id) { router.replace('/checkin'); return }
@@ -292,12 +305,43 @@ function ResultContent() {
     else router.replace('/checkin')
   }, [id, router])
 
+  useEffect(() => {
+    // Load specialist info if client is linked to one
+    async function loadSpecialist() {
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: link } = await supabase
+        .from('specialist_clients')
+        .select('specialist_id')
+        .eq('client_id', user.id)
+        .limit(1)
+        .single()
+
+      if (!link) return
+
+      const { data: spec } = await supabase
+        .from('specialists')
+        .select('name, specialty')
+        .eq('id', link.specialist_id)
+        .single()
+
+      if (spec) {
+        setSpecialistName(spec.name)
+        setSpecialistSpecialty(spec.specialty)
+      }
+    }
+    loadSpecialist()
+  }, [])
+
   async function handleDownloadPdf() {
     if (!data) return
     setPdfLoading(true)
     setPdfError(false)
     try {
-      await generatePdf(data)
+      await generatePdf(data, specialistName, specialistSpecialty)
     } catch (err) {
       console.error('PDF error:', err)
       setPdfError(true)
