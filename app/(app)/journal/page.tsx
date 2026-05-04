@@ -22,14 +22,15 @@ type Entry = {
 
 // ── Voice recording hook ──────────────────────────────────────────────────────
 function useSpeechRecognition(onResult: (text: string) => void) {
-  const recRef = useRef<InstanceType<typeof SpeechRecognition> | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recRef = useRef<any>(null)
   const [listening, setListening] = useState(false)
   const [supported, setSupported] = useState(true)
 
   useEffect(() => {
-    const SR = typeof window !== 'undefined'
-      ? (window.SpeechRecognition || (window as typeof window & { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition)
-      : null
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = typeof window !== 'undefined' ? (window as any) : null
+    const SR = w ? (w.SpeechRecognition || w.webkitSpeechRecognition) : null
     if (!SR) { setSupported(false); return }
 
     const rec = new SR()
@@ -37,7 +38,8 @@ function useSpeechRecognition(onResult: (text: string) => void) {
     rec.continuous = false
     rec.interimResults = false
 
-    rec.onresult = (e: SpeechRecognitionEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onresult = (e: any) => {
       const transcript = e.results[0][0].transcript
       onResult(transcript)
     }
