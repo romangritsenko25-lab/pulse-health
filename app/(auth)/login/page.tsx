@@ -135,7 +135,7 @@ export default function LoginPage() {
       `}</style>
 
       {/* ── 1. HERO ────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-20 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
+      <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
         {/* Concentric animated rings */}
         <div className="absolute inset-0 pointer-events-none">
           {[
@@ -316,7 +316,67 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── 5. ФОРМА ВХОДА ────────────────────────────────────────── */}
+      {/* ── 5. ДЛЯ СПЕЦИАЛИСТОВ ──────────────────────────────────── */}
+      <section className="py-16 px-4 bg-indigo-600">
+        <div className="max-w-lg mx-auto text-center">
+          <p className="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Вы психолог? Работайте с клиентами через Metanoia
+          </h2>
+          <p className="text-indigo-100 text-sm leading-relaxed mb-6 max-w-md mx-auto">
+            Получайте новых клиентов через личную реферальную ссылку. Зарабатывайте до 30% от подписок — вывод от $30 или зачёт в подписку.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
+            {['🔗 Реферальная ссылка', '💰 До 30% от подписок', '💳 Вывод от $30'].map((item) => (
+              <span key={item} className="text-white text-sm font-medium">{item}</span>
+            ))}
+          </div>
+          <a
+            href="/specialists"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-white hover:bg-indigo-50 text-indigo-600 text-sm font-bold rounded-2xl transition shadow-lg shadow-indigo-800/20"
+          >
+            Узнать больше →
+          </a>
+        </div>
+      </section>
+
+      {/* ── 6. МАТЕРИАЛЫ PREVIEW ──────────────────────────────────── */}
+      <section className="py-16 px-4 bg-slate-50">
+        <div className="max-w-lg mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Материалы</p>
+              <h2 className="text-xl font-bold text-slate-800">Книги и видео для самопознания</h2>
+            </div>
+            <a href="/materials" className="text-indigo-600 text-sm font-semibold hover:text-indigo-500 transition shrink-0">
+              Смотреть все →
+            </a>
+          </div>
+          <div className="flex flex-col gap-3 mb-6">
+            {[
+              { title: 'Тело помнит всё', author: 'Бессел ван дер Колк', emoji: '📖' },
+              { title: 'Когнитивная терапия депрессии', author: 'Аарон Бек', emoji: '📗' },
+              { title: 'Токсичный позитив', author: 'Уитни Гудман', emoji: '📘' },
+            ].map((b) => (
+              <div key={b.title} className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl p-4">
+                <span className="text-2xl">{b.emoji}</span>
+                <div>
+                  <p className="font-semibold text-slate-800 text-sm">{b.title}</p>
+                  <p className="text-slate-400 text-xs">{b.author}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <a
+            href="/materials"
+            className="flex items-center justify-center w-full py-3 bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-600 text-sm font-semibold rounded-2xl transition"
+          >
+            Смотреть все материалы
+          </a>
+        </div>
+      </section>
+
+      {/* ── 7. ФОРМА ВХОДА ────────────────────────────────────────── */}
       <section ref={loginRef} className="py-20 px-4 bg-white">
         <div className="max-w-sm mx-auto flex flex-col items-center gap-6">
           <div className="text-center">
@@ -350,7 +410,7 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── Footer ─────────────────────────────────────────────────── */}
+      {/* ── 8. FOOTER ──────────────────────────────────────────────── */}
       <footer className="py-6 px-4 border-t border-slate-100 text-center">
         <p className="text-slate-300 text-xs">© 2025 Metanoia AI · Не является медицинским сервисом</p>
       </footer>
