@@ -577,12 +577,20 @@ export default function CheckinPage() {
       <div className="bg-white border-b border-slate-100 px-4 pt-5 pb-3 max-w-lg mx-auto w-full sticky top-0 z-10">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-slate-400 font-medium">Блок {block} из {TOTAL_BLOCKS}</span>
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="text-slate-400 hover:text-slate-600 text-sm transition"
-          >
-            Выйти
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push('/')}
+              className="text-slate-400 hover:text-slate-600 text-sm transition"
+            >
+              ← Главная
+            </button>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="text-slate-400 hover:text-slate-600 text-sm transition"
+            >
+              Дашборд →
+            </button>
+          </div>
         </div>
         <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
           <div
