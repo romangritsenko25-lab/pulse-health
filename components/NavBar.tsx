@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 const NAV_LINKS = [
   { label: 'Чек-ин', href: '/login' },
@@ -14,7 +15,15 @@ const NAV_LINKS = [
 
 export default function NavBar() {
   const [open, setOpen] = useState(false)
+  const [isAuthed, setIsAuthed] = useState(false)
   const pathname = usePathname()
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      setIsAuthed(!!data.user)
+    })
+  }, [])
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100">
@@ -51,10 +60,10 @@ export default function NavBar() {
 
         <div className="flex items-center gap-2">
           <Link
-            href="/login"
-            className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+            href={isAuthed ? '/checkin' : '/login'}
+            className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm relative z-10"
           >
-            Войти
+            {isAuthed ? 'Чек-ин' : 'Войти'}
           </Link>
           <button
             type="button"
@@ -93,11 +102,11 @@ export default function NavBar() {
               </Link>
             ))}
             <Link
-              href="/login"
+              href={isAuthed ? '/checkin' : '/login'}
               onClick={() => setOpen(false)}
               className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
             >
-              Войти
+              {isAuthed ? 'Чек-ин' : 'Войти'}
             </Link>
           </div>
         </div>
