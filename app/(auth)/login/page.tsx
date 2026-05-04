@@ -116,8 +116,8 @@ export default function LoginPage() {
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
         @keyframes pulse-ring {
-          0%, 100% { opacity: 0.14; transform: translate(-50%, -50%) scale(1); }
-          50%       { opacity: 0.06; transform: translate(-50%, -50%) scale(1.07); }
+          0%, 100% { opacity: 0.40; transform: translate(-50%, -50%) scale(0.88); }
+          50%       { opacity: 0.10; transform: translate(-50%, -50%) scale(1.14); }
         }
         .pr1 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 0s; }
         .pr2 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 1.2s; }
@@ -155,8 +155,9 @@ export default function LoginPage() {
                 width: size,
                 height: size,
                 borderRadius: '50%',
-                border: '1.5px solid rgba(13,148,136,0.25)',
-                backgroundColor: 'rgba(13,148,136,0.03)',
+                border: '2px solid rgba(13,148,136,0.55)',
+                backgroundColor: 'rgba(13,148,136,0.05)',
+                boxShadow: '0 0 24px rgba(13,148,136,0.08)',
               }}
             />
           ))}
