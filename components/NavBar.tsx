@@ -24,7 +24,13 @@ export default function NavBar() {
           className="flex items-center gap-2 shrink-0"
           onClick={() => setOpen(false)}
         >
-          <img src="/logo.svg" alt="Metanoia AI" className="h-7 w-auto" />
+          <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="20" cy="20" r="20" fill="#0d9488"/>
+            <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="font-bold text-slate-900 text-[15px] tracking-tight leading-none">
+            metanoia<span className="text-teal-600 text-[9px] font-bold align-super ml-0.5">AI</span>
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-0.5">

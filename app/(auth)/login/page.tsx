@@ -166,7 +166,10 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up flex flex-col items-center gap-3">
             <div className="w-16 h-16 flex items-center justify-center">
-              <img src="/logo-icon.svg" alt="Metanoia AI" className="w-12 h-12" />
+              <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Metanoia AI">
+                <circle cx="20" cy="20" r="20" fill="#0d9488"/>
+                <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
             <span className="text-sm font-bold text-teal-600 tracking-widest uppercase">Metanoia AI</span>
           </div>
