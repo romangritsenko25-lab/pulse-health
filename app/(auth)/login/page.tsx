@@ -320,30 +320,6 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── 5. ДЛЯ СПЕЦИАЛИСТОВ ──────────────────────────────────── */}
-      <section className="py-16 px-4 bg-teal-600">
-        <div className="max-w-lg mx-auto text-center">
-          <p className="text-teal-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Вы психолог? Работайте с клиентами через Metanoia
-          </h2>
-          <p className="text-teal-100 text-sm leading-relaxed mb-6 max-w-md mx-auto">
-            Получайте новых клиентов через личную реферальную ссылку. Зарабатывайте до 30% от подписок — вывод от $30 или зачёт в подписку.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
-            {['🔗 Реферальная ссылка', '💰 До 30% от подписок', '💳 Вывод от $30'].map((item) => (
-              <span key={item} className="text-white text-sm font-medium">{item}</span>
-            ))}
-          </div>
-          <a
-            href="/specialists"
-            className="inline-flex items-center gap-2 px-5 py-3 bg-white hover:bg-teal-50 text-teal-600 text-sm font-bold rounded-2xl transition shadow-lg shadow-teal-800/20"
-          >
-            Узнать больше →
-          </a>
-        </div>
-      </section>
-
       {/* ── 6. МАТЕРИАЛЫ PREVIEW ──────────────────────────────────── */}
       <section className="py-16 px-4 bg-slate-50">
         <div className="max-w-lg mx-auto">
