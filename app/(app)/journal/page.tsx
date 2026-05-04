@@ -253,6 +253,9 @@ export default function JournalPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
+            <a href="/" className="text-slate-400 hover:text-teal-600 text-sm transition mb-2 inline-flex items-center gap-1">
+              ← Главная
+            </a>
             <h1 className="text-2xl font-bold text-slate-900">Мой журнал</h1>
             <p className="text-slate-400 text-sm mt-1">{entries.length} {entries.length === 1 ? 'запись' : entries.length < 5 ? 'записи' : 'записей'}</p>
           </div>
