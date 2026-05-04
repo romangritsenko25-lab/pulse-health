@@ -128,13 +128,13 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
             <h1 className="text-2xl font-bold text-slate-800">Дашборд</h1>
             <p className="text-slate-400 text-sm">Последние 7 дней</p>
           </div>
           <button
             onClick={() => router.push('/checkin')}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-xl transition font-semibold"
+            className="bg-teal-600 hover:bg-teal-500 text-white text-sm px-4 py-2 rounded-xl transition font-semibold"
           >
             + Новый опрос
           </button>
@@ -165,7 +165,7 @@ export default function DashboardPage() {
             <p className="text-slate-400 text-sm mb-4">Пройди первый опрос чтобы увидеть свою динамику</p>
             <button
               onClick={() => router.push('/checkin')}
-              className="bg-indigo-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-indigo-500 transition"
+              className="bg-teal-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-teal-500 transition"
             >
               Начать опрос
             </button>
@@ -193,12 +193,12 @@ export default function DashboardPage() {
 
             {/* AI trend insight */}
             {(trendLoading || trendInsight) && (
-              <div className="bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-4 mb-4 flex items-start gap-3">
+              <div className="bg-teal-50 border border-teal-100 rounded-2xl px-5 py-4 mb-4 flex items-start gap-3">
                 <span className="text-lg mt-0.5">🧠</span>
                 {trendLoading ? (
-                  <p className="text-sm text-indigo-400 animate-pulse">Анализирую твои данные…</p>
+                  <p className="text-sm text-teal-400 animate-pulse">Анализирую твои данные…</p>
                 ) : (
-                  <p className="text-sm text-indigo-800 leading-relaxed">{trendInsight}</p>
+                  <p className="text-sm text-teal-800 leading-relaxed">{trendInsight}</p>
                 )}
               </div>
             )}
@@ -216,8 +216,8 @@ export default function DashboardPage() {
                       contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, fontSize: 12 }}
                     />
                     <Line
-                      type="monotone" dataKey="score" stroke="#6366f1"
-                      strokeWidth={2} dot={{ fill: '#6366f1', r: 3 }} name="Самочувствие"
+                      type="monotone" dataKey="score" stroke="#0d9488"
+                      strokeWidth={2} dot={{ fill: '#0d9488', r: 3 }} name="Самочувствие"
                     />
                   </LineChart>
                 </ResponsiveContainer>

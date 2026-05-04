@@ -24,10 +24,7 @@ export default function NavBar() {
           className="flex items-center gap-2 shrink-0"
           onClick={() => setOpen(false)}
         >
-          <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold">M</span>
-          </div>
-          <span className="font-bold text-slate-900 text-sm tracking-tight">Metanoia AI</span>
+          <img src="/logo.svg" alt="Metanoia AI" className="h-7 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-0.5">
@@ -37,7 +34,7 @@ export default function NavBar() {
               href={l.href}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 pathname === l.href || (l.href !== '/login' && pathname.startsWith(l.href))
-                  ? 'text-indigo-600 bg-indigo-50'
+                  ? 'text-teal-600 bg-teal-50'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
@@ -49,7 +46,7 @@ export default function NavBar() {
         <div className="flex items-center gap-2">
           <Link
             href="/login"
-            className="hidden md:inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+            className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
           >
             Войти
           </Link>
@@ -82,7 +79,7 @@ export default function NavBar() {
                 onClick={() => setOpen(false)}
                 className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                   pathname === l.href
-                    ? 'text-indigo-600 bg-indigo-50'
+                    ? 'text-teal-600 bg-teal-50'
                     : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
@@ -92,7 +89,7 @@ export default function NavBar() {
             <Link
               href="/login"
               onClick={() => setOpen(false)}
-              className="mt-2 flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition"
+              className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
             >
               Войти
             </Link>

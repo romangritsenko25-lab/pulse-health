@@ -1,0 +1,9 @@
+{
+  "name": "Metanoia AI",
+  "short_name": "Metanoia",
+  "theme_color": "#0d9488",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/login",
+  "icons": [{ "src": "/logo-icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -48,8 +48,8 @@ function Chip({
       onClick={onClick}
       className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${
         selected
-          ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200'
-          : 'bg-white border-slate-200 text-slate-700 hover:border-indigo-300 hover:text-indigo-700'
+          ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-200'
+          : 'bg-white border-slate-200 text-slate-700 hover:border-teal-300 hover:text-teal-700'
       }`}
     >
       {label}
@@ -155,8 +155,8 @@ export default function LoginPage() {
                 width: size,
                 height: size,
                 borderRadius: '50%',
-                border: '1.5px solid rgba(99,102,241,0.25)',
-                backgroundColor: 'rgba(99,102,241,0.03)',
+                border: '1.5px solid rgba(13,148,136,0.25)',
+                backgroundColor: 'rgba(13,148,136,0.03)',
               }}
             />
           ))}
@@ -165,10 +165,10 @@ export default function LoginPage() {
         {/* Hero content */}
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up flex flex-col items-center gap-3">
-            <div className="w-16 h-16 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center">
-              <span className="text-3xl">🧠</span>
+            <div className="w-16 h-16 flex items-center justify-center">
+              <img src="/logo-icon.svg" alt="Metanoia AI" className="w-12 h-12" />
             </div>
-            <span className="text-sm font-bold text-indigo-600 tracking-widest uppercase">Metanoia AI</span>
+            <span className="text-sm font-bold text-teal-600 tracking-widest uppercase">Metanoia AI</span>
           </div>
 
           <h1 className="fade-up-d1 text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
@@ -182,7 +182,7 @@ export default function LoginPage() {
           <div className="fade-up-d3 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
             <button
               onClick={scrollToLogin}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-indigo-200 text-sm"
+              className="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
             >
               Попробовать бесплатно
             </button>
@@ -202,7 +202,7 @@ export default function LoginPage() {
       <section className="bg-slate-50 py-16 px-4">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Мини-опрос</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Мини-опрос</p>
             <h2 className="text-2xl font-bold text-slate-800">Как ты себя чувствуешь прямо сейчас?</h2>
           </div>
 
@@ -246,16 +246,16 @@ export default function LoginPage() {
             {/* Insight */}
             {allAnswered && (
               <div
-                className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 transition-all duration-400"
+                className="rounded-2xl border border-teal-200 bg-teal-50 p-6 transition-all duration-400"
                 style={{ opacity: insightVisible ? 1 : 0, transform: insightVisible ? 'translateY(0)' : 'translateY(8px)' }}
               >
-                <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-3">Metanoia AI</p>
+                <p className="text-xs font-bold text-teal-500 uppercase tracking-widest mb-3">Metanoia AI</p>
                 <p className="text-slate-800 text-sm leading-relaxed mb-5">
                   {getInsight(emotion!, duration!, support!)}
                 </p>
                 <button
                   onClick={scrollToLogin}
-                  className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition text-sm"
+                  className="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 rounded-xl transition text-sm"
                 >
                   Получить полный анализ →
                 </button>
@@ -269,7 +269,7 @@ export default function LoginPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Что ты получишь</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Что ты получишь</p>
             <h2 className="text-2xl font-bold text-slate-800">Не просто опрос</h2>
           </div>
           <div className="flex flex-col gap-4">
@@ -296,7 +296,7 @@ export default function LoginPage() {
       <section className="py-16 px-4 bg-slate-50">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Почему это работает</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Почему это работает</p>
             <h2 className="text-2xl font-bold text-slate-800">Немного психологии</h2>
           </div>
           <div className="flex flex-col gap-4">
@@ -317,13 +317,13 @@ export default function LoginPage() {
       </section>
 
       {/* ── 5. ДЛЯ СПЕЦИАЛИСТОВ ──────────────────────────────────── */}
-      <section className="py-16 px-4 bg-indigo-600">
+      <section className="py-16 px-4 bg-teal-600">
         <div className="max-w-lg mx-auto text-center">
-          <p className="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
+          <p className="text-teal-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
           <h2 className="text-2xl font-bold text-white mb-4">
             Вы психолог? Работайте с клиентами через Metanoia
           </h2>
-          <p className="text-indigo-100 text-sm leading-relaxed mb-6 max-w-md mx-auto">
+          <p className="text-teal-100 text-sm leading-relaxed mb-6 max-w-md mx-auto">
             Получайте новых клиентов через личную реферальную ссылку. Зарабатывайте до 30% от подписок — вывод от $30 или зачёт в подписку.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
@@ -333,7 +333,7 @@ export default function LoginPage() {
           </div>
           <a
             href="/specialists"
-            className="inline-flex items-center gap-2 px-5 py-3 bg-white hover:bg-indigo-50 text-indigo-600 text-sm font-bold rounded-2xl transition shadow-lg shadow-indigo-800/20"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-white hover:bg-teal-50 text-teal-600 text-sm font-bold rounded-2xl transition shadow-lg shadow-teal-800/20"
           >
             Узнать больше →
           </a>
@@ -345,10 +345,10 @@ export default function LoginPage() {
         <div className="max-w-lg mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Материалы</p>
+              <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-1">Материалы</p>
               <h2 className="text-xl font-bold text-slate-800">Книги и видео для самопознания</h2>
             </div>
-            <a href="/materials" className="text-indigo-600 text-sm font-semibold hover:text-indigo-500 transition shrink-0">
+            <a href="/materials" className="text-teal-600 text-sm font-semibold hover:text-teal-500 transition shrink-0">
               Смотреть все →
             </a>
           </div>
@@ -369,7 +369,7 @@ export default function LoginPage() {
           </div>
           <a
             href="/materials"
-            className="flex items-center justify-center w-full py-3 bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-600 text-sm font-semibold rounded-2xl transition"
+            className="flex items-center justify-center w-full py-3 bg-white border border-slate-200 hover:border-teal-300 text-slate-700 hover:text-teal-600 text-sm font-semibold rounded-2xl transition"
           >
             Смотреть все материалы
           </a>
@@ -380,7 +380,7 @@ export default function LoginPage() {
       <section ref={loginRef} className="py-20 px-4 bg-white">
         <div className="max-w-sm mx-auto flex flex-col items-center gap-6">
           <div className="text-center">
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Начать</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Начать</p>
             <h2 className="text-2xl font-bold text-slate-800">Начни прямо сейчас — бесплатно</h2>
             <p className="text-slate-400 text-sm mt-2">Первые опросы бесплатно. Без кредитной карты.</p>
           </div>

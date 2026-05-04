@@ -158,15 +158,15 @@ function Avatar({ name, photo }: { name: string; photo: string | null }) {
     .map((w) => w[0])
     .join('')
   return (
-    <div className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center shrink-0">
-      <span className="text-indigo-600 font-bold text-lg">{initials}</span>
+    <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center shrink-0">
+      <span className="text-teal-600 font-bold text-lg">{initials}</span>
     </div>
   )
 }
 
 function SpecialistCard({ sp, rank }: { sp: (typeof SPECIALISTS)[0]; rank?: number }) {
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-indigo-200 hover:shadow-sm transition">
+    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-teal-200 hover:shadow-sm transition">
       <div className="flex items-start gap-4">
         <Avatar name={sp.name} photo={sp.photo} />
         <div className="flex-1 min-w-0">
@@ -178,7 +178,7 @@ function SpecialistCard({ sp, rank }: { sp: (typeof SPECIALISTS)[0]; rank?: numb
               </span>
             )}
           </div>
-          <p className="text-indigo-600 text-xs font-medium mt-0.5">{sp.specialty}</p>
+          <p className="text-teal-600 text-xs font-medium mt-0.5">{sp.specialty}</p>
           <p className="text-slate-400 text-xs mt-0.5">{sp.city}</p>
         </div>
       </div>
@@ -191,7 +191,7 @@ function SpecialistCard({ sp, rank }: { sp: (typeof SPECIALISTS)[0]; rank?: numb
         </div>
         <a
           href={`/join/${sp.referralCode}`}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition"
+          className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold rounded-xl transition"
         >
           Записаться
         </a>
@@ -217,9 +217,9 @@ export default function SpecialistsPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Header */}
-      <section className="py-14 px-4 bg-gradient-to-b from-indigo-50 to-white">
+      <section className="py-14 px-4 bg-gradient-to-b from-teal-50 to-white">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Специалисты</p>
+          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Специалисты</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Найдите своего психолога
           </h1>
@@ -232,7 +232,7 @@ export default function SpecialistsPage() {
       {/* Top-5 */}
       <section className="py-10 px-4 bg-slate-50 border-y border-slate-100">
         <div className="max-w-5xl mx-auto">
-          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">Рейтинг недели</p>
+          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-4">Рейтинг недели</p>
           <h2 className="text-xl font-bold text-slate-800 mb-6">Топ-5 специалистов</h2>
           <div className="flex flex-col gap-3">
             {TOP5.map((sp, i) => (
@@ -287,7 +287,7 @@ export default function SpecialistsPage() {
               <select
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-indigo-400"
+                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-teal-400"
               >
                 <option value="all">Все специальности</option>
                 {SPECIALTIES.map((s) => (
@@ -297,7 +297,7 @@ export default function SpecialistsPage() {
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-indigo-400"
+                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-teal-400"
               >
                 <option value="all">Все города</option>
                 {CITIES.map((c) => (
@@ -307,7 +307,7 @@ export default function SpecialistsPage() {
               <select
                 value={minRating}
                 onChange={(e) => setMinRating(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-indigo-400"
+                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-teal-400"
               >
                 <option value="all">Любой рейтинг</option>
                 <option value="4.9">4.9+</option>
@@ -335,13 +335,13 @@ export default function SpecialistsPage() {
       </section>
 
       {/* Join as specialist */}
-      <section className="py-16 px-4 bg-indigo-600">
+      <section className="py-16 px-4 bg-teal-600">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
+          <p className="text-teal-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Вы психолог? Присоединяйтесь к платформе
           </h2>
-          <p className="text-indigo-100 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
+          <p className="text-teal-100 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
             Получайте клиентов через реферальную ссылку, зарабатывайте до 30% от подписок. Вывод от $30 или зачёт в подписку.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -358,7 +358,7 @@ export default function SpecialistsPage() {
           </div>
           <a
             href="/specialist/register"
-            className="inline-flex items-center px-6 py-3.5 bg-white hover:bg-indigo-50 text-indigo-600 font-bold rounded-2xl transition text-sm shadow-lg shadow-indigo-800/20"
+            className="inline-flex items-center px-6 py-3.5 bg-white hover:bg-teal-50 text-teal-600 font-bold rounded-2xl transition text-sm shadow-lg shadow-teal-800/20"
           >
             Зарегистрироваться как специалист →
           </a>

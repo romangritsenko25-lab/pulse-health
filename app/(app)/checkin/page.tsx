@@ -73,12 +73,12 @@ function SliderRow({ label, value, onChange, min = 1, max = 10 }: {
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
         <span className="text-sm text-slate-600 font-medium">{label}</span>
-        <span className="text-sm font-bold text-indigo-600 w-6 text-right">{value}</span>
+        <span className="text-sm font-bold text-teal-600 w-6 text-right">{value}</span>
       </div>
       <input
         type="range" min={min} max={max} value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 accent-indigo-500 cursor-pointer"
+        className="w-full h-2 accent-teal-500 cursor-pointer"
       />
     </div>
   )
@@ -94,8 +94,8 @@ function ChipSelect({ options, selected, onToggle }: {
           key={opt} type="button" onClick={() => onToggle(opt)}
           className={`px-3 py-1.5 rounded-xl text-sm border transition font-medium ${
             selected.includes(opt)
-              ? 'border-indigo-500 bg-indigo-500 text-white'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+              ? 'border-teal-500 bg-teal-500 text-white'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-teal-300'
           }`}
         >
           {opt}
@@ -115,8 +115,8 @@ function PillSelect({ options, value, onChange }: {
           key={opt} type="button" onClick={() => onChange(opt)}
           className={`px-3 py-1.5 rounded-xl text-sm border transition font-medium ${
             value === opt
-              ? 'border-indigo-500 bg-indigo-500 text-white'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+              ? 'border-teal-500 bg-teal-500 text-white'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-teal-300'
           }`}
         >
           {opt}
@@ -134,7 +134,7 @@ function TagHints({ tags, onSelect }: { tags: string[]; onSelect: (t: string) =>
           key={tag}
           type="button"
           onClick={() => onSelect(tag)}
-          className="px-2.5 py-1 rounded-lg text-xs border border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition"
+          className="px-2.5 py-1 rounded-lg text-xs border border-slate-200 bg-white text-slate-500 hover:border-teal-300 hover:text-teal-600 hover:bg-teal-50 transition"
         >
           + {tag}
         </button>
@@ -160,20 +160,20 @@ function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof D
       <section>
         <h3 className="font-semibold text-slate-800 mb-3">Общее самочувствие</h3>
         <div className="flex items-center gap-4 mb-3">
-          <span className="text-5xl font-bold text-indigo-600">{form.wellbeing}</span>
+          <span className="text-5xl font-bold text-teal-600">{form.wellbeing}</span>
           <span className="text-slate-400 text-xl">/10</span>
         </div>
         <input
           type="range" min={1} max={10} value={form.wellbeing}
           onChange={(e) => set('wellbeing', Number(e.target.value))}
-          className="w-full h-2 accent-indigo-500 cursor-pointer mb-3"
+          className="w-full h-2 accent-teal-500 cursor-pointer mb-3"
         />
         <textarea
           value={form.wellbeingReason}
           onChange={(e) => set('wellbeingReason', e.target.value)}
           placeholder="Почему именно эта цифра? (необязательно)"
           rows={2}
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300 resize-none"
         />
         <TagHints
           tags={['болит голова', 'напряжение в плечах', 'тяжесть в груди']}
@@ -202,7 +202,7 @@ function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof D
           value={form.sleepIssues}
           onChange={(e) => set('sleepIssues', e.target.value)}
           placeholder="Что мешало спать? (необязательно)"
-          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300"
         />
       </section>
 
@@ -214,8 +214,8 @@ function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof D
               key={pain} type="button" onClick={() => togglePain(pain)}
               className={`px-3 py-1.5 rounded-xl text-sm border transition font-medium ${
                 form.bodyPains.includes(pain)
-                  ? 'border-indigo-500 bg-indigo-500 text-white'
-                  : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+                  ? 'border-teal-500 bg-teal-500 text-white'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-teal-300'
               }`}
             >
               {pain}
@@ -263,8 +263,8 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
               key={e.label} type="button" onClick={() => toggleEmotion(e.label)}
               className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border transition text-xs font-medium ${
                 form.emotions.includes(e.label)
-                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                  : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-200'
+                  ? 'border-teal-500 bg-teal-50 text-teal-700'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-teal-200'
               }`}
             >
               <span className="text-2xl">{e.emoji}</span>
@@ -282,7 +282,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
           onChange={(e) => set('anxietyAbout', e.target.value)}
           placeholder="О чём тревога? (необязательно)"
           rows={2}
-          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300 resize-none"
         />
         <TagHints
           tags={['из-за работы', 'в отношениях', 'без причины']}
@@ -335,7 +335,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
           onChange={(e) => set('memorableMoment', e.target.value)}
           placeholder="Один момент, который запомнился — хорошее или плохое…"
           rows={2}
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300 resize-none"
         />
       </section>
     </div>
@@ -372,7 +372,7 @@ function Block3Context({ form, set }: { form: DeepFormData; set: <K extends keyo
           value={form.substances}
           onChange={(e) => set('substances', e.target.value)}
           placeholder="Например: выпил вино, принял антидепрессант..."
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300"
         />
       </section>
     </div>
@@ -390,7 +390,7 @@ function Block4Narrative({ form, set }: { form: DeepFormData; set: <K extends ke
         onChange={(e) => set('freeText', e.target.value)}
         placeholder="Начните писать свободно, без структуры…"
         rows={10}
-        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300 resize-none"
       />
       <p className="text-slate-400 text-xs text-right">{form.freeText.length} символов</p>
     </div>
@@ -586,7 +586,7 @@ export default function CheckinPage() {
         </div>
         <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-500 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-teal-500 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -635,7 +635,7 @@ export default function CheckinPage() {
               type="button"
               onClick={() => goToBlock(block + 1)}
               disabled={!canGoNext()}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition text-sm"
+              className="flex-1 bg-teal-600 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition text-sm"
             >
               Далее →
             </button>
@@ -644,7 +644,7 @@ export default function CheckinPage() {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 text-sm"
+              className="flex-1 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 text-sm"
             >
               {loading ? (
                 <>

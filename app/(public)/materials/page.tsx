@@ -154,7 +154,7 @@ const ARTICLES = [
 type Tab = 'books' | 'videos' | 'articles'
 
 function BookCover({ title }: { title: string }) {
-  const colors = ['bg-indigo-100', 'bg-purple-100', 'bg-teal-100', 'bg-rose-100', 'bg-amber-100', 'bg-blue-100', 'bg-green-100', 'bg-pink-100']
+  const colors = ['bg-teal-100', 'bg-purple-100', 'bg-teal-100', 'bg-rose-100', 'bg-amber-100', 'bg-blue-100', 'bg-green-100', 'bg-pink-100']
   const idx = title.charCodeAt(0) % colors.length
   return (
     <div className={`${colors[idx]} rounded-xl w-full aspect-[2/3] flex items-end p-3`}>
@@ -175,9 +175,9 @@ export default function MaterialsPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Header */}
-      <section className="py-14 px-4 bg-gradient-to-b from-indigo-50 to-white">
+      <section className="py-14 px-4 bg-gradient-to-b from-teal-50 to-white">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Материалы</p>
+          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Материалы</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Библиотека знаний
           </h1>
@@ -197,14 +197,14 @@ export default function MaterialsPage() {
                 onClick={() => setTab(t.id)}
                 className={`flex items-center gap-1.5 px-4 py-4 text-sm font-medium border-b-2 transition-colors ${
                   tab === t.id
-                    ? 'border-indigo-600 text-indigo-600'
+                    ? 'border-teal-600 text-teal-600'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
                 {t.label}
                 <span
                   className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                    tab === t.id ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'
+                    tab === t.id ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-400'
                   }`}
                 >
                   {t.count}
@@ -226,13 +226,13 @@ export default function MaterialsPage() {
                   <BookCover title={book.title} />
                   <div className="flex flex-col gap-1.5 flex-1">
                     <p className="font-semibold text-slate-800 text-sm leading-snug">{book.title}</p>
-                    <p className="text-indigo-600 text-xs">{book.author}</p>
+                    <p className="text-teal-600 text-xs">{book.author}</p>
                     <p className="text-slate-400 text-xs leading-relaxed line-clamp-2 flex-1">
                       {book.description}
                     </p>
                     <a
                       href={book.affiliateUrl}
-                      className="mt-1 inline-flex items-center justify-center px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-semibold rounded-xl transition"
+                      className="mt-1 inline-flex items-center justify-center px-3 py-2 bg-teal-50 hover:bg-teal-100 text-teal-600 text-xs font-semibold rounded-xl transition"
                     >
                       Читать →
                     </a>
@@ -248,7 +248,7 @@ export default function MaterialsPage() {
               {VIDEOS.map((video) => (
                 <div
                   key={video.id}
-                  className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-indigo-200 hover:shadow-sm transition flex flex-col"
+                  className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-teal-200 hover:shadow-sm transition flex flex-col"
                 >
                   {/* Thumbnail placeholder */}
                   <div className="bg-slate-100 aspect-video flex items-center justify-center">
@@ -261,13 +261,13 @@ export default function MaterialsPage() {
                   </div>
                   <div className="p-4 flex flex-col gap-2 flex-1">
                     <p className="font-semibold text-slate-800 text-sm leading-snug">{video.title}</p>
-                    <p className="text-indigo-600 text-xs">{video.channel}</p>
+                    <p className="text-teal-600 text-xs">{video.channel}</p>
                     <p className="text-slate-400 text-xs leading-relaxed flex-1">{video.description}</p>
                     <a
                       href={video.videoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1 flex items-center gap-2 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-semibold rounded-xl transition"
+                      className="mt-1 flex items-center gap-2 px-3 py-2 bg-teal-50 hover:bg-teal-100 text-teal-600 text-xs font-semibold rounded-xl transition"
                     >
                       <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
@@ -286,17 +286,17 @@ export default function MaterialsPage() {
               {ARTICLES.map((article) => (
                 <div
                   key={article.id}
-                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-indigo-200 hover:shadow-sm transition cursor-pointer"
+                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-teal-200 hover:shadow-sm transition cursor-pointer"
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs bg-indigo-50 text-indigo-600 font-semibold px-2 py-0.5 rounded-full">
+                    <span className="text-xs bg-teal-50 text-teal-600 font-semibold px-2 py-0.5 rounded-full">
                       {article.category}
                     </span>
                     <span className="text-slate-300 text-xs">{article.readTime}</span>
                   </div>
                   <p className="font-semibold text-slate-800 text-sm mb-2 leading-snug">{article.title}</p>
                   <p className="text-slate-400 text-sm leading-relaxed">{article.excerpt}</p>
-                  <p className="text-indigo-600 text-xs font-semibold mt-3">Читать статью →</p>
+                  <p className="text-teal-600 text-xs font-semibold mt-3">Читать статью →</p>
                 </div>
               ))}
             </div>

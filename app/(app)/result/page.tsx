@@ -55,7 +55,7 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
   const html = `
     <div style="width:794px;padding:56px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
       <div style="border-bottom:2px solid #e2e8f0;padding-bottom:20px;margin-bottom:32px;">
-        <p style="font-size:10px;font-weight:700;color:#6366f1;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
+        <p style="font-size:10px;font-weight:700;color:#0d9488;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
         <h1 style="font-size:22px;font-weight:700;color:#0f172a;margin:0 0 6px;line-height:1.3;">Подготовка к приёму у специалиста</h1>
         <p style="font-size:12px;color:#94a3b8;margin:0;">${date}</p>
       </div>
@@ -64,7 +64,7 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
       ${data.patterns ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f0fdfa;border-radius:8px;border-left:4px solid #14b8a6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 · Паттерны</p><p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p></div>` : ''}
       ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
       ${specialist ? `<div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 · Темы для специалиста</p>${specialist}</div>` : ''}
-      ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#6366f1;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
+      ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#0d9488;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
       ${journalData && journalData.count > 0 ? `
       <div style="margin-bottom:22px;padding:18px 20px;background:#f8fafc;border-radius:8px;border-left:4px solid #64748b;">
         <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">Из дневника за 30 дней · ${journalData.count} записей</p>
@@ -226,7 +226,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition flex items-center justify-center gap-2"
+        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-teal-200 bg-teal-50 text-teal-600 font-semibold text-sm hover:bg-teal-100 transition flex items-center justify-center gap-2"
       >
         <span>💬</span> Задать вопрос по анализу
       </button>
@@ -253,7 +253,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
               m.role === 'user'
-                ? 'bg-indigo-600 text-white rounded-br-sm'
+                ? 'bg-teal-600 text-white rounded-br-sm'
                 : 'bg-slate-100 text-slate-800 rounded-bl-sm'
             }`}>
               {m.content}
@@ -268,8 +268,8 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           </div>
         )}
         {limitReached && !loading && (
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-center">
-            <p className="text-xs text-indigo-600 font-medium mb-1">Лимит бесплатных сообщений</p>
+          <div className="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 text-center">
+            <p className="text-xs text-teal-600 font-medium mb-1">Лимит бесплатных сообщений</p>
             <p className="text-xs text-slate-500">Обновись до Pro для безлимитного диалога</p>
           </div>
         )}
@@ -285,12 +285,12 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
           placeholder={limitReached ? 'Лимит исчерпан' : 'Задай вопрос…'}
           disabled={limitReached || loading}
-          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300 disabled:opacity-50"
         />
         <button
           onClick={sendMessage}
           disabled={!input.trim() || loading || limitReached}
-          className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+          className="bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
         >
           →
         </button>
@@ -402,7 +402,7 @@ function ResultContent() {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Metanoia AI</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest">Metanoia AI</p>
             <h1 className="text-2xl font-bold text-slate-800 mt-0.5">Твой анализ</h1>
             <p className="text-slate-400 text-sm mt-0.5">{dateStr}</p>
           </div>
@@ -446,7 +446,7 @@ function ResultContent() {
         )}
 
         {data.support && (
-          <div className="bg-indigo-600 rounded-2xl p-5 text-white">
+          <div className="bg-teal-600 rounded-2xl p-5 text-white">
             <p className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">05 · Поддержка</p>
             <p className="text-sm leading-relaxed font-medium">{data.support}</p>
           </div>
@@ -464,7 +464,7 @@ function ResultContent() {
           <button
             onClick={handleDownloadPdf}
             disabled={pdfLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
+            className="w-full bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
           >
             {pdfLoading
               ? <><span className="animate-spin inline-block">⏳</span> Генерируем…</>
