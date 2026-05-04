@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: 'Журнал', href: '/journal' },
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
+  { label: 'Для специалистов', href: '/for-specialists' },
   { label: 'О нас', href: '/about' },
 ]
 
