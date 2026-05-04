@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import LoginModal from './LoginModal'
 
 const NAV_LINKS = [
   { label: 'Чек-ин', href: '/login' },
@@ -16,6 +17,7 @@ const NAV_LINKS = [
 export default function NavBar() {
   const [open, setOpen] = useState(false)
   const [isAuthed, setIsAuthed] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function NavBar() {
   }, [])
 
   return (
+    <>
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-white/20">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link
@@ -59,12 +62,21 @@ export default function NavBar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            href={isAuthed ? '/checkin' : '/login'}
-            className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm relative z-10"
-          >
-            {isAuthed ? 'Чек-ин' : 'Войти'}
-          </Link>
+          {isAuthed ? (
+            <Link
+              href="/checkin"
+              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+            >
+              Чек-ин
+            </Link>
+          ) : (
+            <button
+              onClick={() => setShowLogin(true)}
+              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+            >
+              Войти
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -101,16 +113,28 @@ export default function NavBar() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              href={isAuthed ? '/checkin' : '/login'}
-              onClick={() => setOpen(false)}
-              className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
-            >
-              {isAuthed ? 'Чек-ин' : 'Войти'}
-            </Link>
+            {isAuthed ? (
+              <Link
+                href="/checkin"
+                onClick={() => setOpen(false)}
+                className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
+              >
+                Чек-ин
+              </Link>
+            ) : (
+              <button
+                onClick={() => { setOpen(false); setShowLogin(true) }}
+                className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
+              >
+                Войти
+              </button>
+            )}
           </div>
         </div>
       )}
     </header>
+
+    {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+  </>
   )
 }
