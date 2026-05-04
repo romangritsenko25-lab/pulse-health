@@ -14,6 +14,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Rate limit: 3 analyses per day for free users
+    const { data: sub } = await supabase
+      .from('subscriptions')
+      .select('status')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle()
+
+    const isPro = !!sub
+
+    if (!isPro) {
+      const dayStart = new Date()
+      dayStart.setHours(0, 0, 0, 0)
+
+      const { count } = await supabase
+        .from('journal_analysis_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', dayStart.toISOString())
+
+      if ((count ?? 0) >= 3) {
+        return NextResponse.json(
+          { error: 'limit_reached', message: 'Достигнут дневной лимит (3 анализа). Обновитесь до Pro для безлимитного доступа.' },
+          { status: 429 }
+        )
+      }
+    }
+
     const since = new Date()
     since.setDate(since.getDate() - period)
 
@@ -67,6 +95,8 @@ export async function POST(req: NextRequest) {
           .filter(Boolean)
           .slice(0, 5)
       : []
+
+    await supabase.from('journal_analysis_logs').insert({ user_id: user.id })
 
     return NextResponse.json({ summary: raw, themes })
   } catch (err) {
