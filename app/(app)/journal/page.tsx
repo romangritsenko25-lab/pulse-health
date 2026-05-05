@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const MOODS = [
@@ -227,6 +228,9 @@ export default function JournalPage() {
   const [entries, setEntries] = useState<Entry[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => { router.replace('/cabinet') }, [router])
 
   useEffect(() => {
     async function load() {

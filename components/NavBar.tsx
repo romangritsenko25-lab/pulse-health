@@ -6,27 +6,45 @@ import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import LoginModal from './LoginModal'
 
-const NAV_LINKS = [
-  { label: 'Чек-ин', href: '/login' },
-  { label: 'Журнал', href: '/journal' },
+const PUBLIC_LINKS = [
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
   { label: 'Для специалистов', href: '/for-specialists' },
   { label: 'О нас', href: '/about' },
 ]
 
+const USER_LINKS = [
+  { label: 'Кабинет', href: '/cabinet' },
+  { label: 'Специалисты', href: '/specialists' },
+  { label: 'Материалы', href: '/materials' },
+]
+
+const SPECIALIST_LINKS = [
+  { label: 'Дашборд', href: '/specialist/dashboard' },
+  { label: 'Специалисты', href: '/specialists' },
+  { label: 'Материалы', href: '/materials' },
+]
+
 export default function NavBar() {
   const [open, setOpen] = useState(false)
-  const [isAuthed, setIsAuthed] = useState(false)
+  const [role, setRole] = useState<string | null>(null)
   const [showLogin, setShowLogin] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => {
-      setIsAuthed(!!data.user)
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return
+      const { data: profile } = await supabase
+        .from('profiles').select('role').eq('id', data.user.id).maybeSingle()
+      setRole(profile?.role ?? 'guest')
     })
   }, [])
+
+  const isAuthed = !!role && role !== 'guest'
+  const navLinks = role === 'user' ? USER_LINKS : role === 'specialist' ? SPECIALIST_LINKS : PUBLIC_LINKS
+  const ctaHref = role === 'user' ? '/cabinet' : role === 'specialist' ? '/specialist/dashboard' : null
+  const ctaLabel = role === 'user' ? 'Кабинет' : role === 'specialist' ? 'Дашборд' : 'Войти'
 
   return (
     <>
@@ -63,18 +81,14 @@ export default function NavBar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {isAuthed ? (
-            <Link
-              href="/checkin"
-              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
-            >
-              Чек-ин
+          {ctaHref ? (
+            <Link href={ctaHref}
+              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm">
+              {ctaLabel}
             </Link>
           ) : (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
-            >
+            <button onClick={() => setShowLogin(true)}
+              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm">
               Войти
             </button>
           )}
@@ -114,19 +128,14 @@ export default function NavBar() {
                 {l.label}
               </Link>
             ))}
-            {isAuthed ? (
-              <Link
-                href="/checkin"
-                onClick={() => setOpen(false)}
-                className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
-              >
-                Чек-ин
+            {ctaHref ? (
+              <Link href={ctaHref} onClick={() => setOpen(false)}
+                className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
+                {ctaLabel}
               </Link>
             ) : (
-              <button
-                onClick={() => { setOpen(false); setShowLogin(true) }}
-                className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
-              >
+              <button onClick={() => { setOpen(false); setShowLogin(true) }}
+                className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
                 Войти
               </button>
             )}

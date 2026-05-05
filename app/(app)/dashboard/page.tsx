@@ -47,6 +47,7 @@ function streakMilestone(streak: number): string | null {
 // ── Main ───────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   const router = useRouter()
+  useEffect(() => { router.replace('/cabinet') }, [router])
   const [checkins, setCheckins] = useState<CheckinRow[]>([])
   const [loading, setLoading] = useState(true)
   const [trendInsight, setTrendInsight] = useState<string | null>(null)

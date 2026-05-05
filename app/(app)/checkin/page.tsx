@@ -585,10 +585,10 @@ export default function CheckinPage() {
               ← Главная
             </button>
             <button
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push('/cabinet')}
               className="text-slate-400 hover:text-slate-600 text-sm transition"
             >
-              Дашборд →
+              Кабинет →
             </button>
           </div>
         </div>
