@@ -7,6 +7,8 @@ const anthropic = new Anthropic()
 const FREE_LIMIT = 5
 const PRO_LIMIT = 20
 
+type SupabaseClient = Awaited<ReturnType<typeof createClient>>
+
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json() as { messages: { role: 'user' | 'assistant'; content: string }[] }
@@ -15,9 +17,11 @@ export async function POST(req: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const userId = user.id
+
     // Check subscription
     const { data: sub } = await supabase
-      .from('subscriptions').select('status').eq('user_id', user.id).eq('status', 'active').maybeSingle()
+      .from('subscriptions').select('status').eq('user_id', userId).eq('status', 'active').maybeSingle()
     const isPro = !!sub
     const limit = isPro ? PRO_LIMIT : FREE_LIMIT
     const today = new Date().toISOString().split('T')[0]
@@ -26,7 +30,7 @@ export async function POST(req: NextRequest) {
     const { data: countRow } = await supabase
       .from('ai_message_counts')
       .select('count')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('date', today)
       .maybeSingle()
 
@@ -40,50 +44,103 @@ export async function POST(req: NextRequest) {
       }, { status: 429 })
     }
 
-    // Load user context
-    const [{ data: profile }, { data: checkins }, { data: journalEntries }] = await Promise.all([
-      supabase.from('profiles').select('name').eq('id', user.id).single(),
-      supabase.from('checkins').select('wellbeing, mood, created_at').eq('user_id', user.id)
-        .order('created_at', { ascending: false }).limit(14),
-      supabase.from('journal_entries').select('content, mood, created_at').eq('user_id', user.id)
-        .order('created_at', { ascending: false }).limit(20),
+    // Load user context in parallel
+    const [{ data: profile }, checkins, journal, memory] = await Promise.all([
+      supabase.from('profiles').select('name').eq('id', userId).single(),
+      supabase.from('checkins')
+        .select('created_at, wellbeing, mood, context, free_text, deep_data')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(14),
+      supabase.from('journal_entries')
+        .select('created_at, content, mood')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(20),
+      supabase.from('user_memory')
+        .select('category, content, relevance')
+        .eq('user_id', userId)
+        .order('relevance', { ascending: false })
+        .limit(15),
     ])
 
     const name = profile?.name ?? 'пользователь'
 
-    const checkinContext = (checkins ?? []).map((c) => {
-      const d = new Date(c.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
-      return `${d}: самочувствие ${c.wellbeing ?? '?'}/10${c.mood ? `, настроение ${c.mood}` : ''}`
-    }).join('\n')
+    const SYSTEM_PROMPT = `
+Ты персональный AI-ассистент Metanoia AI.
+Твоя роль — поддерживающий собеседник между сессиями
+с психологом. Ты НЕ психолог, НЕ ставишь диагнозов.
 
-    const journalContext = (journalEntries ?? []).map((e) => {
-      const d = new Date(e.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
-      return `${d}${e.mood ? ` [${e.mood}]` : ''}: ${e.content.slice(0, 200)}`
-    }).join('\n\n')
+ТЕОРЕТИЧЕСКАЯ БАЗА:
 
-    const systemPrompt = `Ты персональный AI-ассистент Metanoia AI для пользователя ${name}.
-Ты знаешь историю этого человека по его записям.
-Ты НЕ психолог и НЕ ставишь диагнозов.
-Ты поддерживающий собеседник который помогает человеку понять себя между сессиями со специалистом.
+КПТ (когнитивно-поведенческая терапия):
+- Связь мыслей, эмоций и поведения
+- Замечай когнитивные искажения мягко, без ярлыков
+- Помогай исследовать автоматические мысли
 
-ИСТОРИЯ ЧЕК-ИНОВ (последние 14):
-${checkinContext || 'Нет данных'}
+DBT (диалектическая поведенческая терапия):
+- Принятие И изменение одновременно
+- Валидация переживаний как первый шаг
+- Навыки осознанности и регуляции эмоций
 
-ЗАПИСИ ЖУРНАЛА (последние 20):
-${journalContext || 'Нет записей'}
+ACT (терапия принятия и ответственности):
+- Ценности важнее правил
+- Дефузия от мыслей — мысль это не факт
+- Психологическая гибкость
 
-Правила:
-- Отвечай на русском, тепло и принимающе
-- Ссылайся на конкретные записи когда уместно: "Три дня назад ты писал..."
-- Помогай формулировать что принести специалисту
-- При упоминании суицидальных мыслей: дай ресурсы — KZ: 150, RU: 8-800-2000-122, UA: 7333
-- НЕ давай медицинских советов
-- Ответы 2-4 предложения, не монологи`
+МОТИВАЦИОННОЕ ИНТЕРВЬЮИРОВАНИЕ:
+- Не убеждай — исследуй вместе
+- Отражай, не советуй
+- Усиливай внутреннюю мотивацию
+
+ПОРТРЕТ ПОЛЬЗОВАТЕЛЯ:
+Имя: ${name}
+
+Долгосрочная память:
+${memory.data?.map((m: { category: string; content: string }) => `[${m.category}] ${m.content}`).join('\n') || 'Пока пусто — это первый диалог'}
+
+Последние 14 дней (чек-ины):
+${checkins.data?.map((c: { created_at: string; wellbeing: number | null; mood: string | null }) =>
+  `${new Date(c.created_at).toLocaleDateString('ru')} — самочувствие: ${c.wellbeing}/10, настроение: ${c.mood || '—'}`
+).join('\n') || 'Нет данных'}
+
+Последние записи журнала:
+${journal.data?.map((j: { created_at: string; content: string }) =>
+  `${new Date(j.created_at).toLocaleDateString('ru')}: ${j.content?.slice(0, 150)}...`
+).join('\n') || 'Нет записей'}
+
+ПРАВИЛА ОБЩЕНИЯ:
+- Язык: только русский
+- Тон: тёплый, принимающий, без осуждения
+- Длина ответов: 2-4 предложения обычно,
+  развёрнуто только когда человек явно хочет глубины
+- Ссылайся на конкретные записи пользователя:
+  "Три дня назад ты писал что..."
+  "Я заметил что последнюю неделю..."
+- Задавай один вопрос за раз, не несколько
+- Помогай формулировать темы для специалиста
+- Замечай прогресс и называй его
+
+ЗАПРЕЩЕНО:
+- Диагнозы и медицинские термины как ярлыки
+- "Ты должен", "тебе надо", "попробуй"
+- Советы без запроса
+- Длинные монологи-лекции
+- Клише типа "это нормально", "всё будет хорошо"
+
+КРИЗИСНЫЙ ПРОТОКОЛ:
+Если есть признаки суицидальных мыслей —
+немедленно прекрати обычный диалог и напиши:
+"Я слышу тебя. Пожалуйста, позвони сейчас:
+Казахстан: 150 (бесплатно)
+Россия: 8-800-2000-122
+Украина: 7333"
+`
 
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 400,
-      system: systemPrompt,
+      system: SYSTEM_PROMPT,
       messages,
     })
 
@@ -91,13 +148,87 @@ ${journalContext || 'Нет записей'}
 
     // Increment count
     await supabase.from('ai_message_counts').upsert(
-      { user_id: user.id, date: today, count: usedCount + 1 },
+      { user_id: userId, date: today, count: usedCount + 1 },
       { onConflict: 'user_id,date' }
     )
+
+    // Update memory every 5 user messages (fire and forget)
+    const userMessageCount = messages.filter(m => m.role === 'user').length
+    if (userMessageCount > 0 && userMessageCount % 5 === 0) {
+      updateUserMemory(userId, messages, supabase).catch(console.error)
+    }
 
     return NextResponse.json({ text, used: usedCount + 1, limit })
   } catch (err) {
     console.error('personal-ai error', err)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+  }
+}
+
+async function updateUserMemory(
+  userId: string,
+  conversationHistory: { role: string; content: string }[],
+  supabase: SupabaseClient
+) {
+  const conversationText = conversationHistory
+    .map(m => `${m.role === 'user' ? 'Пользователь' : 'AI'}: ${m.content}`)
+    .join('\n')
+
+  const memoryPrompt = `
+Проанализируй этот диалог и извлеки 2-3 важных факта
+о пользователе для долгосрочной памяти.
+
+Диалог: ${conversationText}
+
+Верни JSON массив:
+[
+  {"category": "triggers", "content": "...", "relevance": 8},
+  {"category": "patterns", "content": "...", "relevance": 7}
+]
+
+Категории: triggers, patterns, goals, progress, style, events
+relevance: 1-10 (10 = очень важно)
+Только JSON, без объяснений.
+`
+
+  const memResponse = await anthropic.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 400,
+    messages: [{ role: 'user', content: memoryPrompt }],
+  })
+
+  const rawText = memResponse.content[0].type === 'text' ? memResponse.content[0].text : '[]'
+
+  let memories: { category: string; content: string; relevance: number }[]
+  try {
+    memories = JSON.parse(rawText)
+  } catch {
+    return
+  }
+
+  if (!Array.isArray(memories)) return
+
+  for (const mem of memories) {
+    if (!mem.category || !mem.content) continue
+
+    // If similar memory exists — update relevance, otherwise insert
+    const { data: existing } = await supabase
+      .from('user_memory')
+      .select('id, relevance')
+      .eq('user_id', userId)
+      .eq('category', mem.category)
+      .ilike('content', `%${mem.content.slice(0, 30)}%`)
+      .maybeSingle()
+
+    if (existing) {
+      await supabase
+        .from('user_memory')
+        .update({ relevance: Math.max(existing.relevance, mem.relevance), updated_at: new Date().toISOString() })
+        .eq('id', existing.id)
+    } else {
+      await supabase
+        .from('user_memory')
+        .insert({ user_id: userId, category: mem.category, content: mem.content, relevance: mem.relevance })
+    }
   }
 }
