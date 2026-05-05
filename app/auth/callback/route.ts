@@ -30,20 +30,16 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Role-based redirect: specialists go to their dashboard
-      if (next === '/checkin') {
-        const { data: isSpecialist } = await supabase
-          .from('specialists')
-          .select('id')
-          .eq('user_id', data.user.id)
-          .maybeSingle()
+      // Role-based redirect
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle()
 
-        if (isSpecialist) {
-          return NextResponse.redirect(`${origin}/specialist/dashboard`)
-        }
-      }
-
-      return NextResponse.redirect(`${origin}${next}`)
+      if (!profile?.role) return NextResponse.redirect(`${origin}/onboarding`)
+      if (profile.role === 'specialist') return NextResponse.redirect(`${origin}/specialist/dashboard`)
+      return NextResponse.redirect(`${origin}/cabinet`)
     }
   }
 

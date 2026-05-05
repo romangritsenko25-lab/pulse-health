@@ -32,12 +32,11 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       if (error) {
         setError('Неверный email или пароль')
       } else {
-        const { data: isSpecialist } = await supabase
-          .from('specialists')
-          .select('id')
-          .eq('user_id', data.user.id)
-          .maybeSingle()
-        window.location.href = isSpecialist ? '/specialist/dashboard' : '/checkin'
+        const { data: profile } = await supabase
+          .from('profiles').select('role').eq('id', data.user.id).maybeSingle()
+        if (!profile?.role) window.location.href = '/onboarding'
+        else if (profile.role === 'specialist') window.location.href = '/specialist/dashboard'
+        else window.location.href = '/cabinet'
       }
     } else {
       const { error } = await supabase.auth.signUp({
