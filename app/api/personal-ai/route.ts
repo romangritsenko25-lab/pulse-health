@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 const anthropic = new Anthropic()
 
 const FREE_LIMIT = 5
 const PRO_LIMIT = 20
-
-type SupabaseClient = Awaited<ReturnType<typeof createClient>>
 
 export async function POST(req: NextRequest) {
   try {
@@ -152,10 +151,10 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
       { onConflict: 'user_id,date' }
     )
 
-    // Update memory every 5 user messages (fire and forget)
+    // Update memory after 2+ user messages (fire and forget)
     const userMessageCount = messages.filter(m => m.role === 'user').length
-    if (userMessageCount > 0 && userMessageCount % 5 === 0) {
-      updateUserMemory(userId, messages, supabase).catch(console.error)
+    if (userMessageCount >= 2) {
+      updateUserMemory(userId, messages).catch(console.error)
     }
 
     return NextResponse.json({ text, used: usedCount + 1, limit })
@@ -167,9 +166,15 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
 
 async function updateUserMemory(
   userId: string,
-  conversationHistory: { role: string; content: string }[],
-  supabase: SupabaseClient
+  conversationHistory: { role: string; content: string }[]
 ) {
+  console.log('Updating memory for user:', userId)
+
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   const conversationText = conversationHistory
     .map(m => `${m.role === 'user' ? 'Пользователь' : 'AI'}: ${m.content}`)
     .join('\n')
@@ -198,11 +203,16 @@ relevance: 1-10 (10 = очень важно)
   })
 
   const rawText = memResponse.content[0].type === 'text' ? memResponse.content[0].text : '[]'
+  console.log('Memory response:', rawText)
+
+  // Strip markdown code block if Haiku wraps JSON in ```json ... ```
+  const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
   let memories: { category: string; content: string; relevance: number }[]
   try {
-    memories = JSON.parse(rawText)
-  } catch {
+    memories = JSON.parse(cleaned)
+  } catch (err) {
+    console.error('Memory parse error:', err, 'Raw:', rawText)
     return
   }
 
@@ -212,7 +222,7 @@ relevance: 1-10 (10 = очень важно)
     if (!mem.category || !mem.content) continue
 
     // If similar memory exists — update relevance, otherwise insert
-    const { data: existing } = await supabase
+    const { data: existing, error: selectErr } = await supabaseAdmin
       .from('user_memory')
       .select('id, relevance')
       .eq('user_id', userId)
@@ -220,15 +230,22 @@ relevance: 1-10 (10 = очень важно)
       .ilike('content', `%${mem.content.slice(0, 30)}%`)
       .maybeSingle()
 
+    if (selectErr) {
+      console.error('Memory select error:', selectErr)
+      continue
+    }
+
     if (existing) {
-      await supabase
+      const { error } = await supabaseAdmin
         .from('user_memory')
         .update({ relevance: Math.max(existing.relevance, mem.relevance), updated_at: new Date().toISOString() })
         .eq('id', existing.id)
+      if (error) console.error('Memory update error:', error)
     } else {
-      await supabase
+      const { error } = await supabaseAdmin
         .from('user_memory')
         .insert({ user_id: userId, category: mem.category, content: mem.content, relevance: mem.relevance })
+      if (error) console.error('Memory insert error:', error)
     }
   }
 }
