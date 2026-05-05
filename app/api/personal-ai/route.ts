@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
 
     // Check subscription
     const { data: sub } = await supabase
-      .from('subscriptions').select('status').eq('user_id', userId).eq('status', 'active').maybeSingle()
-    const isPro = !!sub
+      .from('subscriptions').select('plan, status').eq('user_id', userId).eq('status', 'active').maybeSingle()
+    const isPro = sub?.plan === 'pro'
     const limit = isPro ? PRO_LIMIT : FREE_LIMIT
     const today = new Date().toISOString().split('T')[0]
 
