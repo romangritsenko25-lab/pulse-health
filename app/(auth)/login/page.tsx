@@ -97,6 +97,18 @@ export default function LoginPage() {
 
   const allAnswered = !!(emotion && duration && support)
 
+  // If already logged in → redirect based on role
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).maybeSingle()
+      if (!profile?.role) window.location.href = '/onboarding'
+      else if (profile.role === 'specialist') window.location.href = '/specialist/dashboard'
+      else window.location.href = '/cabinet'
+    })
+  }, [])
+
   useEffect(() => {
     if (allAnswered) {
       const t = setTimeout(() => setInsightVisible(true), 60)

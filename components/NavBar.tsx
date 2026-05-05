@@ -9,7 +9,6 @@ import LoginModal from './LoginModal'
 const PUBLIC_LINKS = [
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
-  { label: 'Для специалистов', href: '/for-specialists' },
   { label: 'О нас', href: '/about' },
 ]
 
