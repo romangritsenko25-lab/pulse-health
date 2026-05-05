@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
@@ -154,7 +154,9 @@ type TabId = typeof TABS[number]['id']
 // ── Main ───────────────────────────────────────────────────────────────────
 export default function CabinetPage() {
   const router = useRouter()
-  const [tab, setTab] = useState<TabId>('today')
+  const searchParams = useSearchParams()
+  const initialTab = (searchParams.get('tab') as TabId | null) ?? 'today'
+  const [tab, setTab] = useState<TabId>(initialTab)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [checkins, setCheckins] = useState<CheckinRow[]>([])
   const [entries, setEntries] = useState<JournalEntry[]>([])

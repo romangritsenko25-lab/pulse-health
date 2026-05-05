@@ -410,9 +410,9 @@ function ResultContent() {
             <h1 className="text-2xl font-bold text-slate-800 mt-0.5">Твой анализ</h1>
             <p className="text-slate-400 text-sm mt-0.5">{dateStr}</p>
           </div>
-          <button onClick={() => router.push('/dashboard')}
+          <button onClick={() => router.push('/cabinet')}
             className="text-slate-400 hover:text-slate-600 text-sm transition mt-1">
-            Дашборд →
+            Кабинет →
           </button>
         </div>
 

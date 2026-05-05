@@ -230,7 +230,7 @@ export default function JournalPage() {
   const [showModal, setShowModal] = useState(false)
   const router = useRouter()
 
-  useEffect(() => { router.replace('/cabinet') }, [router])
+  useEffect(() => { router.replace('/cabinet?tab=journal') }, [router])
 
   useEffect(() => {
     async function load() {
