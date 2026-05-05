@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts'
+import PersonalAI from '@/components/PersonalAI'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Profile { name: string | null; email: string | null }
@@ -406,21 +407,7 @@ export default function CabinetPage() {
 
         {/* ── МОЙ AI ── */}
         {tab === 'ai' && (
-          <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-teal-50 flex items-center justify-center">
-              <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="20" fill="#0d9488"/>
-                <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div>
-              <span className="inline-block px-3 py-1 bg-teal-50 text-teal-600 text-xs font-bold rounded-full mb-3">Скоро</span>
-              <h2 className="text-xl font-bold text-slate-900 mb-2">Твой персональный ассистент</h2>
-              <p className="text-slate-400 text-sm max-w-xs mx-auto leading-relaxed">
-                AI знает твою историю за 30 дней и помогает понять себя между сессиями со специалистом
-              </p>
-            </div>
-          </div>
+          <PersonalAI userName={firstName} />
         )}
 
         {/* ── PDF ── */}
