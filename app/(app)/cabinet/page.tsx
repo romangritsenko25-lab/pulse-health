@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
@@ -156,9 +156,12 @@ type TabId = typeof TABS[number]['id']
 // ── Main ───────────────────────────────────────────────────────────────────
 export default function CabinetPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const initialTab = (searchParams.get('tab') as TabId | null) ?? 'today'
-  const [tab, setTab] = useState<TabId>(initialTab)
+  const [tab, setTab] = useState<TabId>('today')
+
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get('tab') as TabId | null
+    if (t && TABS.some((x) => x.id === t)) setTab(t)
+  }, [])
   const [profile, setProfile] = useState<Profile | null>(null)
   const [checkins, setCheckins] = useState<CheckinRow[]>([])
   const [entries, setEntries] = useState<JournalEntry[]>([])
