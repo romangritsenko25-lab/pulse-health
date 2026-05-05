@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import EarningsTab from '@/components/specialist/EarningsTab'
+import ReferralBanner from '@/components/specialist/ReferralBanner'
 
 interface Client {
   client_id: string
@@ -48,16 +50,20 @@ function Sparkline({ scores }: { scores: number[] }) {
 export default function SpecialistDashboard() {
   const router = useRouter()
   const [specialist, setSpecialist] = useState<SpecialistInfo | null>(null)
+  const [specialistId, setSpecialistId] = useState<string>('')
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
   const [showColleagueModal, setShowColleagueModal] = useState(false)
+  const [activeTab, setActiveTab] = useState<'clients' | 'earnings'>('clients')
 
   useEffect(() => {
     async function load() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
+
+      setSpecialistId(user.id)
 
       // Check if specialist
       const { data: spec } = await supabase
@@ -153,6 +159,7 @@ export default function SpecialistDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <ReferralBanner specialistId={specialistId} referralCode={specialist?.referral_code ?? ''} />
       <div className="max-w-2xl mx-auto px-4 py-8">
 
         {/* Header */}
@@ -182,183 +189,217 @@ export default function SpecialistDashboard() {
           </div>
         </div>
 
-        {/* Referral link */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5">
-          <div className="flex items-center gap-2 mb-1">
-            <span>🔗</span>
-            <p className="font-semibold text-slate-800 text-sm">Реферальная ссылка</p>
-          </div>
-          <p className="text-slate-400 text-xs mb-3">
-            Отправьте клиенту — он увидит ваш профиль и сразу подключится
-          </p>
-          <div className="flex gap-2">
-            <input
-              readOnly
-              value={referralUrl}
-              className="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-500 truncate"
-            />
-            <button
-              onClick={copyLink}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
-            >
-              {copied ? '✓ Скопировано' : 'Копировать'}
-            </button>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-5">
-          <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-            <div className="text-2xl font-bold text-slate-800">{clients.length}</div>
-            <div className="text-xs text-slate-400 mt-0.5">Клиентов</div>
-          </div>
-          <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-            <div className="text-2xl font-bold text-slate-800">{totalCheckins}</div>
-            <div className="text-xs text-slate-400 mt-0.5">Всего опросов</div>
-          </div>
-        </div>
-
-        {/* Colleague referral banner */}
-        <div className="bg-gradient-to-r from-indigo-50 to-teal-50 border border-indigo-100 rounded-2xl p-4 mb-5 flex items-center justify-between gap-4">
-          <div>
-            <p className="font-semibold text-slate-800 text-sm">Пригласи коллегу — заработай 30% комиссии</p>
-            <p className="text-slate-500 text-xs mt-0.5">Реферальная программа для специалистов</p>
-          </div>
+        {/* Tabs */}
+        <div className="flex gap-1 mb-6 bg-slate-100 rounded-xl p-1">
           <button
-            onClick={() => setShowColleagueModal(true)}
-            className="shrink-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition"
+            onClick={() => setActiveTab('clients')}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
+              activeTab === 'clients'
+                ? 'bg-white text-slate-800 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+            }`}
           >
-            Узнать подробнее
+            Клиенты
+          </button>
+          <button
+            onClick={() => setActiveTab('earnings')}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
+              activeTab === 'earnings'
+                ? 'bg-white text-slate-800 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            Доходы 💰
           </button>
         </div>
 
-        {/* Colleague modal */}
-        {showColleagueModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-            <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 flex flex-col gap-4">
-              <div className="flex items-start justify-between">
-                <h2 className="font-bold text-slate-800 text-lg">Реферальная программа</h2>
-                <button onClick={() => setShowColleagueModal(false)} className="p-1 text-slate-400 hover:text-slate-600 transition">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="flex flex-col gap-3 text-sm text-slate-600">
-                <div className="flex items-start gap-3 bg-indigo-50 rounded-xl p-3">
-                  <span className="text-xl">🔗</span>
-                  <div>
-                    <p className="font-semibold text-slate-800">Поделись личной ссылкой</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Отправь коллеге ссылку на регистрацию специалиста</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 bg-teal-50 rounded-xl p-3">
-                  <span className="text-xl">💰</span>
-                  <div>
-                    <p className="font-semibold text-slate-800">Получай 30% комиссии</p>
-                    <p className="text-xs text-slate-500 mt-0.5">С каждой оплаченной подписки приглашённого коллеги — первые 12 месяцев</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 bg-amber-50 rounded-xl p-3">
-                  <span className="text-xl">💳</span>
-                  <div>
-                    <p className="font-semibold text-slate-800">Вывод от $30</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Или зачти в счёт своей подписки Pro</p>
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs text-slate-400 text-center">Функция в разработке — напишем когда запустим</p>
-              <button
-                onClick={() => setShowColleagueModal(false)}
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition"
-              >
-                Понятно
-              </button>
-            </div>
-          </div>
+        {/* Earnings tab */}
+        {activeTab === 'earnings' && (
+          <EarningsTab specialistId={specialistId} />
         )}
 
-        {/* Client list */}
-        {clients.length === 0 ? (
-          <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
-            <p className="text-3xl mb-3">👥</p>
-            <p className="font-semibold text-slate-700 mb-1">Пока нет клиентов</p>
-            <p className="text-slate-400 text-sm">
-              Отправьте реферальную ссылку — клиенты появятся здесь автоматически
-            </p>
-          </div>
-        ) : (
-          <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-600">Клиенты</h2>
+        {/* Clients tab */}
+        {activeTab === 'clients' && (
+          <>
+            {/* Referral link */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5">
+              <div className="flex items-center gap-2 mb-1">
+                <span>🔗</span>
+                <p className="font-semibold text-slate-800 text-sm">Реферальная ссылка</p>
+              </div>
+              <p className="text-slate-400 text-xs mb-3">
+                Отправьте клиенту — он увидит ваш профиль и сразу подключится
+              </p>
+              <div className="flex gap-2">
+                <input
+                  readOnly
+                  value={referralUrl}
+                  className="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-500 truncate"
+                />
+                <button
+                  onClick={copyLink}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+                >
+                  {copied ? '✓ Скопировано' : 'Копировать'}
+                </button>
+              </div>
             </div>
 
-            <div className="divide-y divide-slate-50">
-              {clients.map((client) => {
-                const displayName = client.name ?? client.email ?? 'Клиент'
-                const initials = displayName
-                  .split(' ')
-                  .map((w) => w[0])
-                  .join('')
-                  .toUpperCase()
-                  .slice(0, 2)
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+                <div className="text-2xl font-bold text-slate-800">{clients.length}</div>
+                <div className="text-xs text-slate-400 mt-0.5">Клиентов</div>
+              </div>
+              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+                <div className="text-2xl font-bold text-slate-800">{totalCheckins}</div>
+                <div className="text-xs text-slate-400 mt-0.5">Всего опросов</div>
+              </div>
+            </div>
 
-                const wellbeingColor =
-                  client.lastCheckin?.wellbeing !== null && client.lastCheckin?.wellbeing !== undefined
-                    ? client.lastCheckin.wellbeing >= 7
-                      ? 'text-teal-500'
-                      : client.lastCheckin.wellbeing >= 4
-                      ? 'text-amber-500'
-                      : 'text-red-400'
-                    : 'text-slate-400'
+            {/* Colleague referral banner */}
+            <div className="bg-gradient-to-r from-indigo-50 to-teal-50 border border-indigo-100 rounded-2xl p-4 mb-5 flex items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-slate-800 text-sm">Пригласи коллегу — заработай 30% комиссии</p>
+                <p className="text-slate-500 text-xs mt-0.5">Реферальная программа для специалистов</p>
+              </div>
+              <button
+                onClick={() => setShowColleagueModal(true)}
+                className="shrink-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition"
+              >
+                Узнать подробнее
+              </button>
+            </div>
 
-                return (
-                  <div key={client.client_id} className="px-5 py-4 flex items-center gap-4">
-                    {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
-                      {initials}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-800 text-sm truncate">{displayName}</p>
-                      <p className="text-slate-400 text-xs mt-0.5">
-                        {client.checkinCount}{' '}
-                        {client.checkinCount === 1 ? 'опрос' : client.checkinCount < 5 ? 'опроса' : 'опросов'}
-                        {client.lastCheckin && (
-                          <>
-                            {' · '}
-                            {new Date(client.lastCheckin.created_at).toLocaleDateString('ru-RU', {
-                              day: 'numeric',
-                              month: 'short',
-                            })}
-                          </>
-                        )}
-                      </p>
-                    </div>
-
-                    {/* Sparkline */}
-                    {client.recentScores.length >= 2 && (
-                      <div className="shrink-0">
-                        <Sparkline scores={client.recentScores} />
-                      </div>
-                    )}
-
-                    {/* Last score */}
-                    {client.lastCheckin?.wellbeing !== null &&
-                      client.lastCheckin?.wellbeing !== undefined && (
-                        <div className="text-center shrink-0">
-                          <div className={`text-sm font-bold ${wellbeingColor}`}>
-                            {client.lastCheckin.wellbeing}/10
-                          </div>
-                          <div className="text-xs text-slate-400">сейчас</div>
-                        </div>
-                      )}
+            {/* Colleague modal */}
+            {showColleagueModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+                <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 flex flex-col gap-4">
+                  <div className="flex items-start justify-between">
+                    <h2 className="font-bold text-slate-800 text-lg">Реферальная программа</h2>
+                    <button onClick={() => setShowColleagueModal(false)} className="p-1 text-slate-400 hover:text-slate-600 transition">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </div>
-                )
-              })}
-            </div>
-          </div>
+                  <div className="flex flex-col gap-3 text-sm text-slate-600">
+                    <div className="flex items-start gap-3 bg-indigo-50 rounded-xl p-3">
+                      <span className="text-xl">🔗</span>
+                      <div>
+                        <p className="font-semibold text-slate-800">Поделись личной ссылкой</p>
+                        <p className="text-xs text-slate-500 mt-0.5">Отправь коллеге ссылку на регистрацию специалиста</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 bg-teal-50 rounded-xl p-3">
+                      <span className="text-xl">💰</span>
+                      <div>
+                        <p className="font-semibold text-slate-800">Получай 30% комиссии</p>
+                        <p className="text-xs text-slate-500 mt-0.5">С каждой оплаченной подписки приглашённого коллеги — первые 12 месяцев</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 bg-amber-50 rounded-xl p-3">
+                      <span className="text-xl">💳</span>
+                      <div>
+                        <p className="font-semibold text-slate-800">Вывод от $30</p>
+                        <p className="text-xs text-slate-500 mt-0.5">Или зачти в счёт своей подписки Pro</p>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-400 text-center">Функция в разработке — напишем когда запустим</p>
+                  <button
+                    onClick={() => setShowColleagueModal(false)}
+                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition"
+                  >
+                    Понятно
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Client list */}
+            {clients.length === 0 ? (
+              <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+                <p className="text-3xl mb-3">👥</p>
+                <p className="font-semibold text-slate-700 mb-1">Пока нет клиентов</p>
+                <p className="text-slate-400 text-sm">
+                  Отправьте реферальную ссылку — клиенты появятся здесь автоматически
+                </p>
+              </div>
+            ) : (
+              <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
+                <div className="px-5 py-4 border-b border-slate-100">
+                  <h2 className="text-sm font-semibold text-slate-600">Клиенты</h2>
+                </div>
+
+                <div className="divide-y divide-slate-50">
+                  {clients.map((client) => {
+                    const displayName = client.name ?? client.email ?? 'Клиент'
+                    const initials = displayName
+                      .split(' ')
+                      .map((w) => w[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)
+
+                    const wellbeingColor =
+                      client.lastCheckin?.wellbeing !== null && client.lastCheckin?.wellbeing !== undefined
+                        ? client.lastCheckin.wellbeing >= 7
+                          ? 'text-teal-500'
+                          : client.lastCheckin.wellbeing >= 4
+                          ? 'text-amber-500'
+                          : 'text-red-400'
+                        : 'text-slate-400'
+
+                    return (
+                      <div key={client.client_id} className="px-5 py-4 flex items-center gap-4">
+                        {/* Avatar */}
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
+                          {initials}
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-slate-800 text-sm truncate">{displayName}</p>
+                          <p className="text-slate-400 text-xs mt-0.5">
+                            {client.checkinCount}{' '}
+                            {client.checkinCount === 1 ? 'опрос' : client.checkinCount < 5 ? 'опроса' : 'опросов'}
+                            {client.lastCheckin && (
+                              <>
+                                {' · '}
+                                {new Date(client.lastCheckin.created_at).toLocaleDateString('ru-RU', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                })}
+                              </>
+                            )}
+                          </p>
+                        </div>
+
+                        {/* Sparkline */}
+                        {client.recentScores.length >= 2 && (
+                          <div className="shrink-0">
+                            <Sparkline scores={client.recentScores} />
+                          </div>
+                        )}
+
+                        {/* Last score */}
+                        {client.lastCheckin?.wellbeing !== null &&
+                          client.lastCheckin?.wellbeing !== undefined && (
+                            <div className="text-center shrink-0">
+                              <div className={`text-sm font-bold ${wellbeingColor}`}>
+                                {client.lastCheckin.wellbeing}/10
+                              </div>
+                              <div className="text-xs text-slate-400">сейчас</div>
+                            </div>
+                          )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

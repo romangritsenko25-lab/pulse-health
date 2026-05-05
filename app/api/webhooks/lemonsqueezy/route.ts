@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
+import { createClient } from '@/lib/supabase/server'
+import { recordReferralEarning } from '@/lib/referral-earnings'
 
 function verifySignature(payload: string, signature: string, secret: string): boolean {
   const hmac = crypto.createHmac('sha256', secret)
@@ -23,14 +25,30 @@ export async function POST(req: NextRequest) {
     case 'order_created':
     case 'subscription_created': {
       const userId: string = event.meta?.custom_data?.user_id ?? ''
-      // TODO: update user subscription status in Supabase
+      if (userId) {
+        const supabase = await createClient()
+        await supabase.from('subscriptions').upsert({
+          user_id: userId,
+          status: 'active',
+          plan: 'pro',
+          current_period_end: event.data?.attributes?.ends_at ?? null,
+        }, { onConflict: 'user_id' })
+        await recordReferralEarning(userId)
+      }
       console.log(`[LemonSqueezy] New subscription for user ${userId}`)
       break
     }
 
     case 'subscription_cancelled': {
       const userId: string = event.meta?.custom_data?.user_id ?? ''
-      // TODO: downgrade user to free plan in Supabase
+      if (userId) {
+        const supabase = await createClient()
+        await supabase.from('subscriptions').upsert({
+          user_id: userId,
+          status: 'cancelled',
+          plan: 'free',
+        }, { onConflict: 'user_id' })
+      }
       console.log(`[LemonSqueezy] Subscription cancelled for user ${userId}`)
       break
     }
