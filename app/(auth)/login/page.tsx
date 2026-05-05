@@ -125,11 +125,14 @@ export default function LoginPage() {
     setEmailLoading(true)
     const supabase = createClient()
     if (emailMode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error, data: signInData } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setEmailError('Неверный email или пароль')
-      } else {
-        window.location.href = '/checkin'
+      } else if (signInData.user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', signInData.user.id).maybeSingle()
+        if (!profile?.role) window.location.href = '/onboarding'
+        else if (profile.role === 'specialist') window.location.href = '/specialist/dashboard'
+        else window.location.href = '/cabinet'
       }
     } else {
       const { error } = await supabase.auth.signUp({
