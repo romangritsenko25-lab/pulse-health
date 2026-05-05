@@ -37,9 +37,9 @@ export async function GET(request: NextRequest) {
         .eq('id', data.user.id)
         .maybeSingle()
 
-      if (!profile?.role) return NextResponse.redirect(`${origin}/onboarding`)
-      if (profile.role === 'specialist') return NextResponse.redirect(`${origin}/specialist/dashboard`)
-      return NextResponse.redirect(`${origin}/cabinet`)
+      if (!profile?.role) return NextResponse.redirect(new URL('/onboarding', request.url))
+      if (profile.role === 'specialist') return NextResponse.redirect(new URL('/specialist/dashboard', request.url))
+      return NextResponse.redirect(new URL('/cabinet', request.url))
     }
   }
 
