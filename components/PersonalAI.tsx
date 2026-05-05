@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
 
 interface Msg { role: 'user' | 'assistant'; content: string }
 
@@ -23,11 +22,14 @@ export default function PersonalAI({ userName }: { userName: string }) {
     }
     setMessages([greeting])
 
-    // Load today's count
-    const supabase = createClient()
-    const today = new Date().toISOString().split('T')[0]
-    supabase.from('ai_message_counts').select('count').eq('date', today)
-      .then(({ data }) => { if (data?.[0]) setUsed(data[0].count) })
+    // Load today's count from API (includes subscription-aware limit)
+    fetch('/api/personal-ai')
+      .then(res => res.json())
+      .then(data => {
+        if (typeof data.used === 'number') setUsed(data.used)
+        if (typeof data.limit === 'number') setLimit(data.limit)
+      })
+      .catch(() => {})
   }, [userName])
 
   useEffect(() => {
@@ -60,8 +62,8 @@ export default function PersonalAI({ userName }: { userName: string }) {
       }])
     } else if (data.text) {
       setMessages((prev) => [...prev, { role: 'assistant', content: data.text }])
-      setUsed(data.used ?? used + 1)
-      setLimit(data.limit ?? limit)
+      if (typeof data.used === 'number') setUsed(data.used)
+      if (typeof data.limit === 'number') setLimit(data.limit)
     } else {
       setMessages((prev) => [...prev, { role: 'assistant', content: 'Произошла ошибка. Попробуй снова.' }])
     }

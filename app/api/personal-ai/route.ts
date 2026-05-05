@@ -8,6 +8,33 @@ const anthropic = new Anthropic()
 const FREE_LIMIT = 5
 const PRO_LIMIT = 20
 
+export async function GET() {
+  try {
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    const userId = user.id
+    const { data: sub } = await supabase
+      .from('subscriptions').select('plan, status').eq('user_id', userId).eq('status', 'active').maybeSingle()
+    const isPro = sub?.plan === 'pro'
+    const limit = isPro ? PRO_LIMIT : FREE_LIMIT
+    const today = new Date().toISOString().split('T')[0]
+
+    const { data: countRow } = await supabase
+      .from('ai_message_counts')
+      .select('count')
+      .eq('user_id', userId)
+      .eq('date', today)
+      .maybeSingle()
+
+    return NextResponse.json({ used: countRow?.count ?? 0, limit })
+  } catch (err) {
+    console.error('personal-ai count error', err)
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json() as { messages: { role: 'user' | 'assistant'; content: string }[] }
