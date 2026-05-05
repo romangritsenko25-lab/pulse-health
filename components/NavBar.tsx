@@ -65,7 +65,7 @@ export default function NavBar() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-0.5">
-          {NAV_LINKS.map((l) => (
+          {navLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
@@ -114,7 +114,7 @@ export default function NavBar() {
       {open && (
         <div className="md:hidden border-t border-slate-100 bg-white">
           <div className="px-4 py-3 flex flex-col gap-1">
-            {NAV_LINKS.map((l) => (
+            {navLinks.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
