@@ -191,6 +191,29 @@ NEXT_PUBLIC_SITE_URL=https://pulse-health-smoky.vercel.app
 - Если контекст заканчивается — сделай коммит, сообщи где остановился
 - Одна задача = один чат с пользователем
 
+## Защита тестовых данных (ОБЯЗАТЕЛЬНО)
+
+НИКОГДА не выполнять без явного запроса пользователя:
+- DROP TABLE
+- TRUNCATE
+- DELETE (без WHERE по конкретному id)
+
+Миграции — только:
+- ADD COLUMN
+- CREATE TABLE IF NOT EXISTS
+
+### Тестовый Pro-пользователь
+
+- user_id: `b1cca88e-1683-4410-b80c-09752805e8a1`
+- email: `romangritsenko25@gmail.com`
+- plan: `pro`, status: `active` в таблице `subscriptions`
+
+Если `subscriptions` пустая — восстановить:
+```sql
+INSERT INTO subscriptions (user_id, plan, status)
+VALUES ('b1cca88e-1683-4410-b80c-09752805e8a1', 'pro', 'active');
+```
+
 ## Тестовые данные
 
 Тестовый user_id: b1cca88e-1683-4410-b80c-09752805e8a1
