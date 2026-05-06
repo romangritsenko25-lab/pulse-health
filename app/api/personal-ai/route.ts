@@ -15,10 +15,19 @@ export async function GET() {
     if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const userId = user.id
-    const { data: sub } = await supabase
-      .from('subscriptions').select('plan, status').eq('user_id', userId).eq('status', 'active').maybeSingle()
+
+    const supabaseAuth = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+    const { data: sub } = await supabaseAuth
+      .from('subscriptions')
+      .select('plan, status')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .single()
     const isPro = sub?.plan === 'pro'
-    const limit = isPro ? PRO_LIMIT : FREE_LIMIT
+    const limit = isPro ? 20 : 5
     const today = new Date().toISOString().split('T')[0]
 
     const { data: countRow } = await supabase
