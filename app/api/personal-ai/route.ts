@@ -20,16 +20,6 @@ export async function GET() {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    console.log('SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
-    console.log('SERVICE_ROLE_KEY length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length)
-
-    const testQuery = await supabaseAuth
-      .from('subscriptions')
-      .select('user_id, plan, status')
-      .limit(5)
-    console.log('Test query result:', JSON.stringify(testQuery.data))
-    console.log('Test query error:', JSON.stringify(testQuery.error))
-    console.log('Current user.id:', userId)
 
     const { data: sub } = await supabaseAuth
       .from('subscriptions')
@@ -37,11 +27,8 @@ export async function GET() {
       .eq('user_id', user.id)
       .eq('status', 'active')
       .maybeSingle()
-    console.log('Subscription query result:', JSON.stringify(sub))
     const isPro = sub?.plan === 'pro'
-    console.log('isPro:', isPro)
     const limit = isPro ? 20 : 5
-    console.log('limit:', limit)
     const today = new Date().toISOString().split('T')[0]
 
     const { data: countRow } = await supabase
