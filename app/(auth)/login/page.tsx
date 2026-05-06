@@ -95,17 +95,19 @@ export default function LoginPage() {
   const [emailLoading, setEmailLoading] = useState(false)
   const [emailError, setEmailError] = useState('')
 
+  const [authUser, setAuthUser] = useState<{ id: string; email?: string } | null>(null)
+  const [userName, setUserName] = useState<string>('')
+
   const allAnswered = !!(emotion && duration && support)
 
-  // If already logged in → redirect based on role
+  // Check session — show banner/button if logged in, but don't redirect
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).maybeSingle()
-      if (!profile?.role) window.location.href = '/onboarding'
-      else if (profile.role === 'specialist') window.location.href = '/specialist/dashboard'
-      else window.location.href = '/cabinet'
+      setAuthUser(data.user)
+      const { data: profile } = await supabase.from('profiles').select('name').eq('id', data.user.id).maybeSingle()
+      setUserName(profile?.name || data.user.email?.split('@')[0] || 'пользователь')
     })
   }, [])
 
@@ -166,6 +168,15 @@ export default function LoginPage() {
 
   return (
     <div className="bg-white min-h-screen">
+      {/* ── Баннер для залогиненных ────────────────────────────────── */}
+      {authUser && (
+        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 bg-teal-600 text-white text-sm font-medium" style={{ height: 40 }}>
+          <span>Добро пожаловать, {userName}</span>
+          <span className="text-teal-300">·</span>
+          <a href="/cabinet" className="underline underline-offset-2 hover:text-teal-100 transition">В кабинет →</a>
+        </div>
+      )}
+
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
         @keyframes pulse-ring {
@@ -192,7 +203,7 @@ export default function LoginPage() {
       `}</style>
 
       {/* ── 1. HERO ────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
+      <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={authUser ? { paddingTop: 56 } : {}}>
         {/* Concentric animated rings */}
         <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
           {[
@@ -239,12 +250,21 @@ export default function LoginPage() {
           </p>
 
           <div className="fade-up-d3 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
-            <button
-              onClick={scrollToLogin}
-              className="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
-            >
-              Попробовать бесплатно
-            </button>
+            {authUser ? (
+              <a
+                href="/cabinet"
+                className="w-full flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
+              >
+                В кабинет →
+              </a>
+            ) : (
+              <button
+                onClick={scrollToLogin}
+                className="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
+              >
+                Попробовать бесплатно
+              </button>
+            )}
           </div>
 
           <p className="fade-up-d3 text-slate-400 text-xs">Без кредитной карты · Бесплатно навсегда для первых опросов</p>
