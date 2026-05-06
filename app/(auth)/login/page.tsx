@@ -38,18 +38,15 @@ function getInsight(emotion: string, duration: string, support: string): string 
   return 'Усталость может быть первым признаком что что-то требует внимания. Metanoia AI поможет исследовать своё состояние глубже и понять что за ней стоит.'
 }
 
-// ── Reusable chip button ───────────────────────────────────────────────────
-function Chip({
-  label, selected, onClick,
-}: { label: string; selected: boolean; onClick: () => void }) {
+// ── Chip ───────────────────────────────────────────────────────────────────
+function Chip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      style={selected ? { background: '#0d9488', borderColor: '#0d9488', color: 'white' } : {}}
       className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-        selected
-          ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-200'
-          : 'bg-white border-slate-200 text-slate-700 hover:border-teal-300 hover:text-teal-700'
+        selected ? '' : 'bg-white border-slate-200 text-slate-700 hover:border-[#0d9488] hover:text-[#0d9488]'
       }`}
     >
       {label}
@@ -60,10 +57,12 @@ function Chip({
 // ── Value card ─────────────────────────────────────────────────────────────
 function ValueCard({ icon, title, body }: { icon: string; title: string; body: string }) {
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-2">
-      <span className="text-3xl">{icon}</span>
-      <p className="font-semibold text-slate-800 text-sm">{title}</p>
-      <p className="text-slate-500 text-sm leading-relaxed">{body}</p>
+    <div style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5 flex flex-col gap-2">
+      <div style={{ background: '#f0fdfa', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
+        <span className="text-2xl">{icon}</span>
+      </div>
+      <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">{title}</p>
+      <p style={{ color: '#64748b' }} className="text-sm leading-relaxed">{body}</p>
     </div>
   )
 }
@@ -71,9 +70,9 @@ function ValueCard({ icon, title, body }: { icon: string; title: string; body: s
 // ── Psychology card ────────────────────────────────────────────────────────
 function PsychCard({ title, body }: { title: string; body: string }) {
   return (
-    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5">
-      <p className="font-semibold text-slate-800 text-sm mb-2">{title}</p>
-      <p className="text-slate-500 text-sm leading-relaxed">{body}</p>
+    <div style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5">
+      <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm mb-2">{title}</p>
+      <p style={{ color: '#64748b' }} className="text-sm leading-relaxed">{body}</p>
     </div>
   )
 }
@@ -87,7 +86,6 @@ export default function LoginPage() {
   const [insightVisible, setInsightVisible] = useState(false)
   const loginRef = useRef<HTMLDivElement>(null)
 
-  // Email/password form
   const [emailMode, setEmailMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -99,7 +97,6 @@ export default function LoginPage() {
 
   const allAnswered = !!(emotion && duration && support)
 
-  // Check session — show В кабинет button in hero if logged in
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
@@ -164,7 +161,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="min-h-screen">
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
         @keyframes pulse-ring {
@@ -188,9 +185,26 @@ export default function LoginPage() {
         .fade-up-d1 { animation: fade-up 0.6s 0.15s ease-out forwards; opacity: 0; }
         .fade-up-d2 { animation: fade-up 0.6s 0.30s ease-out forwards; opacity: 0; }
         .fade-up-d3 { animation: fade-up 0.6s 0.45s ease-out forwards; opacity: 0; }
+        .dark-input {
+          background: rgba(255,255,255,0.1);
+          border: 1px solid rgba(255,255,255,0.2);
+          color: white;
+          width: 100%;
+          padding: 12px 16px;
+          border-radius: 16px;
+          font-size: 14px;
+          outline: none;
+          transition: border-color 0.2s;
+        }
+        .dark-input::placeholder { color: rgba(255,255,255,0.4); }
+        .dark-input:focus { border-color: rgba(255,255,255,0.5); }
       `}</style>
 
-      {/* ── 1. HERO ────────────────────────────────────────────────── */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ЗОНА 1 — БЕЛАЯ                                             */}
+      {/* ════════════════════════════════════════════════════════════ */}
+
+      {/* ── Hero ───────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
         {/* Concentric animated rings */}
         <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
@@ -217,7 +231,6 @@ export default function LoginPage() {
           ))}
         </div>
 
-        {/* Hero content */}
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up flex flex-col items-center gap-3">
             <div className="w-16 h-16 flex items-center justify-center">
@@ -226,14 +239,14 @@ export default function LoginPage() {
                 <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span className="text-sm font-bold text-teal-600 tracking-widest uppercase">Metanoia AI</span>
+            <span style={{ color: '#0d9488' }} className="text-sm font-bold tracking-widest uppercase">Metanoia AI</span>
           </div>
 
-          <h1 className="fade-up-d1 text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
+          <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">
             Что-то не так,<br />но сложно объяснить<br />даже себе?
           </h1>
 
-          <p className="fade-up-d2 text-slate-500 text-base leading-relaxed max-w-sm">
+          <p style={{ color: '#64748b' }} className="fade-up-d2 text-base leading-relaxed max-w-sm">
             Пройди глубокий AI-опрос и получи структурированный анализ своего состояния. Подготовься к встрече со специалистом за 10 минут.
           </p>
 
@@ -241,42 +254,42 @@ export default function LoginPage() {
             {authUser ? (
               <a
                 href="/cabinet"
-                className="w-full flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
+                style={{ background: '#0d9488' }}
+                className="w-full flex items-center justify-center hover:opacity-90 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg text-sm"
               >
                 В кабинет →
               </a>
             ) : (
               <button
                 onClick={scrollToLogin}
-                className="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
+                style={{ background: '#0d9488' }}
+                className="w-full hover:opacity-90 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg text-sm"
               >
                 Попробовать бесплатно
               </button>
             )}
           </div>
 
-          <p className="fade-up-d3 text-slate-400 text-xs">Без кредитной карты · Бесплатно навсегда для первых опросов</p>
+          <p style={{ color: '#94a3b8' }} className="fade-up-d3 text-xs">Без кредитной карты · Бесплатно навсегда для первых опросов</p>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-300">
           <div className="w-px h-8 bg-gradient-to-b from-transparent to-slate-200" />
           <span className="text-xs">↓</span>
         </div>
       </section>
 
-      {/* ── 2. МИНИ-ОПРОС ─────────────────────────────────────────── */}
-      <section className="bg-slate-50 py-16 px-4">
+      {/* ── Мини-опрос ─────────────────────────────────────────────── */}
+      <section className="bg-white py-16 px-4">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Мини-опрос</p>
-            <h2 className="text-2xl font-bold text-slate-800">Как ты себя чувствуешь прямо сейчас?</h2>
+            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Как ты себя чувствуешь прямо сейчас?</h2>
           </div>
 
           <div className="flex flex-col gap-8">
-            {/* Q1 */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6">
-              <p className="text-sm font-semibold text-slate-700 mb-4">Выбери одно из состояний</p>
+            <div style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="border rounded-2xl p-6">
+              <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold mb-4">Выбери одно из состояний</p>
               <div className="flex flex-wrap gap-2">
                 {EMOTIONS.map((e) => (
                   <Chip key={e} label={e} selected={emotion === e} onClick={() => setEmotion(e)} />
@@ -284,12 +297,11 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Q2 — appears after Q1 */}
             <div
-              className="bg-white rounded-2xl border border-slate-100 p-6 transition-all duration-300"
-              style={{ opacity: emotion ? 1 : 0.35, pointerEvents: emotion ? 'auto' : 'none' }}
+              style={{ background: '#f8fafc', borderColor: '#e2e8f0', opacity: emotion ? 1 : 0.35, pointerEvents: emotion ? 'auto' : 'none' }}
+              className="border rounded-2xl p-6 transition-all duration-300"
             >
-              <p className="text-sm font-semibold text-slate-700 mb-4">Как давно это состояние?</p>
+              <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold mb-4">Как давно это состояние?</p>
               <div className="flex flex-wrap gap-2">
                 {DURATIONS.map((d) => (
                   <Chip key={d} label={d} selected={duration === d} onClick={() => setDuration(d)} />
@@ -297,12 +309,11 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Q3 — appears after Q2 */}
             <div
-              className="bg-white rounded-2xl border border-slate-100 p-6 transition-all duration-300"
-              style={{ opacity: duration ? 1 : 0.35, pointerEvents: duration ? 'auto' : 'none' }}
+              style={{ background: '#f8fafc', borderColor: '#e2e8f0', opacity: duration ? 1 : 0.35, pointerEvents: duration ? 'auto' : 'none' }}
+              className="border rounded-2xl p-6 transition-all duration-300"
             >
-              <p className="text-sm font-semibold text-slate-700 mb-4">Есть ли рядом кто-то с кем можно поговорить?</p>
+              <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold mb-4">Есть ли рядом кто-то с кем можно поговорить?</p>
               <div className="flex flex-wrap gap-2">
                 {SUPPORTS.map((s) => (
                   <Chip key={s} label={s} selected={support === s} onClick={() => setSupport(s)} />
@@ -310,19 +321,24 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Insight */}
             {allAnswered && (
               <div
-                className="rounded-2xl border border-teal-200 bg-teal-50 p-6 transition-all duration-400"
-                style={{ opacity: insightVisible ? 1 : 0, transform: insightVisible ? 'translateY(0)' : 'translateY(8px)' }}
+                style={{
+                  background: '#f0fdfa',
+                  borderColor: '#99f6e4',
+                  opacity: insightVisible ? 1 : 0,
+                  transform: insightVisible ? 'translateY(0)' : 'translateY(8px)',
+                }}
+                className="border rounded-2xl p-6 transition-all duration-400"
               >
-                <p className="text-xs font-bold text-teal-500 uppercase tracking-widest mb-3">Metanoia AI</p>
-                <p className="text-slate-800 text-sm leading-relaxed mb-5">
+                <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-3">Metanoia AI</p>
+                <p style={{ color: '#1e3a5f' }} className="text-sm leading-relaxed mb-5">
                   {getInsight(emotion!, duration!, support!)}
                 </p>
                 <button
                   onClick={scrollToLogin}
-                  className="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 rounded-xl transition text-sm"
+                  style={{ background: '#0d9488' }}
+                  className="w-full hover:opacity-90 text-white font-semibold py-3 rounded-xl transition text-sm"
                 >
                   Получить полный анализ →
                 </button>
@@ -332,12 +348,12 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── 3. КАРТОЧКИ ЦЕННОСТИ ─────────────────────────────────── */}
+      {/* ── Карточки ценности ──────────────────────────────────────── */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Что ты получишь</p>
-            <h2 className="text-2xl font-bold text-slate-800">Не просто опрос</h2>
+            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Что ты получишь</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Не просто опрос</h2>
           </div>
           <div className="flex flex-col gap-4">
             <ValueCard
@@ -359,12 +375,12 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── 4. ПСИХОЛОГИЯ ─────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-slate-50">
+      {/* ── Психология ─────────────────────────────────────────────── */}
+      <section className="py-16 px-4 bg-white">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Почему это работает</p>
-            <h2 className="text-2xl font-bold text-slate-800">Немного психологии</h2>
+            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Почему это работает</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Немного психологии</h2>
           </div>
           <div className="flex flex-col gap-4">
             <PsychCard
@@ -383,15 +399,15 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── 6. МАТЕРИАЛЫ PREVIEW ──────────────────────────────────── */}
-      <section className="py-16 px-4 bg-slate-50">
+      {/* ── Материалы ──────────────────────────────────────────────── */}
+      <section className="py-16 px-4 bg-white">
         <div className="max-w-lg mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-1">Материалы</p>
-              <h2 className="text-xl font-bold text-slate-800">Книги и видео для самопознания</h2>
+              <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-1">Материалы</p>
+              <h2 style={{ color: '#1e3a5f' }} className="text-xl font-bold">Книги и видео для самопознания</h2>
             </div>
-            <a href="/materials" className="text-teal-600 text-sm font-semibold hover:text-teal-500 transition shrink-0">
+            <a href="/materials" style={{ color: '#0d9488' }} className="text-sm font-semibold hover:opacity-70 transition shrink-0">
               Смотреть все →
             </a>
           </div>
@@ -401,37 +417,73 @@ export default function LoginPage() {
               { title: 'Когнитивная терапия депрессии', author: 'Аарон Бек', emoji: '📗' },
               { title: 'Токсичный позитив', author: 'Уитни Гудман', emoji: '📘' },
             ].map((b) => (
-              <div key={b.title} className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl p-4">
+              <div key={b.title} style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="flex items-center gap-3 border rounded-2xl p-4">
                 <span className="text-2xl">{b.emoji}</span>
                 <div>
-                  <p className="font-semibold text-slate-800 text-sm">{b.title}</p>
-                  <p className="text-slate-400 text-xs">{b.author}</p>
+                  <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">{b.title}</p>
+                  <p style={{ color: '#94a3b8' }} className="text-xs">{b.author}</p>
                 </div>
               </div>
             ))}
           </div>
           <a
             href="/materials"
-            className="flex items-center justify-center w-full py-3 bg-white border border-slate-200 hover:border-teal-300 text-slate-700 hover:text-teal-600 text-sm font-semibold rounded-2xl transition"
+            style={{ borderColor: '#e2e8f0', color: '#64748b' }}
+            className="flex items-center justify-center w-full py-3 bg-white border hover:border-[#0d9488] hover:text-[#0d9488] text-sm font-semibold rounded-2xl transition"
           >
             Смотреть все материалы
           </a>
         </div>
       </section>
 
-      {/* ── 7. ФОРМА ВХОДА ────────────────────────────────────────── */}
-      <section ref={loginRef} className="py-20 px-4 bg-white">
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ПЕРЕХОД: белая → teal                                      */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <div className="h-16 bg-gradient-to-b from-white to-[#0d9488]" />
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ЗОНА 2 — TEAL                                              */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section style={{ background: '#0d9488' }} className="py-12 px-4 text-center">
+        <div className="max-w-lg mx-auto flex flex-col items-center gap-5">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
+            Понимай себя между сессиями
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.8)' }} className="text-base">
+            Ежедневный журнал · AI-ассистент · PDF для специалиста
+          </p>
+          <button
+            onClick={scrollToLogin}
+            style={{ color: '#0d9488' }}
+            className="bg-white hover:opacity-90 font-semibold py-3.5 px-10 rounded-2xl transition text-sm shadow-lg"
+          >
+            Начать бесплатно
+          </button>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ПЕРЕХОД: teal → тёмно-синяя                               */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <div className="h-16 bg-gradient-to-b from-[#0d9488] to-[#1e3a5f]" />
+
+      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ЗОНА 3 — ТЁМНО-СИНЯЯ                                      */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <section ref={loginRef} style={{ background: '#1e3a5f' }} className="py-16 px-4">
         <div className="max-w-sm mx-auto flex flex-col items-center gap-6">
           <div className="text-center">
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Начать</p>
-            <h2 className="text-2xl font-bold text-slate-800">Начни прямо сейчас — бесплатно</h2>
-            <p className="text-slate-400 text-sm mt-2">Первые опросы бесплатно. Без кредитной карты.</p>
+            <h2 className="text-2xl font-bold text-white">Начни прямо сейчас — бесплатно</h2>
+            <p style={{ color: 'rgba(255,255,255,0.6)' }} className="text-sm mt-2">
+              Без кредитной карты · 3 опроса бесплатно
+            </p>
           </div>
 
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 disabled:opacity-60 text-slate-700 font-semibold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition text-sm"
+            style={{ color: '#1e3a5f' }}
+            className="w-full flex items-center justify-center gap-3 bg-white hover:opacity-90 disabled:opacity-60 font-semibold py-3.5 rounded-2xl border-0 shadow-lg transition text-sm"
           >
             {loading ? (
               <span className="animate-spin text-xl inline-block">⏳</span>
@@ -446,14 +498,12 @@ export default function LoginPage() {
             {loading ? 'Перенаправление…' : 'Войти через Google'}
           </button>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 w-full">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-slate-400 text-xs">или</span>
-            <div className="flex-1 h-px bg-slate-200" />
+            <div style={{ background: 'rgba(255,255,255,0.2)' }} className="flex-1 h-px" />
+            <span style={{ color: 'rgba(255,255,255,0.4)' }} className="text-xs">или</span>
+            <div style={{ background: 'rgba(255,255,255,0.2)' }} className="flex-1 h-px" />
           </div>
 
-          {/* Email/password form */}
           <form onSubmit={handleEmailSubmit} className="w-full flex flex-col gap-3">
             {emailMode === 'register' && (
               <input
@@ -462,7 +512,7 @@ export default function LoginPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm text-slate-800 placeholder:text-slate-400"
+                className="dark-input"
               />
             )}
             <input
@@ -471,7 +521,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm text-slate-800 placeholder:text-slate-400"
+              className="dark-input"
             />
             <input
               type="password"
@@ -480,17 +530,18 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm text-slate-800 placeholder:text-slate-400"
+              className="dark-input"
             />
             {emailError && (
-              <p className={`text-xs text-center ${emailError.includes('Проверь') ? 'text-teal-600' : 'text-red-500'}`}>
+              <p style={{ color: emailError.includes('Проверь') ? '#5eead4' : '#fca5a5' }} className="text-xs text-center">
                 {emailError}
               </p>
             )}
             <button
               type="submit"
               disabled={emailLoading}
-              className="w-full py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
+              style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.25)' }}
+              className="w-full py-3.5 border hover:opacity-80 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
             >
               {emailLoading ? '…' : emailMode === 'login' ? 'Войти' : 'Создать аккаунт'}
             </button>
@@ -499,21 +550,25 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => { setEmailMode(emailMode === 'login' ? 'register' : 'login'); setEmailError('') }}
-            className="text-slate-400 hover:text-teal-600 text-xs transition"
+            style={{ color: 'rgba(255,255,255,0.5)' }}
+            className="hover:text-white text-xs transition"
           >
             {emailMode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
           </button>
 
-          <p className="text-slate-400 text-xs text-center leading-relaxed">
-            Твои данные зашифрованы и видны только тебе.<br />
-            Мы никогда не передаём личную информацию третьим лицам.
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }} className="text-center leading-relaxed">
+            Твои данные зашифрованы и видны только тебе
           </p>
         </div>
       </section>
 
-      {/* ── 8. FOOTER ──────────────────────────────────────────────── */}
-      <footer className="py-6 px-4 border-t border-slate-100 text-center">
-        <p className="text-slate-300 text-xs">© 2025 Metanoia AI · Не является медицинским сервисом</p>
+      {/* ── Footer (в тёмно-синей зоне) ────────────────────────────── */}
+      <footer style={{ background: '#1e3a5f' }} className="pb-8 px-4 text-center">
+        <div style={{ borderTopColor: 'rgba(255,255,255,0.1)' }} className="border-t pt-6 max-w-lg mx-auto">
+          <p style={{ color: 'rgba(255,255,255,0.3)' }} className="text-xs">
+            © 2026 Metanoia AI · Не является медицинским сервисом
+          </p>
+        </div>
       </footer>
     </div>
   )
