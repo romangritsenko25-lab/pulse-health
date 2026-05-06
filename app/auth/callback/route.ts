@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -10,8 +10,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login?error=auth_failed`)
   }
 
-  // Collect cookies set during session exchange
-  const pendingCookies: Array<Parameters<typeof Response.prototype.headers.append>> = []
+  type PendingCookie = { name: string; value: string; options: CookieOptions }
+  const pendingCookies: PendingCookie[] = []
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,7 +23,6 @@ export async function GET(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            // @ts-expect-error — collect for later
             pendingCookies.push({ name, value, options })
           })
         },
@@ -70,8 +69,8 @@ export async function GET(request: NextRequest) {
   const response = NextResponse.redirect(new URL(redirectPath, request.url))
 
   // Set session cookies directly on the redirect response
-  pendingCookies.forEach(({ name, value, options }: { name: string; value: string; options: Record<string, unknown> }) => {
-    response.cookies.set(name, value, options as Parameters<typeof response.cookies.set>[2])
+  pendingCookies.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, options)
   })
 
   return response
