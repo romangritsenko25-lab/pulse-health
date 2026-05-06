@@ -143,11 +143,14 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const userMessage = buildPrompt(form)
+    console.log('User message to Claude:', userMessage)
+
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 800,
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: buildPrompt(form) }],
+      messages: [{ role: 'user', content: userMessage }],
     })
 
     const raw = message.content[0].type === 'text' ? message.content[0].text : ''
