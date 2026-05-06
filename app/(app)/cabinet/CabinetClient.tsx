@@ -423,7 +423,9 @@ export default function CabinetClient() {
   const todayCheckin = checkins.find(
     (c) => new Date(c.created_at).toLocaleDateString('ru-RU') === todayStr
   )
-  const lastEntry = entries[0]
+  const lastEntry = entries[0] ?? null
+  const threeDaysAgo = new Date(); threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
+  const recentEntry = lastEntry && new Date(lastEntry.created_at) >= threeDaysAgo ? lastEntry : null
   const chartData = [...checkins].reverse().map((c) => ({
     date: new Date(c.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
     wellbeing: c.wellbeing ?? null,
@@ -474,6 +476,8 @@ export default function CabinetClient() {
         {/* ── СЕГОДНЯ ── */}
         {tab === 'today' && (
           <div className="flex flex-col gap-4">
+
+            {/* 1. Приветствие */}
             <div>
               <h1 className="text-xl font-bold text-slate-900">Привет, {firstName}!</h1>
               <p className="text-slate-400 text-sm mt-0.5">
@@ -481,6 +485,7 @@ export default function CabinetClient() {
               </p>
             </div>
 
+            {/* 2. Стрик */}
             {streak > 0 && (
               <div className="bg-amber-50 border border-amber-100 rounded-2xl px-4 py-3 flex items-center gap-3">
                 <span className="text-2xl">🔥</span>
@@ -488,48 +493,63 @@ export default function CabinetClient() {
               </div>
             )}
 
-            {!todayCheckin ? (
-              <div className="bg-teal-600 rounded-3xl p-6 flex flex-col gap-3">
-                <div>
-                  <p className="text-teal-100 text-xs font-bold uppercase tracking-widest mb-1">Чек-ин сегодня</p>
-                  <h2 className="text-white font-bold text-lg">Пройти чек-ин — 10 минут</h2>
-                  <p className="text-teal-100 text-sm mt-1">Ответь на вопросы и получи AI-анализ состояния</p>
+            {/* 3. Блок чек-ина */}
+            {todayCheckin ? (
+              <div className="bg-white border border-slate-100 rounded-2xl p-5">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-semibold text-slate-700">Чек-ин пройден сегодня</p>
                 </div>
-                <a href="/checkin"
-                  className="self-start px-5 py-2.5 bg-white text-teal-600 text-sm font-bold rounded-2xl hover:bg-teal-50 transition">
-                  Начать →
+                <a href={`/cabinet?tab=dynamics`}
+                  className="inline-flex text-teal-600 hover:text-teal-500 text-sm font-semibold transition">
+                  Посмотреть анализ →
                 </a>
               </div>
             ) : (
-              <div className="bg-white border border-slate-100 rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-bold text-teal-600 uppercase tracking-widest">Чек-ин пройден</p>
-                  {todayCheckin.mood && <span className="text-xl">{todayCheckin.mood}</span>}
+              <div className="bg-teal-600 rounded-3xl p-6 flex flex-col gap-3">
+                <div>
+                  <p className="text-teal-100 text-xs font-bold uppercase tracking-widest mb-1">Чек-ин</p>
+                  <h2 className="text-white font-bold text-lg">Как ты себя чувствуешь сегодня?</h2>
                 </div>
-                <p className="text-slate-700 text-sm">
-                  Самочувствие: <span className="font-semibold">{todayCheckin.wellbeing ?? '—'} / 10</span>
-                </p>
-                <a href="/checkin" className="mt-3 inline-flex text-teal-600 hover:text-teal-500 text-xs font-semibold transition">
-                  Пройти ещё раз →
+                <a href="/checkin"
+                  className="self-start px-5 py-2.5 bg-white text-teal-600 text-sm font-bold rounded-2xl hover:bg-teal-50 transition">
+                  Пройти чек-ин →
                 </a>
               </div>
             )}
 
-            {lastEntry && (
+            {/* 4. Блок AI-ассистента */}
+            <div className="bg-white border border-slate-100 rounded-2xl p-5">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">AI-ассистент</p>
+              <p className="text-slate-700 text-sm font-medium mb-3">Хочешь поговорить?</p>
+              <button onClick={() => setTab('ai')}
+                className="text-teal-600 hover:text-teal-500 text-sm font-semibold transition">
+                Открыть ассистента →
+              </button>
+            </div>
+
+            {/* 5. Последняя запись журнала (за последние 3 дня) */}
+            {recentEntry ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Последняя запись</p>
-                  {lastEntry.mood && <span className="text-lg">{lastEntry.mood}</span>}
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Из дневника</p>
+                  <p className="text-xs text-slate-400">
+                    {new Date(recentEntry.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
+                  </p>
                 </div>
-                <p className="text-slate-700 text-sm leading-relaxed line-clamp-2">{lastEntry.content}</p>
+                <p className="text-slate-700 text-sm leading-relaxed">
+                  {recentEntry.content.slice(0, 80)}{recentEntry.content.length > 80 ? '…' : ''}
+                </p>
                 <button onClick={() => setTab('journal')}
                   className="mt-3 text-teal-600 hover:text-teal-500 text-xs font-semibold transition">
-                  Открыть журнал →
+                  Читать →
                 </button>
               </div>
-            )}
-
-            {!lastEntry && (
+            ) : (
               <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-5 text-center">
                 <p className="text-slate-400 text-sm mb-3">Дневник пуст — начни вести записи</p>
                 <button onClick={() => { setTab('journal'); setShowNewEntry(true) }}
