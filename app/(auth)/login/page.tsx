@@ -280,7 +280,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Мини-опрос ─────────────────────────────────────────────── */}
-      <section className="bg-white py-16 px-4">
+      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
@@ -376,7 +376,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Психология ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Почему это работает</p>
@@ -436,14 +436,7 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════ */}
-      {/* ПЕРЕХОД: белая → teal                                      */}
-      {/* ════════════════════════════════════════════════════════════ */}
-      <div className="h-16 bg-gradient-to-b from-white to-[#0d9488]" />
-
-      {/* ════════════════════════════════════════════════════════════ */}
-      {/* ЗОНА 2 — TEAL                                              */}
-      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ── Teal CTA ───────────────────────────────────────────────── */}
       <section style={{ background: '#0d9488' }} className="py-12 px-4 text-center">
         <div className="max-w-lg mx-auto flex flex-col items-center gap-5">
           <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
@@ -462,14 +455,7 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════ */}
-      {/* ПЕРЕХОД: teal → тёмно-синяя                               */}
-      {/* ════════════════════════════════════════════════════════════ */}
-      <div className="h-16 bg-gradient-to-b from-[#0d9488] to-[#1e3a5f]" />
-
-      {/* ════════════════════════════════════════════════════════════ */}
-      {/* ЗОНА 3 — ТЁМНО-СИНЯЯ                                      */}
-      {/* ════════════════════════════════════════════════════════════ */}
+      {/* ── Dark blue login ────────────────────────────────────────── */}
       <section ref={loginRef} style={{ background: '#1e3a5f' }} className="py-16 px-4">
         <div className="max-w-sm mx-auto flex flex-col items-center gap-6">
           <div className="text-center">
@@ -540,8 +526,8 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={emailLoading}
-              style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.25)' }}
-              className="w-full py-3.5 border hover:opacity-80 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
+              style={{ background: '#0d9488' }}
+              className="w-full py-3.5 hover:opacity-90 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
             >
               {emailLoading ? '…' : emailMode === 'login' ? 'Войти' : 'Создать аккаунт'}
             </button>
