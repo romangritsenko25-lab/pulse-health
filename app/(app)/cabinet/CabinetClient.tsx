@@ -443,7 +443,7 @@ export default function CabinetClient() {
     )
   }
 
-  const firstName = profile?.name?.split(' ')[0] ?? 'друг'
+  const firstName = profile?.name?.split(' ')[0] ?? profile?.email?.split('@')[0] ?? 'друг'
   const streak = calcStreak(checkins)
   const todayStr = new Date().toLocaleDateString('ru-RU')
   const todayCheckin = checkins.find(
@@ -481,7 +481,7 @@ export default function CabinetClient() {
             </span>
           </a>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-600 font-medium hidden sm:inline">{profile?.name ?? profile?.email}</span>
+            <span className="text-sm text-slate-600 font-medium hidden sm:inline">{profile?.name || profile?.email?.split('@')[0]}</span>
             <button onClick={signOut} className="text-slate-400 hover:text-slate-600 text-xs transition px-3 py-1.5 rounded-lg hover:bg-slate-100">
               Выйти
             </button>
