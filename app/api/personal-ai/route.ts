@@ -27,7 +27,7 @@ export async function GET() {
       .select('plan, status')
       .eq('user_id', user.id)
       .eq('status', 'active')
-      .single()
+      .maybeSingle()
     console.log('Subscription query result:', JSON.stringify(sub))
     const isPro = sub?.plan === 'pro'
     console.log('isPro:', isPro)
