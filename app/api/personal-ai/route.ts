@@ -20,14 +20,19 @@ export async function GET() {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
+    console.log('SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
+    console.log('SERVICE_ROLE_KEY length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length)
     const { data: sub } = await supabaseAuth
       .from('subscriptions')
       .select('plan, status')
       .eq('user_id', user.id)
       .eq('status', 'active')
       .single()
+    console.log('Subscription query result:', JSON.stringify(sub))
     const isPro = sub?.plan === 'pro'
+    console.log('isPro:', isPro)
     const limit = isPro ? 20 : 5
+    console.log('limit:', limit)
     const today = new Date().toISOString().split('T')[0]
 
     const { data: countRow } = await supabase
