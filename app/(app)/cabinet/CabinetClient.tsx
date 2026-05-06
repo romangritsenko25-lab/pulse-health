@@ -380,6 +380,7 @@ export default function CabinetClient() {
     if (t && TABS.some((x) => x.id === t)) setTab(t)
   }, [])
 
+  const [showUserMenu, setShowUserMenu] = useState(false)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [checkins, setCheckins] = useState<CheckinRow[]>([])
@@ -431,10 +432,14 @@ export default function CabinetClient() {
     }
   }
 
-  async function signOut() {
+  function handleGoHome() {
+    router.push('/')
+  }
+
+  async function handleSignOut() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/')
   }
 
   if (loading) {
@@ -483,11 +488,37 @@ export default function CabinetClient() {
               metanoia<span className="text-teal-600 text-[9px] font-bold align-super ml-0.5">AI</span>
             </span>
           </a>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-600 font-medium hidden sm:inline">{displayName}</span>
-            <button onClick={signOut} className="text-slate-400 hover:text-slate-600 text-xs transition px-3 py-1.5 rounded-lg hover:bg-slate-100">
-              Выйти
+          <div className="relative flex items-center">
+            <button
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="flex items-center gap-1.5 text-sm text-slate-600 font-medium hover:text-slate-800 transition px-2 py-1.5 rounded-lg hover:bg-slate-50"
+            >
+              <span className="hidden sm:inline">{displayName}</span>
+              <span className="sm:hidden text-slate-400 text-xs">Меню</span>
+              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
+            {showUserMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+                <div className="absolute right-0 top-full mt-1 bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[180px] z-50">
+                  <button
+                    onClick={() => { setShowUserMenu(false); handleGoHome() }}
+                    className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
+                  >
+                    На главную
+                  </button>
+                  <div className="my-1 border-t border-slate-50" />
+                  <button
+                    onClick={() => { setShowUserMenu(false); handleSignOut() }}
+                    className="w-full text-left px-4 py-2.5 text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition"
+                  >
+                    Выйти из аккаунта
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </header>

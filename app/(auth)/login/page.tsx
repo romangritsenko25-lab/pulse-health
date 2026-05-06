@@ -97,6 +97,8 @@ export default function LoginPage() {
 
   const [authUser, setAuthUser] = useState<{ id: string; email?: string } | null>(null)
   const [userName, setUserName] = useState<string>('')
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [showUserDropdown, setShowUserDropdown] = useState(false)
 
   const allAnswered = !!(emotion && duration && support)
 
@@ -122,6 +124,15 @@ export default function LoginPage() {
 
   function scrollToLogin() {
     loginRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    setAuthUser(null)
+    setUserName('')
+    setShowMobileMenu(false)
+    setShowUserDropdown(false)
   }
 
   async function handleGoogleLogin() {
@@ -168,14 +179,114 @@ export default function LoginPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* ── Баннер для залогиненных ────────────────────────────────── */}
-      {authUser && (
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 bg-teal-600 text-white text-sm font-medium" style={{ height: 40 }}>
-          <span>Добро пожаловать, {userName}</span>
-          <span className="text-teal-300">·</span>
-          <a href="/cabinet" className="underline underline-offset-2 hover:text-teal-100 transition">В кабинет →</a>
+      {/* ── Navbar ─────────────────────────────────────────────────── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <a href="/" className="flex items-center gap-2 shrink-0">
+            <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="20" fill="#0d9488"/>
+              <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="font-bold text-slate-900 text-sm">metanoia<span className="text-teal-600 text-[10px] font-bold align-super ml-0.5">AI</span></span>
+          </a>
+
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-7">
+            <a href="/checkin" className="text-sm text-slate-500 hover:text-slate-800 transition">Чек-ин</a>
+            <a href="/specialists" className="text-sm text-slate-500 hover:text-slate-800 transition">Специалисты</a>
+            <a href="/materials" className="text-sm text-slate-500 hover:text-slate-800 transition">Материалы</a>
+            <a href="/about" className="text-sm text-slate-500 hover:text-slate-800 transition">О нас</a>
+          </div>
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center">
+            {authUser ? (
+              <div className="relative">
+                <button
+                  onMouseEnter={() => setShowUserDropdown(true)}
+                  onMouseLeave={() => setShowUserDropdown(false)}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
+                >
+                  В кабинет →
+                  <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showUserDropdown && (
+                  <div
+                    onMouseEnter={() => setShowUserDropdown(true)}
+                    onMouseLeave={() => setShowUserDropdown(false)}
+                    className="absolute right-0 top-full pt-1 z-50"
+                  >
+                    <div className="bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[180px]">
+                      <a href="/cabinet" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition">
+                        Перейти в кабинет
+                      </a>
+                      <div className="my-1 border-t border-slate-50" />
+                      <button onClick={handleSignOut} className="w-full text-left px-4 py-2.5 text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition">
+                        Выйти из аккаунта
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={scrollToLogin}
+                className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
+              >
+                Войти
+              </button>
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition"
+          >
+            {showMobileMenu ? (
+              <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
-      )}
+
+        {/* Mobile menu */}
+        {showMobileMenu && (
+          <div className="md:hidden border-t border-slate-100 bg-white px-4 py-3 flex flex-col">
+            <a href="/checkin" className="py-3 text-sm text-slate-700 border-b border-slate-50 hover:text-teal-600 transition">Чек-ин</a>
+            <a href="/specialists" className="py-3 text-sm text-slate-700 border-b border-slate-50 hover:text-teal-600 transition">Специалисты</a>
+            <a href="/materials" className="py-3 text-sm text-slate-700 border-b border-slate-50 hover:text-teal-600 transition">Материалы</a>
+            <a href="/about" className="py-3 text-sm text-slate-700 border-b border-slate-50 hover:text-teal-600 transition">О нас</a>
+            <div className="pt-4 flex flex-col gap-2">
+              {authUser ? (
+                <>
+                  <a href="/cabinet" className="flex items-center justify-center py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
+                    В кабинет →
+                  </a>
+                  <button onClick={handleSignOut} className="text-center text-xs text-slate-400 hover:text-slate-600 py-1.5 transition">
+                    Выйти из аккаунта
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => { scrollToLogin(); setShowMobileMenu(false) }}
+                  className="flex items-center justify-center py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition"
+                >
+                  Войти
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
 
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
@@ -203,7 +314,7 @@ export default function LoginPage() {
       `}</style>
 
       {/* ── 1. HERO ────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={authUser ? { paddingTop: 56 } : {}}>
+      <section className="relative overflow-hidden bg-white pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={{ paddingTop: 88 }}>
         {/* Concentric animated rings */}
         <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
           {[
