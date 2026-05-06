@@ -7,6 +7,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts'
 import PersonalAI from '@/components/PersonalAI'
+import CalendarTab from '@/components/CalendarTab'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Profile { name: string | null; email: string | null }
@@ -148,6 +149,7 @@ const TABS = [
   { id: 'dynamics', label: 'Динамика' },
   { id: 'ai', label: 'Мой AI' },
   { id: 'pdf', label: 'PDF' },
+  { id: 'calendar', label: 'Календарь' },
 ] as const
 type TabId = typeof TABS[number]['id']
 
@@ -412,6 +414,9 @@ export default function CabinetClient() {
         {tab === 'ai' && (
           <PersonalAI userName={firstName} />
         )}
+
+        {/* ── КАЛЕНДАРЬ ── */}
+        {tab === 'calendar' && <CalendarTab />}
 
         {/* ── PDF ── */}
         {tab === 'pdf' && (

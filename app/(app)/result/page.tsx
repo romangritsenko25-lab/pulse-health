@@ -377,6 +377,12 @@ function ResultContent() {
         }
       } catch { /* journal is optional — don't block PDF */ }
       await generatePdf(data, specialistName, specialistSpecialty, journalData)
+      try {
+        const { createClient: mkClient2 } = await import('@/lib/supabase/client')
+        const sb = mkClient2()
+        const { data: { user } } = await sb.auth.getUser()
+        if (user) await sb.from('pdf_downloads').insert({ user_id: user.id })
+      } catch { /* non-blocking */ }
     } catch (err) {
       console.error('PDF error:', err)
       setPdfError(true)
