@@ -137,7 +137,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
   return (
     <div className="flex flex-col" style={{ minHeight: 'calc(100dvh - 120px)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 gap-2">
+      <div className="flex items-center justify-between mb-4 gap-2 shrink-0" style={{ paddingTop: '1rem' }}>
         <button
           onClick={() => setShowHistory(h => !h)}
           className="flex items-center gap-1 text-xs text-slate-500 hover:text-teal-600 transition px-2 py-1.5 rounded-xl hover:bg-teal-50"
@@ -245,7 +245,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
               <a href="/upgrade" className="text-teal-600 font-semibold hover:text-teal-500">перейди на Pro</a>.
             </div>
           ) : (
-            <div className="flex gap-2 items-end bg-slate-50 pt-2" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+            <div className="flex gap-2 items-end bg-slate-50 pt-2 shrink-0" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
               <textarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
