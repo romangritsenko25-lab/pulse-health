@@ -63,7 +63,6 @@ export default function PersonalAI({ userName }: { userName: string }) {
     } else if (data.text) {
       setMessages((prev) => [...prev, { role: 'assistant', content: data.text }])
       if (typeof data.used === 'number') setUsed(data.used)
-      if (typeof data.limit === 'number') setLimit(data.limit)
     } else {
       setMessages((prev) => [...prev, { role: 'assistant', content: 'Произошла ошибка. Попробуй снова.' }])
     }
