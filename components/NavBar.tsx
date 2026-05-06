@@ -28,6 +28,7 @@ export default function NavBar() {
   const [open, setOpen] = useState(false)
   const [role, setRole] = useState<string | null>(null)
   const [showLogin, setShowLogin] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -40,10 +41,15 @@ export default function NavBar() {
     })
   }, [])
 
-  const isAuthed = !!role && role !== 'guest'
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    window.location.href = '/'
+  }
+
   const navLinks = role === 'user' ? USER_LINKS : role === 'specialist' ? SPECIALIST_LINKS : PUBLIC_LINKS
   const ctaHref = role === 'user' ? '/cabinet' : role === 'specialist' ? '/specialist/dashboard' : null
-  const ctaLabel = role === 'user' ? 'Кабинет' : role === 'specialist' ? 'Дашборд' : 'Войти'
+  const ctaLabel = role === 'user' ? 'В кабинет →' : role === 'specialist' ? 'Дашборд' : 'Войти'
 
   return (
     <>
@@ -81,10 +87,36 @@ export default function NavBar() {
 
         <div className="flex items-center gap-2">
           {ctaHref ? (
-            <Link href={ctaHref}
-              className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm">
-              {ctaLabel}
-            </Link>
+            <div className="relative hidden md:block">
+              <button
+                onMouseEnter={() => setShowDropdown(true)}
+                onMouseLeave={() => setShowDropdown(false)}
+                onClick={() => window.location.href = ctaHref}
+                className="inline-flex items-center gap-1 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+              >
+                {ctaLabel}
+                <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {showDropdown && (
+                <div
+                  onMouseEnter={() => setShowDropdown(true)}
+                  onMouseLeave={() => setShowDropdown(false)}
+                  className="absolute right-0 top-full pt-1 z-50"
+                >
+                  <div className="bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[180px]">
+                    <Link href={ctaHref} className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition">
+                      Перейти в кабинет
+                    </Link>
+                    <div className="my-1 border-t border-slate-50" />
+                    <button onClick={handleSignOut} className="w-full text-left px-4 py-2.5 text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition">
+                      Выйти из аккаунта
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <button onClick={() => setShowLogin(true)}
               className="hidden md:inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm">
@@ -128,10 +160,16 @@ export default function NavBar() {
               </Link>
             ))}
             {ctaHref ? (
-              <Link href={ctaHref} onClick={() => setOpen(false)}
-                className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
-                {ctaLabel}
-              </Link>
+              <>
+                <Link href={ctaHref} onClick={() => setOpen(false)}
+                  className="mt-2 flex items-center justify-center px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
+                  {ctaLabel}
+                </Link>
+                <button onClick={() => { setOpen(false); handleSignOut() }}
+                  className="text-center text-xs text-slate-400 hover:text-slate-600 py-1.5 transition">
+                  Выйти из аккаунта
+                </button>
+              </>
             ) : (
               <button onClick={() => { setOpen(false); setShowLogin(true) }}
                 className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
