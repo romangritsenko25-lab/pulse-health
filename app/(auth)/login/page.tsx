@@ -169,19 +169,23 @@ export default function LoginPage() {
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
         @keyframes pulse-ring {
-          0%, 100% { opacity: 0.40; transform: translate(-50%, -50%) scale(0.88); }
-          50%       { opacity: 0.10; transform: translate(-50%, -50%) scale(1.14); }
+          0%   { transform: translate(-50%, -50%) scale(0.95); opacity: 0.12; }
+          50%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.06; }
+          100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.12; }
         }
-        .pr1 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 0s; }
-        .pr2 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 1.2s; }
-        .pr3 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 2.4s; }
-        .pr4 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 3.6s; }
-        .pr5 { animation: pulse-ring 6s ease-in-out infinite; animation-delay: 4.8s; }
+        .pr1 { animation: pulse-ring 6s  ease-in-out infinite; }
+        .pr2 { animation: pulse-ring 8s  ease-in-out infinite; }
+        .pr3 { animation: pulse-ring 10s ease-in-out infinite; }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        .circles-container { animation: fadeIn 1.5s ease-in-out; z-index: 0; }
         @keyframes fade-up {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .fade-up { animation: fade-up 0.6s ease-out forwards; }
+        .fade-up    { animation: fade-up 0.6s ease-out forwards; }
         .fade-up-d1 { animation: fade-up 0.6s 0.15s ease-out forwards; opacity: 0; }
         .fade-up-d2 { animation: fade-up 0.6s 0.30s ease-out forwards; opacity: 0; }
         .fade-up-d3 { animation: fade-up 0.6s 0.45s ease-out forwards; opacity: 0; }
@@ -190,13 +194,11 @@ export default function LoginPage() {
       {/* ── 1. HERO ────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
         {/* Concentric animated rings */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
           {[
-            { size: 220, cls: 'pr1' },
-            { size: 380, cls: 'pr2' },
-            { size: 540, cls: 'pr3' },
-            { size: 700, cls: 'pr4' },
-            { size: 860, cls: 'pr5' },
+            { size: 300, cls: 'pr1' },
+            { size: 500, cls: 'pr2' },
+            { size: 700, cls: 'pr3' },
           ].map(({ size, cls }) => (
             <div
               key={size}
@@ -205,12 +207,12 @@ export default function LoginPage() {
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: size,
                 height: size,
                 borderRadius: '50%',
-                border: '2px solid rgba(13,148,136,0.55)',
-                backgroundColor: 'rgba(13,148,136,0.05)',
-                boxShadow: '0 0 24px rgba(13,148,136,0.08)',
+                border: '1px solid #0d9488',
+                backgroundColor: 'transparent',
               }}
             />
           ))}
