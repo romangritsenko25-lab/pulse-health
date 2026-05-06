@@ -164,23 +164,6 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
 - Помогай формулировать темы для специалиста
 - Замечай прогресс и называй его
 
-РЕЖИМ ПЕРВЫХ СЕССИЙ:
-Если в истории диалога меньше 6 сообщений от пользователя —
-ты в режиме сбора информации.
-После каждого содержательного ответа пользователя добавляй:
-
-"→ Добавлено в темы для специалиста: [краткая суть]"
-
-Примеры:
-"→ Добавлено в темы для специалиста: конфликт с руководством длится 2 года"
-"→ Добавлено в темы для специалиста: апатия и потеря интереса к работе"
-
-Это показывает пользователю что разговор строит
-реальный документ для приёма.
-
-После 6 сообщений — этот маркер не нужен,
-человек уже понимает ценность.
-
 ЗАПРЕЩЕНО:
 - Диагнозы и медицинские термины как ярлыки
 - "Ты должен", "тебе надо", "попробуй"
@@ -222,12 +205,20 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
       claudeMessages = messages
     }
 
-    const response = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
-      messages: claudeMessages,
-    })
+    const userMessageCount = claudeMessages.filter(m => m.role === 'user').length
+
+    // Run main AI call and pdf/memory analysis in parallel
+    const [response, memResult] = await Promise.all([
+      anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        system: SYSTEM_PROMPT,
+        messages: claudeMessages,
+      }),
+      userMessageCount >= 1
+        ? updateUserMemory(userId, claudeMessages, userMessageCount >= 2)
+        : Promise.resolve({ pdf_worthy: false, pdf_topic: null }),
+    ])
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
 
@@ -262,13 +253,14 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
       { onConflict: 'user_id,date' }
     )
 
-    // Update long-term memory after 2+ user messages (fire and forget)
-    const userMessageCount = claudeMessages.filter(m => m.role === 'user').length
-    if (userMessageCount >= 2) {
-      updateUserMemory(userId, claudeMessages).catch(console.error)
-    }
-
-    return NextResponse.json({ text, conversation_id: convId, used: usedCount + 1, limit })
+    return NextResponse.json({
+      text,
+      pdf_worthy: memResult.pdf_worthy,
+      pdf_topic: memResult.pdf_topic,
+      conversation_id: convId,
+      used: usedCount + 1,
+      limit,
+    })
   } catch (err) {
     console.error('personal-ai error', err)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
@@ -277,8 +269,9 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
 
 async function updateUserMemory(
   userId: string,
-  conversationHistory: { role: string; content: string }[]
-) {
+  conversationHistory: { role: string; content: string }[],
+  saveMem: boolean
+): Promise<{ pdf_worthy: boolean; pdf_topic: string | null }> {
   const admin = adminClient()
 
   const conversationText = conversationHistory
@@ -286,60 +279,78 @@ async function updateUserMemory(
     .join('\n')
 
   const memoryPrompt = `
-Проанализируй этот диалог и извлеки 2-3 важных факта
-о пользователе для долгосрочной памяти.
+Проанализируй этот диалог и извлеки факты о пользователе.
 
 Диалог: ${conversationText}
 
-Верни JSON массив:
-[
-  {"category": "triggers", "content": "...", "relevance": 8},
-  {"category": "patterns", "content": "...", "relevance": 7}
-]
+Верни JSON:
+{
+  "memories": [
+    {"category": "triggers", "content": "...", "relevance": 8}
+  ],
+  "pdf_worthy": false,
+  "pdf_topic": null
+}
 
-Категории: triggers, patterns, goals, progress, style, events
-relevance: 1-10 (10 = очень важно)
+pdf_worthy = true ТОЛЬКО если:
+- конкретный страх, боль или травма
+- важное событие повлиявшее на состояние
+- паттерн который человек сам осознал
+- вопрос который хочет задать специалисту
+
+pdf_worthy = false если:
+- светская беседа или тестирование AI
+- общие вопросы без личного контекста
+
+Категории memories: triggers, patterns, goals, progress, style, events
+relevance: 1-10
 Только JSON, без объяснений.
 `
 
   const memResponse = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 400,
+    max_tokens: 500,
     messages: [{ role: 'user', content: memoryPrompt }],
   })
 
-  const rawText = memResponse.content[0].type === 'text' ? memResponse.content[0].text : '[]'
+  const rawText = memResponse.content[0].type === 'text' ? memResponse.content[0].text : '{}'
   const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
-  let memories: { category: string; content: string; relevance: number }[]
+  let parsed: { memories?: { category: string; content: string; relevance: number }[]; pdf_worthy?: boolean; pdf_topic?: string | null }
   try {
-    memories = JSON.parse(cleaned)
+    parsed = JSON.parse(cleaned)
   } catch {
-    return
+    return { pdf_worthy: false, pdf_topic: null }
   }
 
-  if (!Array.isArray(memories)) return
+  if (saveMem && Array.isArray(parsed.memories)) {
+    for (const mem of parsed.memories) {
+      if (!mem.category || !mem.content) continue
 
-  for (const mem of memories) {
-    if (!mem.category || !mem.content) continue
-
-    const { data: existing } = await admin
-      .from('user_memory')
-      .select('id, relevance')
-      .eq('user_id', userId)
-      .eq('category', mem.category)
-      .ilike('content', `%${mem.content.slice(0, 30)}%`)
-      .maybeSingle()
-
-    if (existing) {
-      await admin
+      const { data: existing } = await admin
         .from('user_memory')
-        .update({ relevance: Math.max(existing.relevance, mem.relevance), updated_at: new Date().toISOString() })
-        .eq('id', existing.id)
-    } else {
-      await admin
-        .from('user_memory')
-        .insert({ user_id: userId, category: mem.category, content: mem.content, relevance: mem.relevance })
+        .select('id, relevance')
+        .eq('user_id', userId)
+        .eq('category', mem.category)
+        .ilike('content', `%${mem.content.slice(0, 30)}%`)
+        .maybeSingle()
+
+      if (existing) {
+        await admin
+          .from('user_memory')
+          .update({ relevance: Math.max(existing.relevance, mem.relevance), updated_at: new Date().toISOString() })
+          .eq('id', existing.id)
+      } else {
+        await admin
+          .from('user_memory')
+          .insert({ user_id: userId, category: mem.category, content: mem.content, relevance: mem.relevance })
+      }
     }
+  }
+
+  const pdfWorthy = parsed.pdf_worthy === true
+  return {
+    pdf_worthy: pdfWorthy,
+    pdf_topic: pdfWorthy ? (parsed.pdf_topic ?? null) : null,
   }
 }

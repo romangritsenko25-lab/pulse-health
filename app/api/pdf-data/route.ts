@@ -27,6 +27,7 @@ export async function GET() {
       { data: userMemory },
       { data: profile },
       { data: specialistLink },
+      { data: pdfTopics },
     ] = await Promise.all([
       admin.from('checkins')
         .select('wellbeing, sleep, energy, mood, notes, deep_data, created_at')
@@ -56,6 +57,11 @@ export async function GET() {
         .select('specialist_id')
         .eq('client_id', userId)
         .maybeSingle(),
+      admin.from('pdf_topics')
+        .select('content')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(20),
     ])
 
     let aiMessages: { content: string; role: string }[] = []
@@ -142,7 +148,9 @@ TOPICS: тема1 | тема2 | тема3 | тема4
     const rawText = claudeResponse.content[0].type === 'text' ? claudeResponse.content[0].text : ''
     const topicsMatch = rawText.match(/TOPICS:\s*(.+)$/m)
     const topicsRaw = topicsMatch ? topicsMatch[1] : ''
-    const topics = topicsRaw.split('|').map((t: string) => t.trim()).filter(Boolean)
+    const aiTopics = topicsRaw.split('|').map((t: string) => t.trim()).filter(Boolean)
+    const userTopics = (pdfTopics ?? []).map((t: { content: string }) => t.content)
+    const topics = [...userTopics, ...aiTopics]
     const resume = rawText.replace(/TOPICS:.*$/m, '').trim()
 
     const userName = profile?.name ?? profile?.email ?? 'Пользователь'

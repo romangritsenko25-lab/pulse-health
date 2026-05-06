@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 
-interface Msg { role: 'user' | 'assistant'; content: string }
+interface Msg { role: 'user' | 'assistant'; content: string; pdf_topic?: string }
 interface Conversation {
   id: string
   title: string
@@ -29,6 +29,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
   const [used, setUsed] = useState(0)
   const [limitState, setLimitState] = useState(5)
   const [limitReached, setLimitReached] = useState(false)
+  const [addedTopics, setAddedTopics] = useState<Set<number>>(new Set())
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -96,7 +97,11 @@ export default function PersonalAI({ userName }: { userName: string }) {
       setLimitReached(true)
       setMessages(prev => [...prev, { role: 'assistant', content: data.message ?? 'Лимит сообщений исчерпан на сегодня.' }])
     } else if (data.text) {
-      setMessages(prev => [...prev, { role: 'assistant', content: data.text }])
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.text,
+        pdf_topic: data.pdf_worthy ? data.pdf_topic : undefined,
+      }])
       if (typeof data.used === 'number') setUsed(data.used)
 
       if (data.conversation_id) {
@@ -120,6 +125,15 @@ export default function PersonalAI({ userName }: { userName: string }) {
     }
 
     setSending(false)
+  }
+
+  async function addTopic(index: number, topic: string) {
+    setAddedTopics(prev => new Set([...prev, index]))
+    await fetch('/api/pdf-topics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: topic }),
+    })
   }
 
   function handleKey(e: React.KeyboardEvent) {
@@ -210,15 +224,31 @@ export default function PersonalAI({ userName }: { userName: string }) {
               </div>
             ) : (
               messages.map((m, i) => (
-                <div key={i} className={`flex gap-2 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  {m.role === 'assistant' && <AIIcon />}
-                  <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
-                    m.role === 'user'
-                      ? 'bg-teal-600 text-white rounded-tr-sm'
-                      : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm shadow-sm'
-                  }`}>
-                    {m.content}
+                <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`flex gap-2 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {m.role === 'assistant' && <AIIcon />}
+                    <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+                      m.role === 'user'
+                        ? 'bg-teal-600 text-white rounded-tr-sm'
+                        : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm shadow-sm'
+                    }`}>
+                      {m.content}
+                    </div>
                   </div>
+                  {m.role === 'assistant' && m.pdf_topic && (
+                    <div className="ml-9 mt-1">
+                      {addedTopics.has(i) ? (
+                        <span className="text-xs text-teal-500 font-medium">✓ Добавлено</span>
+                      ) : (
+                        <button
+                          onClick={() => addTopic(i, m.pdf_topic!)}
+                          className="text-xs text-teal-600 border border-teal-200 rounded-lg px-2.5 py-1 hover:bg-teal-50 transition"
+                        >
+                          + Добавить в темы для специалиста
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))
             )}
