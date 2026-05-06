@@ -9,7 +9,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [used, setUsed] = useState(0)
-  const [limit, setLimit] = useState(5)
+  const [limitState, setLimitState] = useState(5)
   const [limitReached, setLimitReached] = useState(false)
   const [showHint, setShowHint] = useState(true)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -26,8 +26,8 @@ export default function PersonalAI({ userName }: { userName: string }) {
     fetch('/api/personal-ai')
       .then(res => res.json())
       .then(data => {
-        if (typeof data.used === 'number') setUsed(data.used)
-        if (typeof data.limit === 'number') setLimit(data.limit)
+        setUsed(data.used ?? 0)
+        setLimitState(data.limit ?? 5)
       })
       .catch(() => {})
   }, [userName])
@@ -83,8 +83,8 @@ export default function PersonalAI({ userName }: { userName: string }) {
           <p className="text-slate-400 text-xs mt-0.5">Знает историю за последние 30 дней</p>
         </div>
         <div className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
-          used >= limit ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-500'}`}>
-          {used} / {limit} сегодня
+          used >= limitState ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-500'}`}>
+          {used} / {limitState} сегодня
         </div>
       </div>
 
