@@ -36,7 +36,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  if (pathname === '/login' && user) {
+  if ((pathname === '/login' || pathname === '/') && user) {
     const cabinetUrl = request.nextUrl.clone()
     cabinetUrl.pathname = '/cabinet'
     return NextResponse.redirect(cabinetUrl)
