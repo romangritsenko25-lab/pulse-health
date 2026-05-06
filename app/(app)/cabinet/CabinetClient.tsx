@@ -105,7 +105,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
             placeholder="Что сейчас происходит? Пиши свободно..."
             className="w-full resize-none rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
-            style={{ minHeight: 160 }} />
+            style={{ minHeight: 160, fontSize: 16 }} />
           <button type="button" onClick={toggle} disabled={!supported}
             className={`absolute bottom-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition ${
               !supported ? 'opacity-30 cursor-not-allowed bg-slate-100'
@@ -430,9 +430,9 @@ export default function CabinetClient() {
   }))
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="bg-slate-50 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
       {/* Header */}
-      <header className="bg-white border-b border-slate-100 sticky top-0 z-40">
+      <header className="bg-white border-b border-slate-100 shrink-0 z-40">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
           <a href="/login" className="flex items-center gap-2">
             <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
@@ -453,7 +453,7 @@ export default function CabinetClient() {
       </header>
 
       {/* Tab bar */}
-      <div className="bg-white border-b border-slate-100 sticky top-14 z-30">
+      <div className="bg-white border-b border-slate-100 shrink-0 z-30">
         <div className="max-w-2xl mx-auto px-4">
           <div className="flex overflow-x-auto no-scrollbar">
             {TABS.map((t) => (
@@ -468,7 +468,8 @@ export default function CabinetClient() {
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="max-w-2xl mx-auto px-4 py-6">
 
         {/* ── СЕГОДНЯ ── */}
         {tab === 'today' && (
@@ -691,6 +692,7 @@ export default function CabinetClient() {
             </p>
           </div>
         )}
+        </div>
       </div>
 
       {showNewEntry && (
