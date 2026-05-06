@@ -82,9 +82,14 @@ export default function PersonalAI({ userName }: { userName: string }) {
           <h2 className="text-xl font-bold text-slate-900">Твой ассистент</h2>
           <p className="text-slate-400 text-xs mt-0.5">Знает историю за последние 30 дней</p>
         </div>
-        <div className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
-          used >= limitState ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-500'}`}>
-          {used} / {limitState} сегодня
+        <div className="flex flex-col items-end">
+          <div className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
+            used >= limitState ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-500'}`}>
+            {used} / {limitState} сегодня
+          </div>
+          <p className="text-xs text-slate-400 mt-1 text-right">
+            Каждый ответ пополняет PDF для специалиста
+          </p>
         </div>
       </div>
 
