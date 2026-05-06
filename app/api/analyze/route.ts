@@ -153,7 +153,9 @@ export async function POST(req: NextRequest) {
       messages: [{ role: 'user', content: userMessage }],
     })
 
-    const raw = message.content[0].type === 'text' ? message.content[0].text : ''
+    const rawText = message.content[0].type === 'text' ? message.content[0].text : ''
+    console.log('Claude raw response:', rawText)
+    const raw = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
     const parsed = JSON.parse(raw)
 
     if (parsed.crisis) {
