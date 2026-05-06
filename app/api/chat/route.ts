@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
+import Anthropic from '@anthropic-ai/sdk'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -27,7 +27,9 @@ function buildSystemPrompt(analysis: ChatRequest['analysis']): string {
   }
   if (analysis.support) sections.push(`ПОДДЕРЖКА: ${analysis.support}`)
 
-  return `Ты опытный психолог-консультант. Ты только что провёл анализ состояния пользователя.
+  return `КРИТИЧЕСКИ ВАЖНО: Отвечай ТОЛЬКО на русском языке. Никаких иероглифов, никакого английского, никакого смешения языков. Только русский.
+
+Ты опытный психолог-консультант. Ты только что провёл анализ состояния пользователя.
 
 ${sections.length ? sections.join('\n\n') : '(анализ не передан)'}
 
@@ -56,22 +58,22 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+    const anthropic = new Anthropic()
 
-    const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 300,
-      messages: [
-        { role: 'system', content: buildSystemPrompt(analysis) },
-        ...messages.map((m) => ({ role: m.role, content: m.content })),
-      ],
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 500,
+      system: buildSystemPrompt(analysis),
+      messages: messages.map((m) => ({ role: m.role, content: m.content })),
     })
 
-    const reply = completion.choices[0]?.message?.content?.trim() ?? 'Не удалось получить ответ.'
+    const reply = response.content[0]?.type === 'text'
+      ? response.content[0].text.trim()
+      : 'Не удалось получить ответ.'
     return NextResponse.json({ reply })
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err)
-    console.error('Chat (Groq) error:', detail)
+    console.error('Chat (Claude) error:', detail)
     return NextResponse.json({ error: 'server_error', detail }, { status: 500 })
   }
 }
