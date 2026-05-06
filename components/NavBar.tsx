@@ -13,9 +13,9 @@ const PUBLIC_LINKS = [
 ]
 
 const USER_LINKS = [
-  { label: 'Кабинет', href: '/cabinet' },
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
+  { label: 'О нас', href: '/about' },
 ]
 
 const SPECIALIST_LINKS = [
@@ -49,7 +49,7 @@ export default function NavBar() {
 
   const navLinks = role === 'user' ? USER_LINKS : role === 'specialist' ? SPECIALIST_LINKS : PUBLIC_LINKS
   const ctaHref = role === 'user' ? '/cabinet' : role === 'specialist' ? '/specialist/dashboard' : null
-  const ctaLabel = role === 'user' ? 'В кабинет →' : role === 'specialist' ? 'Дашборд' : 'Войти'
+  const ctaLabel = role === 'user' ? 'В кабинет' : role === 'specialist' ? 'Дашборд' : 'Войти'
 
   return (
     <>
@@ -92,12 +92,9 @@ export default function NavBar() {
                 onMouseEnter={() => setShowDropdown(true)}
                 onMouseLeave={() => setShowDropdown(false)}
                 onClick={() => window.location.href = ctaHref}
-                className="inline-flex items-center gap-1 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+                className="inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
               >
                 {ctaLabel}
-                <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
               </button>
               {showDropdown && (
                 <div
