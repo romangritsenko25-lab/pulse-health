@@ -29,6 +29,7 @@ export async function GET() {
       .limit(5)
     console.log('Test query result:', JSON.stringify(testQuery.data))
     console.log('Test query error:', JSON.stringify(testQuery.error))
+    console.log('Current user.id:', userId)
 
     const { data: sub } = await supabaseAuth
       .from('subscriptions')
