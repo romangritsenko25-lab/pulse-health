@@ -59,8 +59,13 @@ export async function POST(req: NextRequest) {
 
     const userId = user.id
 
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     // Check subscription
-    const { data: sub } = await supabase
+    const { data: sub } = await supabaseAdmin
       .from('subscriptions').select('plan, status').eq('user_id', userId).eq('status', 'active').maybeSingle()
     const isPro = sub?.plan === 'pro'
     const limit = isPro ? PRO_LIMIT : FREE_LIMIT
