@@ -333,6 +333,32 @@ async function generateProfessionalPdf(data: PdfData) {
   pdf.save(filename)
 }
 
+// ── Chart helpers ──────────────────────────────────────────────────────────
+const LABEL_MAP: Record<string, string> = {
+  wellbeing: 'Самочувствие',
+  anxiety: 'Тревога',
+  energy: 'Энергия',
+  mood: 'Настроение',
+}
+
+function CustomTooltip({ active, payload, label }: {
+  active?: boolean
+  payload?: Array<{ dataKey: string; value: number }>
+  label?: string
+}) {
+  if (!active || !payload?.length) return null
+  return (
+    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', padding: '8px 12px', fontSize: 12 }}>
+      <p style={{ color: '#94a3b8', marginBottom: 4 }}>{label}</p>
+      {payload.map((p) => (
+        <p key={p.dataKey} style={{ color: '#0d9488', fontWeight: 600 }}>
+          {LABEL_MAP[p.dataKey] ?? p.dataKey}: {p.value}
+        </p>
+      ))}
+    </div>
+  )
+}
+
 // ── Tabs ───────────────────────────────────────────────────────────────────
 const TABS = [
   { id: 'today', label: 'Сегодня' },
@@ -426,10 +452,19 @@ export default function CabinetClient() {
   const lastEntry = entries[0] ?? null
   const threeDaysAgo = new Date(); threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
   const recentEntry = lastEntry && new Date(lastEntry.created_at) >= threeDaysAgo ? lastEntry : null
-  const chartData = [...checkins].reverse().map((c) => ({
-    date: new Date(c.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
-    wellbeing: c.wellbeing ?? null,
-  }))
+  const reversedCheckins = [...checkins].reverse()
+  const allSameDay = reversedCheckins.length > 1 && reversedCheckins.every(
+    (c) => new Date(c.created_at).toLocaleDateString('ru-RU') === new Date(reversedCheckins[0].created_at).toLocaleDateString('ru-RU')
+  )
+  const chartData = reversedCheckins.map((c) => {
+    const d = new Date(c.created_at)
+    return {
+      date: allSameDay
+        ? d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+        : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
+      wellbeing: c.wellbeing ?? null,
+    }
+  })
 
   return (
     <div className="bg-slate-50 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
@@ -625,7 +660,7 @@ export default function CabinetClient() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                     <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
                     <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
                     <Line type="monotone" dataKey="wellbeing" stroke="#0d9488" strokeWidth={2} dot={{ r: 3, fill: '#0d9488' }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
