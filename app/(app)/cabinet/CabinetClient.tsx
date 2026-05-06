@@ -142,6 +142,166 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
   )
 }
 
+// ── PDF data types ─────────────────────────────────────────────────────────
+interface PdfCheckin {
+  wellbeing?: number | null
+  sleep?: string | null
+  anxiety?: number | null
+  control?: number | null
+  energyMorning?: string | number | null
+  energyDay?: string | number | null
+  energyEvening?: string | number | null
+  emotions?: string[]
+  stressors?: string[]
+  freeText?: string | null
+  date?: string | null
+}
+
+interface PdfData {
+  checkin: PdfCheckin
+  resume: string
+  topics: string[]
+  specialist: { name: string; specialty: string } | null
+  userName: string
+  date: string
+}
+
+async function generateProfessionalPdf(data: PdfData) {
+  const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
+    import('jspdf'),
+    import('html2canvas'),
+  ])
+
+  const { checkin, resume, topics, specialist, userName, date } = data
+
+  const emotionsStr = checkin.emotions?.length ? checkin.emotions.join(', ') : '—'
+  const stressorsStr = checkin.stressors?.length ? checkin.stressors.join(', ') : '—'
+  const checkinDate = checkin.date ? new Date(checkin.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'
+
+  const topicsHtml = topics.map((t, i) => `
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+      <div style="min-width:24px;height:24px;background:#0d9488;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;padding-top:1px;">${i + 1}</div>
+      <p style="font-size:13px;line-height:1.6;color:#1e3a5f;margin:3px 0 0;flex:1;">${t}</p>
+    </div>`).join('')
+
+  const specialistBlock = specialist
+    ? `<div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+        <div>
+          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для</p>
+          <p style="font-size:14px;font-weight:700;color:#0f766e;margin:0;">${specialist.name} · ${specialist.specialty}</p>
+        </div>
+      </div>`
+    : ''
+
+  const nowStr = new Date().toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+
+  const html = `
+    <div style="width:794px;padding:52px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e3a5f;box-sizing:border-box;">
+      <!-- ШАПКА -->
+      <div style="border-bottom:2px solid #ccfbf1;padding-bottom:22px;margin-bottom:28px;">
+        <p style="font-size:22px;font-weight:800;color:#0d9488;margin:0 0 4px;letter-spacing:-0.5px;">Metanoia AI</p>
+        <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0 0 6px;">Подготовка к приёму у специалиста</p>
+        <p style="font-size:11px;color:#94a3b8;margin:0;">${userName} · ${date}</p>
+      </div>
+
+      ${specialistBlock}
+
+      <!-- 01 ЧЕК-ИН -->
+      <div style="margin-bottom:24px;">
+        <p style="font-size:10px;font-weight:700;color:#0d9488;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">01 · Последний чек-ин <span style="color:#94a3b8;font-weight:400;font-size:9px;">${checkinDate}</span></p>
+        <div style="background:#f8fafc;border-radius:10px;padding:18px 20px;margin-bottom:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:12px;">
+            <div>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Самочувствие</p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.wellbeing ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
+            </div>
+            <div>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Тревога</p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.anxiety ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
+            </div>
+            <div>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Сон</p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.sleep ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;"> ч</span></p>
+            </div>
+            <div>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Контроль</p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.control ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
+            </div>
+          </div>
+          <div style="border-top:1px solid #e2e8f0;padding-top:10px;margin-top:2px;">
+            <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Энергия: утро / день / вечер</p>
+            <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0;">${checkin.energyMorning ?? '—'} · ${checkin.energyDay ?? '—'} · ${checkin.energyEvening ?? '—'}</p>
+          </div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Эмоции</p>
+          <p style="font-size:13px;color:#1e3a5f;margin:0;">${emotionsStr}</p>
+        </div>
+        <div style="margin-bottom:${checkin.freeText ? '14px' : '0'};">
+          <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Стрессоры</p>
+          <p style="font-size:13px;color:#1e3a5f;margin:0;">${stressorsStr}</p>
+        </div>
+        ${checkin.freeText ? `<div style="background:#fffbeb;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:0 8px 8px 0;">
+          <p style="font-size:10px;font-weight:700;color:#92400e;margin:0 0 6px;">Своими словами:</p>
+          <p style="font-size:12px;line-height:1.65;color:#78350f;margin:0;">${checkin.freeText}</p>
+        </div>` : ''}
+      </div>
+
+      <!-- 02 РЕЗЮМЕ -->
+      <div style="margin-bottom:24px;">
+        <p style="font-size:10px;font-weight:700;color:#0d9488;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">02 · Резюме состояния</p>
+        <div style="background:#f0fdfa;border-radius:10px;padding:18px 20px;border:1px solid #ccfbf1;">
+          <p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;white-space:pre-wrap;">${resume}</p>
+        </div>
+      </div>
+
+      <!-- 03 ТЕМЫ -->
+      ${topics.length > 0 ? `<div style="margin-bottom:28px;">
+        <p style="font-size:10px;font-weight:700;color:#0d9488;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">03 · Темы для обсуждения</p>
+        <div style="background:#f8fafc;border-radius:10px;padding:16px 20px;">
+          ${topicsHtml}
+        </div>
+      </div>` : ''}
+
+      <!-- ФУТЕР -->
+      <div style="border-top:1px solid #e2e8f0;padding-top:14px;margin-top:4px;">
+        <p style="font-size:11px;color:#94a3b8;margin:0 0 3px;">Составлено AI-ассистентом Metanoia AI · Не является медицинским заключением</p>
+        <p style="font-size:10px;color:#cbd5e1;margin:0;">${nowStr}</p>
+      </div>
+    </div>`
+
+  const wrapper = document.createElement('div')
+  wrapper.style.cssText = 'position:fixed;top:-9999px;left:-9999px;'
+  wrapper.innerHTML = html
+  document.body.appendChild(wrapper)
+
+  const canvas = await html2canvas(wrapper.firstElementChild as HTMLElement, {
+    scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false,
+  })
+  document.body.removeChild(wrapper)
+
+  const imgData = canvas.toDataURL('image/png')
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+  const pageW = pdf.internal.pageSize.getWidth()
+  const pageH = pdf.internal.pageSize.getHeight()
+  const imgH = (canvas.height * pageW) / canvas.width
+
+  let remaining = imgH
+  let yPos = 0
+  pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
+  remaining -= pageH
+
+  while (remaining > 0) {
+    yPos -= pageH
+    pdf.addPage()
+    pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
+    remaining -= pageH
+  }
+
+  const filename = `metanoia-specialist-${new Date().toISOString().slice(0, 10)}.pdf`
+  pdf.save(filename)
+}
+
 // ── Tabs ───────────────────────────────────────────────────────────────────
 const TABS = [
   { id: 'today', label: 'Сегодня' },
@@ -168,6 +328,8 @@ export default function CabinetClient() {
   const [entries, setEntries] = useState<JournalEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [showNewEntry, setShowNewEntry] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
+  const [pdfError, setPdfError] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -188,6 +350,27 @@ export default function CabinetClient() {
     }
     load()
   }, [router])
+
+  async function handleCreatePdf() {
+    setPdfLoading(true)
+    setPdfError(null)
+    try {
+      const res = await fetch('/api/pdf-data')
+      if (!res.ok) throw new Error('Ошибка загрузки данных')
+      const data: PdfData = await res.json()
+      await generateProfessionalPdf(data)
+
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('pdf_downloads').insert({ user_id: user.id })
+      }
+    } catch (e) {
+      setPdfError(e instanceof Error ? e.message : 'Неизвестная ошибка')
+    } finally {
+      setPdfLoading(false)
+    }
+  }
 
   async function signOut() {
     const supabase = createClient()
@@ -420,19 +603,61 @@ export default function CabinetClient() {
 
         {/* ── PDF ── */}
         {tab === 'pdf' && (
-          <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold text-slate-900">PDF для приёма</h2>
-            <div className="bg-white border border-slate-100 rounded-2xl p-6 flex flex-col gap-4">
-              <div>
-                <p className="font-semibold text-slate-800">Создать PDF для специалиста</p>
-                <p className="text-slate-400 text-sm mt-1">Включает чек-ины и дневник за 30 дней. Покажи на приёме.</p>
-              </div>
-              <a href="/result"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-2xl transition">
-                ↓ Перейти к результату и PDF
-              </a>
+          <div className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">PDF для специалиста</h2>
+              <p className="text-slate-400 text-sm mt-0.5">Клинический документ подготовки к сессии</p>
             </div>
-            <p className="text-slate-400 text-xs text-center">PDF создаётся на странице результата после чек-ина</p>
+
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 text-sm text-slate-600">
+                  <span className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-xs font-bold flex-shrink-0">01</span>
+                  Последний чек-ин — самочувствие, эмоции, стрессоры
+                </div>
+                <div className="flex items-center gap-3 text-sm text-slate-600">
+                  <span className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-xs font-bold flex-shrink-0">02</span>
+                  Резюме состояния — AI-синтез без цитирования источников
+                </div>
+                <div className="flex items-center gap-3 text-sm text-slate-600">
+                  <span className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-xs font-bold flex-shrink-0">03</span>
+                  Темы для обсуждения — конкретные, из вашего контекста
+                </div>
+              </div>
+
+              {pdfError && (
+                <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                  <p className="text-red-600 text-sm">{pdfError}</p>
+                </div>
+              )}
+
+              <button
+                onClick={handleCreatePdf}
+                disabled={pdfLoading}
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-2xl transition"
+              >
+                {pdfLoading ? (
+                  <>
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Подготавливаем документ…
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
+                    Создать PDF
+                  </>
+                )}
+              </button>
+            </div>
+
+            <p className="text-slate-400 text-xs text-center px-4">
+              Специалист видит психологический портрет — не переписку. Источники не раскрываются.
+            </p>
           </div>
         )}
       </div>
