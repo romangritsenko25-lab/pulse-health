@@ -381,6 +381,7 @@ export default function CabinetClient() {
   }, [])
 
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
   const [checkins, setCheckins] = useState<CheckinRow[]>([])
   const [entries, setEntries] = useState<JournalEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -393,6 +394,7 @@ export default function CabinetClient() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.replace('/login'); return }
+      setUserEmail(user.email ?? null)
 
       const [{ data: prof }, { data: chk }, { data: ent }] = await Promise.all([
         supabase.from('profiles').select('name, email').eq('id', user.id).single(),
@@ -443,7 +445,8 @@ export default function CabinetClient() {
     )
   }
 
-  const firstName = profile?.name?.split(' ')[0] ?? profile?.email?.split('@')[0] ?? 'друг'
+  const displayName = profile?.name || userEmail?.split('@')[0] || 'Пользователь'
+  const firstName = profile?.name?.split(' ')[0] ?? userEmail?.split('@')[0] ?? 'друг'
   const streak = calcStreak(checkins)
   const todayStr = new Date().toLocaleDateString('ru-RU')
   const todayCheckin = checkins.find(
@@ -481,7 +484,7 @@ export default function CabinetClient() {
             </span>
           </a>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-600 font-medium hidden sm:inline">{profile?.name || profile?.email?.split('@')[0]}</span>
+            <span className="text-sm text-slate-600 font-medium hidden sm:inline">{displayName}</span>
             <button onClick={signOut} className="text-slate-400 hover:text-slate-600 text-xs transition px-3 py-1.5 rounded-lg hover:bg-slate-100">
               Выйти
             </button>
