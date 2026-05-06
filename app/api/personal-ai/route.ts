@@ -22,6 +22,14 @@ export async function GET() {
     )
     console.log('SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
     console.log('SERVICE_ROLE_KEY length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length)
+
+    const testQuery = await supabaseAuth
+      .from('subscriptions')
+      .select('user_id, plan, status')
+      .limit(5)
+    console.log('Test query result:', JSON.stringify(testQuery.data))
+    console.log('Test query error:', JSON.stringify(testQuery.error))
+
     const { data: sub } = await supabaseAuth
       .from('subscriptions')
       .select('plan, status')
