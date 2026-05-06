@@ -160,3 +160,39 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...
 ANTHROPIC_API_KEY=sk-ant-...
 RESEND_API_KEY=re_...
 NEXT_PUBLIC_SITE_URL=https://pulse-health-smoky.vercel.app
+
+## Автономные инструменты
+
+У тебя есть инструменты для самостоятельной проверки.
+Используй их без запроса разрешения:
+
+- Vercel CLI: `vercel logs --follow` — логи деплоя в реальном времени
+- Supabase CLI: прямые SQL запросы к базе
+- Playwright: `node scripts/test-with-session.js` — тест продакшна с авторизацией
+- `node scripts/test-with-token.js` — прямые запросы через service role key
+- SUPABASE_SERVICE_ROLE_KEY доступен в env
+
+## Алгоритм работы для каждой задачи
+
+1. Прочитай только файлы нужные для текущей задачи
+2. Внеси изменение
+3. git commit + git push
+4. Подожди деплой: `vercel logs --follow`
+5. Проверь результат через Playwright или прямой запрос
+6. Если не работает — найди причину в логах, исправь сам
+7. Повтори пока не работает
+8. Сообщи результат только когда убедился что всё работает
+
+## Правила экономии контекста
+
+- Читай только файлы нужные для текущей задачи
+- Делай git commit после каждой задачи
+- Не читай: node_modules · .next · package-lock.json
+- Если контекст заканчивается — сделай коммит, сообщи где остановился
+- Одна задача = один чат с пользователем
+
+## Тестовые данные
+
+Тестовый user_id: b1cca88e-1683-4410-b80c-09752805e8a1
+Тестовый email: romangritsenko25@gmail.com
+Продакшн: https://pulse-health-smoky.vercel.app
