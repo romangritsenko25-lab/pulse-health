@@ -233,7 +233,8 @@ export default function LoginPage() {
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up flex flex-col items-center gap-3">
-            <img src="/logo.svg" alt="Metanoia AI" height="36" style={{ height: '36px' }} />
+            <img src="/logo-icon1.svg" alt="Metanoia AI" width="40" height="40" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
+            <span className="text-lg font-bold text-teal-600">Metanoia <span className="font-normal">AI</span></span>
           </div>
 
           <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">
