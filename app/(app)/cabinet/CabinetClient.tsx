@@ -480,13 +480,8 @@ export default function CabinetClient() {
       <header className="bg-white border-b border-slate-100 shrink-0 z-40">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
           <a href="/login" className="flex items-center gap-2">
-            <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="20" fill="#0d9488"/>
-              <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="font-bold text-slate-900 text-sm tracking-tight hidden sm:inline">
-              metanoia<span className="text-teal-600 text-[9px] font-bold align-super ml-0.5">AI</span>
-            </span>
+            <img src="/logo-icon.svg" alt="Metanoia AI" width="26" height="26" style={{ width: '26px', height: '26px' }} />
+            <img src="/logo.svg" alt="Metanoia AI" height="20" style={{ height: '20px' }} className="hidden sm:inline" />
           </a>
           <div className="relative flex items-center">
             <button

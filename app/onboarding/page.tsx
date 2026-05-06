@@ -45,14 +45,8 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
-      <div className="flex items-center gap-2 mb-10">
-        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="20" fill="#0d9488"/>
-          <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span className="font-bold text-slate-900 text-[17px] tracking-tight">
-          metanoia<span className="text-teal-600 text-[10px] font-bold align-super ml-0.5">AI</span>
-        </span>
+      <div className="flex items-center mb-10">
+        <img src="/logo.svg" alt="Metanoia AI" height="36" style={{ height: '36px' }} />
       </div>
 
       <div className="text-center mb-8">

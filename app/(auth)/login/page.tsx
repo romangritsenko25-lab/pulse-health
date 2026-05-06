@@ -233,13 +233,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up flex flex-col items-center gap-3">
-            <div className="w-16 h-16 flex items-center justify-center">
-              <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Metanoia AI">
-                <circle cx="20" cy="20" r="20" fill="#0d9488"/>
-                <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <span style={{ color: '#0d9488' }} className="text-sm font-bold tracking-widest uppercase">Metanoia AI</span>
+            <img src="/logo.svg" alt="Metanoia AI" height="36" style={{ height: '36px' }} />
           </div>
 
           <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">
