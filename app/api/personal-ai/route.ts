@@ -8,6 +8,13 @@ const anthropic = new Anthropic()
 const FREE_LIMIT = 5
 const PRO_LIMIT = 20
 
+function adminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
+
 export async function GET() {
   try {
     const supabase = await createClient()
@@ -15,13 +22,9 @@ export async function GET() {
     if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const userId = user.id
+    const admin = adminClient()
 
-    const supabaseAuth = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
-    const { data: sub } = await supabaseAuth
+    const { data: sub } = await admin
       .from('subscriptions')
       .select('plan, status')
       .eq('user_id', user.id)
@@ -47,21 +50,20 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json() as { messages: { role: 'user' | 'assistant'; content: string }[] }
-    const supabase = await createClient()
+    const { messages, conversation_id } = await req.json() as {
+      messages: { role: 'user' | 'assistant'; content: string }[]
+      conversation_id?: string
+    }
 
+    const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const userId = user.id
-
-    const supabaseAdmin = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const admin = adminClient()
 
     // Check subscription
-    const { data: sub } = await supabaseAdmin
+    const { data: sub } = await admin
       .from('subscriptions').select('plan, status').eq('user_id', userId).eq('status', 'active').maybeSingle()
     const isPro = sub?.plan === 'pro'
     const limit = isPro ? PRO_LIMIT : FREE_LIMIT
@@ -195,28 +197,78 @@ ${journal.data?.map((j: { created_at: string; content: string }) =>
 Украина: 7333"
 `
 
+    // Build messages for Claude:
+    // if conversation_id — load history from DB and append new user message
+    // if no conversation_id — use messages as-is
+    let claudeMessages: { role: 'user' | 'assistant'; content: string }[]
+    let convId = conversation_id ?? null
+
+    // Extract the last user message from incoming messages
+    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user')
+
+    if (convId) {
+      const { data: dbMessages } = await admin
+        .from('ai_messages')
+        .select('role, content')
+        .eq('conversation_id', convId)
+        .order('created_at', { ascending: true })
+        .limit(50)
+
+      claudeMessages = [
+        ...(dbMessages ?? []) as { role: 'user' | 'assistant'; content: string }[],
+        ...(lastUserMessage ? [lastUserMessage] : []),
+      ]
+    } else {
+      claudeMessages = messages
+    }
+
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 400,
       system: SYSTEM_PROMPT,
-      messages,
+      messages: claudeMessages,
     })
 
     const text = response.content[0].type === 'text' ? response.content[0].text : ''
 
-    // Increment count
+    // Save to conversation
+    if (!convId) {
+      // Create new conversation with title from first user message
+      const title = (lastUserMessage?.content ?? 'Новый чат').slice(0, 50)
+      const { data: newConv } = await admin
+        .from('ai_conversations')
+        .insert({ user_id: userId, title })
+        .select('id')
+        .single()
+      convId = newConv?.id ?? null
+    }
+
+    if (convId && lastUserMessage) {
+      // Save user message + AI response, update conversation timestamp
+      await Promise.all([
+        admin.from('ai_messages').insert([
+          { conversation_id: convId, role: 'user', content: lastUserMessage.content },
+          { conversation_id: convId, role: 'assistant', content: text },
+        ]),
+        admin.from('ai_conversations')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', convId),
+      ])
+    }
+
+    // Increment daily count
     await supabase.from('ai_message_counts').upsert(
       { user_id: userId, date: today, count: usedCount + 1 },
       { onConflict: 'user_id,date' }
     )
 
-    // Update memory after 2+ user messages (fire and forget)
-    const userMessageCount = messages.filter(m => m.role === 'user').length
+    // Update long-term memory after 2+ user messages (fire and forget)
+    const userMessageCount = claudeMessages.filter(m => m.role === 'user').length
     if (userMessageCount >= 2) {
-      updateUserMemory(userId, messages).catch(console.error)
+      updateUserMemory(userId, claudeMessages).catch(console.error)
     }
 
-    return NextResponse.json({ text, used: usedCount + 1, limit })
+    return NextResponse.json({ text, conversation_id: convId, used: usedCount + 1, limit })
   } catch (err) {
     console.error('personal-ai error', err)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
@@ -227,12 +279,7 @@ async function updateUserMemory(
   userId: string,
   conversationHistory: { role: string; content: string }[]
 ) {
-  console.log('Updating memory for user:', userId)
-
-  const supabaseAdmin = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  const admin = adminClient()
 
   const conversationText = conversationHistory
     .map(m => `${m.role === 'user' ? 'Пользователь' : 'AI'}: ${m.content}`)
@@ -262,16 +309,12 @@ relevance: 1-10 (10 = очень важно)
   })
 
   const rawText = memResponse.content[0].type === 'text' ? memResponse.content[0].text : '[]'
-  console.log('Memory response:', rawText)
-
-  // Strip markdown code block if Haiku wraps JSON in ```json ... ```
   const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
   let memories: { category: string; content: string; relevance: number }[]
   try {
     memories = JSON.parse(cleaned)
-  } catch (err) {
-    console.error('Memory parse error:', err, 'Raw:', rawText)
+  } catch {
     return
   }
 
@@ -280,8 +323,7 @@ relevance: 1-10 (10 = очень важно)
   for (const mem of memories) {
     if (!mem.category || !mem.content) continue
 
-    // If similar memory exists — update relevance, otherwise insert
-    const { data: existing, error: selectErr } = await supabaseAdmin
+    const { data: existing } = await admin
       .from('user_memory')
       .select('id, relevance')
       .eq('user_id', userId)
@@ -289,22 +331,15 @@ relevance: 1-10 (10 = очень важно)
       .ilike('content', `%${mem.content.slice(0, 30)}%`)
       .maybeSingle()
 
-    if (selectErr) {
-      console.error('Memory select error:', selectErr)
-      continue
-    }
-
     if (existing) {
-      const { error } = await supabaseAdmin
+      await admin
         .from('user_memory')
         .update({ relevance: Math.max(existing.relevance, mem.relevance), updated_at: new Date().toISOString() })
         .eq('id', existing.id)
-      if (error) console.error('Memory update error:', error)
     } else {
-      const { error } = await supabaseAdmin
+      await admin
         .from('user_memory')
         .insert({ user_id: userId, category: mem.category, content: mem.content, relevance: mem.relevance })
-      if (error) console.error('Memory insert error:', error)
     }
   }
 }
