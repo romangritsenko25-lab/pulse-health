@@ -166,6 +166,15 @@ interface PdfData {
   date: string
 }
 
+function cleanMarkdown(text: string): string {
+  return text
+    .replace(/\*\*/g, '')
+    .replace(/^#+\s/gm, '')
+    .replace(/^---$/gm, '')
+    .replace(/\*/g, '')
+    .trim()
+}
+
 async function generateProfessionalPdf(data: PdfData) {
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
     import('jspdf'),
@@ -175,8 +184,20 @@ async function generateProfessionalPdf(data: PdfData) {
   const { checkin, resume, topics, specialist, userName, date } = data
 
   const emotionsStr = checkin.emotions?.length ? checkin.emotions.join(', ') : '—'
-  const stressorsStr = checkin.stressors?.length ? checkin.stressors.join(', ') : '—'
   const checkinDate = checkin.date ? new Date(checkin.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'
+  const cleanResume = cleanMarkdown(resume)
+
+  // Bug 2: energy formatting — filter nulls, format "Утро: X · День: X · Вечер: X"
+  const energyParts = [
+    checkin.energyMorning != null ? `Утро: ${checkin.energyMorning}` : null,
+    checkin.energyDay != null ? `День: ${checkin.energyDay}` : null,
+    checkin.energyEvening != null ? `Вечер: ${checkin.energyEvening}` : null,
+  ].filter(Boolean)
+  const energyStr = energyParts.length ? energyParts.join(' · ') : 'Не указано'
+
+  // Bug 1: anxiety/control — show "Не указано" when null
+  const anxietyStr = checkin.anxiety != null ? `${checkin.anxiety}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">Не указано</span>'
+  const controlStr = checkin.control != null ? `${checkin.control}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">Не указано</span>'
 
   const topicsHtml = topics.map((t, i) => `
     <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
@@ -184,7 +205,8 @@ async function generateProfessionalPdf(data: PdfData) {
       <p style="font-size:13px;line-height:1.6;color:#1e3a5f;margin:3px 0 0;flex:1;">${t}</p>
     </div>`).join('')
 
-  const specialistBlock = specialist
+  // Bug 6: specialist block only if specialist exists
+  const specialistBlock = specialist?.name
     ? `<div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
         <div>
           <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для</p>
@@ -193,10 +215,18 @@ async function generateProfessionalPdf(data: PdfData) {
       </div>`
     : ''
 
+  // Bug 3: stressors — show only if not empty
+  const stressorsBlock = checkin.stressors?.length
+    ? `<div style="margin-bottom:${checkin.freeText ? '14px' : '0'};">
+        <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Стрессоры</p>
+        <p style="font-size:13px;color:#1e3a5f;margin:0;">${checkin.stressors.join(', ')}</p>
+      </div>`
+    : ''
+
   const nowStr = new Date().toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 
   const html = `
-    <div style="width:794px;padding:52px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e3a5f;box-sizing:border-box;">
+    <div style="width:794px;padding:52px 60px 80px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e3a5f;box-sizing:border-box;">
       <!-- ШАПКА -->
       <div style="border-bottom:2px solid #ccfbf1;padding-bottom:22px;margin-bottom:28px;">
         <p style="font-size:22px;font-weight:800;color:#0d9488;margin:0 0 4px;letter-spacing:-0.5px;">Metanoia AI</p>
@@ -217,7 +247,7 @@ async function generateProfessionalPdf(data: PdfData) {
             </div>
             <div>
               <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Тревога</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.anxiety ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${anxietyStr}</p>
             </div>
             <div>
               <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Сон</p>
@@ -225,23 +255,20 @@ async function generateProfessionalPdf(data: PdfData) {
             </div>
             <div>
               <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Контроль</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.control ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${controlStr}</p>
             </div>
           </div>
           <div style="border-top:1px solid #e2e8f0;padding-top:10px;margin-top:2px;">
-            <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Энергия: утро / день / вечер</p>
-            <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0;">${checkin.energyMorning ?? '—'} · ${checkin.energyDay ?? '—'} · ${checkin.energyEvening ?? '—'}</p>
+            <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Энергия (утро / день / вечер)</p>
+            <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0;">${energyStr}</p>
           </div>
         </div>
         <div style="margin-bottom:8px;">
           <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Эмоции</p>
           <p style="font-size:13px;color:#1e3a5f;margin:0;">${emotionsStr}</p>
         </div>
-        <div style="margin-bottom:${checkin.freeText ? '14px' : '0'};">
-          <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Стрессоры</p>
-          <p style="font-size:13px;color:#1e3a5f;margin:0;">${stressorsStr}</p>
-        </div>
-        ${checkin.freeText ? `<div style="background:#fffbeb;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:0 8px 8px 0;">
+        ${stressorsBlock}
+        ${checkin.freeText ? `<div style="background:#fffbeb;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:0 8px 8px 0;margin-top:8px;">
           <p style="font-size:10px;font-weight:700;color:#92400e;margin:0 0 6px;">Своими словами:</p>
           <p style="font-size:12px;line-height:1.65;color:#78350f;margin:0;">${checkin.freeText}</p>
         </div>` : ''}
@@ -251,7 +278,7 @@ async function generateProfessionalPdf(data: PdfData) {
       <div style="margin-bottom:24px;">
         <p style="font-size:10px;font-weight:700;color:#0d9488;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">02 · Резюме состояния</p>
         <div style="background:#f0fdfa;border-radius:10px;padding:18px 20px;border:1px solid #ccfbf1;">
-          <p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;white-space:pre-wrap;">${resume}</p>
+          <p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;white-space:pre-wrap;">${cleanResume}</p>
         </div>
       </div>
 
@@ -286,15 +313,19 @@ async function generateProfessionalPdf(data: PdfData) {
   const pageH = pdf.internal.pageSize.getHeight()
   const imgH = (canvas.height * pageW) / canvas.width
 
+  // Bug 5: page breaks — add white overlay at top of new pages to avoid cut text
+  const topMargin = 10
   let remaining = imgH
   let yPos = 0
   pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
   remaining -= pageH
 
   while (remaining > 0) {
-    yPos -= pageH
     pdf.addPage()
+    yPos = -(imgH - remaining) + topMargin
     pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
+    pdf.setFillColor(255, 255, 255)
+    pdf.rect(0, 0, pageW, topMargin, 'F')
     remaining -= pageH
   }
 

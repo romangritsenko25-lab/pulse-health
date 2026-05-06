@@ -79,15 +79,20 @@ export async function GET() {
       if (spec) specialist = spec
     }
 
-    const deepData = lastCheckin?.deep_data ?? {}
-    const emotions: string[] = deepData.emotions ?? []
-    const stressors: string[] = deepData.stressors ?? []
-    const energyMorning = deepData.energy_morning ?? lastCheckin?.energy ?? null
-    const energyDay = deepData.energy_day ?? null
-    const energyEvening = deepData.energy_evening ?? null
-    const anxiety = deepData.anxiety ?? null
-    const control = deepData.control ?? null
-    const freeText = deepData.free_text ?? lastCheckin?.notes ?? null
+    const rawDeepData = lastCheckin?.deep_data
+    const deepData: Record<string, unknown> = typeof rawDeepData === 'string'
+      ? JSON.parse(rawDeepData)
+      : (rawDeepData ?? {})
+
+    const emotions: string[] = Array.isArray(deepData.emotions) ? deepData.emotions as string[] : []
+    const stressors: string[] = Array.isArray(deepData.stressFactors) ? deepData.stressFactors as string[] : []
+    const energyMorning = (deepData.energyMorning as number | undefined) ?? null
+    const energyDay = (deepData.energyAfternoon as number | undefined) ?? null
+    const energyEvening = (deepData.energyEvening as number | undefined) ?? null
+    const anxiety = (deepData.anxietyLevel as number | undefined) ?? null
+    const control = (deepData.controlFeeling as number | undefined) ?? null
+    const freeText = (deepData.freeText as string | undefined) ?? lastCheckin?.notes ?? null
+    const sleepHours = (deepData.sleepHours as number | undefined) ?? null
 
     const dataForClaude = `
 ПОСЛЕДНИЙ ЧЕК-ИН (${lastCheckin?.created_at ? new Date(lastCheckin.created_at).toLocaleDateString('ru-RU') : 'нет данных'}):
@@ -146,7 +151,7 @@ TOPICS: тема1 | тема2 | тема3 | тема4
     return NextResponse.json({
       checkin: {
         wellbeing: lastCheckin?.wellbeing,
-        sleep: lastCheckin?.sleep,
+        sleep: sleepHours ?? lastCheckin?.sleep,
         anxiety,
         control,
         energyMorning,
