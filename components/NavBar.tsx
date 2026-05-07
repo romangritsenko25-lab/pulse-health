@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import LoginModal from './LoginModal'
 
@@ -60,10 +61,7 @@ export default function NavBar() {
           className="flex items-center gap-2 shrink-0"
           onClick={() => setOpen(false)}
         >
-          <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="20" cy="20" r="20" fill="#0d9488"/>
-            <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <Image src="/logo-icon.svg" alt="Metanoia AI" width={36} height={36} unoptimized style={{ borderRadius: '8px' }} />
           <span className="font-bold text-slate-900 text-[15px] tracking-tight leading-none">
             metanoia<span className="text-teal-600 text-[9px] font-bold align-super ml-0.5">AI</span>
           </span>
