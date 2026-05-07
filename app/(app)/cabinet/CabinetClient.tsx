@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
@@ -480,7 +481,7 @@ export default function CabinetClient() {
       <header className="bg-white border-b border-slate-100 shrink-0 z-40">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
           <a href="/login" className="flex items-center gap-2">
-            <img src="/logo-icon1.svg" alt="Metanoia AI" width="40" height="40" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
+            <Image src="/logo-icon.svg" alt="Metanoia AI" width={32} height={32} unoptimized style={{ borderRadius: '7px' }} />
             <span className="font-bold text-teal-600 text-sm tracking-tight hidden sm:inline">Metanoia <span className="font-normal">AI</span></span>
           </a>
           <div className="relative flex items-center">

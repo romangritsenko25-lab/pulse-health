@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardingPage() {
@@ -46,7 +47,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
       <div className="flex items-center gap-2 mb-10">
-        <img src="/logo-icon1.svg" alt="Metanoia AI" width="40" height="40" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
+        <Image src="/logo-icon.svg" alt="Metanoia AI" width={72} height={72} unoptimized style={{ borderRadius: '16px' }} />
         <span className="font-bold text-teal-600 text-[17px] tracking-tight">Metanoia <span className="font-normal">AI</span></span>
       </div>
 
