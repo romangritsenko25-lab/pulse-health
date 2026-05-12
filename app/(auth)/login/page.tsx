@@ -221,7 +221,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up">
-            <Logo size="lg" />
+            <Logo size="lg" showMark={false} />
           </div>
 
           <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">

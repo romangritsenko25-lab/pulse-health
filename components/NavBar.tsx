@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/Logo'
 import LoginModal from './LoginModal'
 
 const PUBLIC_LINKS = [
@@ -61,10 +61,7 @@ export default function NavBar() {
           className="flex items-center gap-2 shrink-0"
           onClick={() => setOpen(false)}
         >
-          <Image src="/logo-icon.svg" alt="Metanoia AI" width={36} height={36} unoptimized style={{ borderRadius: '8px' }} />
-          <span className="font-bold text-slate-900 text-[15px] tracking-tight leading-none">
-            metanoia<span className="text-teal-600 text-[9px] font-bold align-super ml-0.5">AI</span>
-          </span>
+          <Logo size="sm" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-0.5">
