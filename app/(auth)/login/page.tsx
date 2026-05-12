@@ -544,12 +544,15 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── Footer (в тёмно-синей зоне) ────────────────────────────── */}
-      <footer style={{ background: '#1e3a5f' }} className="pb-8 px-4 text-center">
-        <div style={{ borderTopColor: 'rgba(255,255,255,0.1)' }} className="border-t pt-6 max-w-lg mx-auto">
-          <p style={{ color: 'rgba(255,255,255,0.3)' }} className="text-xs">
-            © 2026 Metanoia AI · Не является медицинским сервисом
-          </p>
+      {/* ── Footer ─────────────────────────────────────────────────── */}
+      <footer className="border-t border-gray-100 py-8 bg-white">
+        <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+          <span>© 2026 Metanoia AI · ИП Гриценко</span>
+          <div className="flex gap-6">
+            <a href="/terms" className="hover:text-gray-600 transition-colors">Условия использования</a>
+            <a href="/privacy" className="hover:text-gray-600 transition-colors">Конфиденциальность</a>
+            <a href="/refund" className="hover:text-gray-600 transition-colors">Возврат средств</a>
+          </div>
         </div>
       </footer>
     </div>
