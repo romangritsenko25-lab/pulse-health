@@ -186,19 +186,6 @@ export default function LoginPage() {
         .fade-up-d1 { animation: fade-up 0.6s 0.15s ease-out forwards; opacity: 0; }
         .fade-up-d2 { animation: fade-up 0.6s 0.30s ease-out forwards; opacity: 0; }
         .fade-up-d3 { animation: fade-up 0.6s 0.45s ease-out forwards; opacity: 0; }
-        .dark-input {
-          background: rgba(255,255,255,0.1);
-          border: 1px solid rgba(255,255,255,0.2);
-          color: white;
-          width: 100%;
-          padding: 12px 16px;
-          border-radius: 16px;
-          font-size: 14px;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-        .dark-input::placeholder { color: rgba(255,255,255,0.4); }
-        .dark-input:focus { border-color: rgba(255,255,255,0.5); }
       `}</style>
 
       {/* ════════════════════════════════════════════════════════════ */}
@@ -206,7 +193,7 @@ export default function LoginPage() {
       {/* ════════════════════════════════════════════════════════════ */}
 
       {/* ── Hero ───────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center">
+      <section className="relative overflow-hidden pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={{ background: '#faf9f7' }}>
         {/* Concentric animated rings */}
         <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
           {[
@@ -276,7 +263,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Мини-опрос ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
+      <section className="py-16 px-4" style={{ background: '#f0fdfa' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
@@ -345,7 +332,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Карточки ценности ──────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: '#faf9f7' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Что ты получишь</p>
@@ -372,7 +359,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Психология ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
+      <section className="py-16 px-4" style={{ background: '#ffffff' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Почему это работает</p>
@@ -396,7 +383,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Материалы ──────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4" style={{ background: '#faf9f7' }}>
         <div className="max-w-lg mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -451,12 +438,12 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── Dark blue login ────────────────────────────────────────── */}
-      <section ref={loginRef} style={{ background: '#1e3a5f' }} className="py-16 px-4">
-        <div className="max-w-sm mx-auto flex flex-col items-center gap-6">
+      {/* ── Login section ──────────────────────────────────────────── */}
+      <section ref={loginRef} className="py-16 px-4" style={{ background: '#f0fdfa' }}>
+        <div className="max-w-sm mx-auto flex flex-col items-center gap-5">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white">Начни прямо сейчас — бесплатно</h2>
-            <p style={{ color: 'rgba(255,255,255,0.6)' }} className="text-sm mt-2">
+            <h2 className="text-2xl font-bold" style={{ color: '#1a2535' }}>Начни прямо сейчас — бесплатно</h2>
+            <p className="text-sm mt-2" style={{ color: '#64748b' }}>
               Без кредитной карты · 3 опроса бесплатно
             </p>
           </div>
@@ -464,11 +451,11 @@ export default function LoginPage() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            style={{ color: '#1e3a5f' }}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:opacity-90 disabled:opacity-60 font-semibold py-3.5 rounded-2xl border-0 shadow-lg transition text-sm"
+            className="w-full flex items-center justify-center gap-3 bg-white hover:opacity-90 disabled:opacity-60 font-semibold py-3.5 rounded-2xl transition text-sm"
+            style={{ color: '#1a2535', border: '1px solid #ede9e4', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
           >
             {loading ? (
-              <span className="animate-spin text-xl inline-block">⏳</span>
+              <span className="animate-spin inline-block w-5 h-5 border-2 rounded-full" style={{ borderColor: '#0d9488', borderTopColor: 'transparent' }} />
             ) : (
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -481,9 +468,9 @@ export default function LoginPage() {
           </button>
 
           <div className="flex items-center gap-3 w-full">
-            <div style={{ background: 'rgba(255,255,255,0.2)' }} className="flex-1 h-px" />
-            <span style={{ color: 'rgba(255,255,255,0.4)' }} className="text-xs">или</span>
-            <div style={{ background: 'rgba(255,255,255,0.2)' }} className="flex-1 h-px" />
+            <div className="flex-1 h-px" style={{ background: '#ede9e4' }} />
+            <span className="text-xs" style={{ color: '#9ca3af' }}>или</span>
+            <div className="flex-1 h-px" style={{ background: '#ede9e4' }} />
           </div>
 
           <form onSubmit={handleEmailSubmit} className="w-full flex flex-col gap-3">
@@ -494,7 +481,10 @@ export default function LoginPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="dark-input"
+                className="w-full px-4 py-3 rounded-2xl text-sm outline-none transition"
+                style={{ background: '#ffffff', border: '1px solid #ede9e4', color: '#1a2535' }}
+                onFocus={e => (e.currentTarget.style.borderColor = '#0d9488')}
+                onBlur={e => (e.currentTarget.style.borderColor = '#ede9e4')}
               />
             )}
             <input
@@ -503,7 +493,10 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="dark-input"
+              className="w-full px-4 py-3 rounded-2xl text-sm outline-none transition"
+              style={{ background: '#ffffff', border: '1px solid #ede9e4', color: '#1a2535' }}
+              onFocus={e => (e.currentTarget.style.borderColor = '#0d9488')}
+              onBlur={e => (e.currentTarget.style.borderColor = '#ede9e4')}
             />
             <input
               type="password"
@@ -512,18 +505,24 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="dark-input"
+              className="w-full px-4 py-3 rounded-2xl text-sm outline-none transition"
+              style={{ background: '#ffffff', border: '1px solid #ede9e4', color: '#1a2535' }}
+              onFocus={e => (e.currentTarget.style.borderColor = '#0d9488')}
+              onBlur={e => (e.currentTarget.style.borderColor = '#ede9e4')}
             />
             {emailError && (
-              <p style={{ color: emailError.includes('Проверь') ? '#5eead4' : '#fca5a5' }} className="text-xs text-center">
+              <p
+                className="text-xs text-center"
+                style={{ color: emailError.includes('Проверь') ? '#0d9488' : '#ef4444' }}
+              >
                 {emailError}
               </p>
             )}
             <button
               type="submit"
               disabled={emailLoading}
-              style={{ background: '#0d9488' }}
               className="w-full py-3.5 hover:opacity-90 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
+              style={{ background: '#0d9488', boxShadow: '0 4px 12px rgba(13,148,136,0.25)' }}
             >
               {emailLoading ? '…' : emailMode === 'login' ? 'Войти' : 'Создать аккаунт'}
             </button>
@@ -532,14 +531,16 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => { setEmailMode(emailMode === 'login' ? 'register' : 'login'); setEmailError('') }}
-            style={{ color: 'rgba(255,255,255,0.5)' }}
-            className="hover:text-white text-xs transition"
+            className="text-xs transition"
+            style={{ color: '#9ca3af' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0d9488')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
           >
             {emailMode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
           </button>
 
-          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }} className="text-center leading-relaxed">
-            Твои данные зашифрованы и видны только тебе
+          <p className="text-xs text-center leading-relaxed" style={{ color: '#9ca3af' }}>
+            🔒 Твои данные зашифрованы и видны только тебе
           </p>
         </div>
       </section>

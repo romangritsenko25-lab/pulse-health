@@ -37,14 +37,14 @@ export default function OnboardingPage() {
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#faf9f7' }}>
+        <p className="text-sm animate-pulse" style={{ color: '#9ca3af' }}>Загрузка…</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12" style={{ background: '#faf9f7' }}>
       {/* Logo */}
       <div className="flex items-center gap-2 mb-10">
         <Image src="/logo-icon.svg" alt="Metanoia AI" width={72} height={72} unoptimized style={{ borderRadius: '16px' }} />
@@ -84,18 +84,24 @@ export default function OnboardingPage() {
         <button
           onClick={() => choose('specialist')}
           disabled={!!loading}
-          className="flex-1 flex flex-col items-center gap-4 p-7 bg-white border-2 border-slate-200 hover:border-indigo-400 hover:shadow-lg hover:shadow-indigo-50 rounded-3xl transition-all disabled:opacity-60 text-left group"
+          className="flex-1 flex flex-col items-center gap-4 p-7 bg-white border-2 rounded-3xl transition-all disabled:opacity-60 text-left group"
+          style={{ borderColor: '#ede9e4' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = '#0d9488'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(13,148,136,0.08)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = '#ede9e4'; e.currentTarget.style.boxShadow = 'none'; }}
         >
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-4xl group-hover:bg-indigo-100 transition">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl transition" style={{ background: '#f0fdfa' }}>
             🩺
           </div>
           <div className="text-center">
-            <p className="font-bold text-slate-900 text-base mb-1">Я психолог / терапевт</p>
-            <p className="text-slate-500 text-sm leading-relaxed">
+            <p className="font-bold text-base mb-1" style={{ color: '#1a2535' }}>Я психолог / терапевт</p>
+            <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>
               Буду приглашать клиентов, помогать им подготовиться к сессиям
             </p>
           </div>
-          <span className="mt-auto w-full py-3 bg-indigo-600 group-hover:bg-indigo-500 text-white text-sm font-semibold rounded-2xl transition text-center">
+          <span
+            className="mt-auto w-full py-3 text-white text-sm font-semibold rounded-2xl transition text-center"
+            style={{ background: '#0d9488' }}
+          >
             {loading === 'specialist' ? 'Загрузка…' : 'Войти как специалист'}
           </span>
         </button>

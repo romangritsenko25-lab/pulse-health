@@ -111,18 +111,37 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
   pdf.save(`metanoia-${new Date().toISOString().slice(0, 10)}.pdf`)
 }
 
+const SECTION_ACCENTS: Record<string, string> = {
+  '01': '#3b82f6',
+  '02': '#0d9488',
+  '03': '#8b5cf6',
+  '04': '#f59e0b',
+}
+
 // ── Section ────────────────────────────────────────────────────────────────
-function Section({ badge, title, color, children }: {
-  badge: string; title: string; color: string; children: React.ReactNode
+function Section({ badge, title, children }: {
+  badge: string; title: string; color?: string; children: React.ReactNode
 }) {
+  const accent = SECTION_ACCENTS[badge] ?? '#0d9488'
   return (
-    <div className={`rounded-2xl border p-5 ${color}`}>
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-xs font-bold uppercase tracking-widest opacity-60">{badge}</span>
-        <span className="text-xs opacity-40">·</span>
-        <span className="text-sm font-semibold opacity-80">{title}</span>
+    <div
+      className="rounded-2xl border overflow-hidden"
+      style={{ background: '#faf9f7', borderColor: '#ede9e4' }}
+    >
+      <div className="flex gap-4 p-5" style={{ borderLeft: `3px solid ${accent}` }}>
+        <div
+          className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white mt-0.5"
+          style={{ background: accent }}
+        >
+          {parseInt(badge)}
+        </div>
+        <div className="flex-1">
+          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: accent }}>
+            {title}
+          </p>
+          {children}
+        </div>
       </div>
-      {children}
     </div>
   )
 }
@@ -393,8 +412,8 @@ function ResultContent() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-400 animate-pulse text-sm">Загрузка…</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#faf9f7' }}>
+        <p className="animate-pulse text-sm" style={{ color: '#9ca3af' }}>Загрузка…</p>
       </div>
     )
   }
@@ -406,46 +425,53 @@ function ResultContent() {
   })
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-lg mx-auto px-4 py-8 flex flex-col gap-5">
+    <div className="min-h-screen" style={{ background: '#faf9f7' }}>
+      <div className="max-w-lg mx-auto px-4 py-8 flex flex-col gap-4">
 
         {/* Header */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between mb-1">
           <div>
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest">Metanoia AI</p>
-            <h1 className="text-2xl font-bold text-slate-800 mt-0.5">Твой анализ</h1>
-            <p className="text-slate-400 text-sm mt-0.5">{dateStr}</p>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#0d9488' }}>Metanoia AI</p>
+            <h1 className="text-2xl font-bold mt-0.5" style={{ color: '#1a2535' }}>Твой анализ</h1>
+            <p className="text-sm mt-0.5" style={{ color: '#9ca3af' }}>{dateStr}</p>
           </div>
           <button onClick={() => router.push('/cabinet')}
-            className="text-slate-400 hover:text-slate-600 text-sm transition mt-1">
+            className="text-sm transition mt-1 font-medium"
+            style={{ color: '#9ca3af' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#1a2535')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+          >
             Кабинет →
           </button>
         </div>
 
         {data.reflection && (
-          <Section badge="01" title="Отражение" color="bg-blue-50 border-blue-100 text-blue-900">
-            <p className="text-sm leading-relaxed">{data.reflection}</p>
+          <Section badge="01" title="Отражение">
+            <p className="text-sm leading-relaxed" style={{ color: '#1a2535' }}>{data.reflection}</p>
           </Section>
         )}
 
         {data.patterns && (
-          <Section badge="02" title="Паттерны" color="bg-teal-50 border-teal-100 text-teal-900">
-            <p className="text-sm leading-relaxed">{data.patterns}</p>
+          <Section badge="02" title="Паттерны">
+            <p className="text-sm leading-relaxed" style={{ color: '#1a2535' }}>{data.patterns}</p>
           </Section>
         )}
 
         {data.hypothesis && (
-          <Section badge="03" title="Гипотеза" color="bg-violet-50 border-violet-100 text-violet-900">
-            <p className="text-sm leading-relaxed italic">{data.hypothesis}</p>
+          <Section badge="03" title="Гипотеза">
+            <p className="text-sm leading-relaxed italic" style={{ color: '#1a2535' }}>{data.hypothesis}</p>
           </Section>
         )}
 
         {data.forSpecialist && data.forSpecialist.length > 0 && (
-          <Section badge="04" title="Темы для специалиста" color="bg-amber-50 border-amber-100 text-amber-900">
-            <ul className="flex flex-col gap-2">
+          <Section badge="04" title="Темы для специалиста">
+            <ul className="flex flex-col gap-2.5">
               {data.forSpecialist.map((topic, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-sm">
-                  <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: '#1a2535' }}>
+                  <span
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 text-white"
+                    style={{ background: '#f59e0b' }}
+                  >
                     {i + 1}
                   </span>
                   <span>{topic}</span>
@@ -456,8 +482,13 @@ function ResultContent() {
         )}
 
         {data.support && (
-          <div className="bg-teal-600 rounded-2xl p-5 text-white">
-            <p className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">05 · Поддержка</p>
+          <div
+            className="rounded-2xl p-5 text-white"
+            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)' }}
+          >
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ opacity: 0.7 }}>
+              05 · Поддержка
+            </p>
             <p className="text-sm leading-relaxed font-medium">{data.support}</p>
           </div>
         )}
@@ -495,11 +526,15 @@ function ResultContent() {
         </div>
 
         <button onClick={() => router.push('/checkin')}
-          className="w-full py-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium hover:bg-slate-50 transition text-sm">
+          className="w-full py-3 rounded-2xl font-medium transition text-sm"
+          style={{ border: '1px solid #ede9e4', background: '#ffffff', color: '#64748b' }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#faf9f7')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#ffffff')}
+        >
           Пройти ещё раз
         </button>
 
-        <p className="text-slate-300 text-xs text-center leading-relaxed">
+        <p className="text-xs text-center leading-relaxed" style={{ color: '#9ca3af' }}>
           Составлено AI-ассистентом Metanoia AI.<br />
           Не является медицинским заключением.
         </p>

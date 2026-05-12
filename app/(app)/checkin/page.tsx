@@ -42,19 +42,21 @@ const BODY_PAINS = ['Голова', 'Шея/плечи', 'Спина', 'Груд
 
 const SLEEP_QUALITY = ['Очень плохо', 'Плохо', 'Нормально', 'Хорошо', 'Отлично']
 
+const NOTO = 'https://fonts.gstatic.com/s/e/notoemoji/latest'
+
 const EMOTIONS_LIST = [
-  { label: 'Спокойствие', emoji: '😌' },
-  { label: 'Тревога', emoji: '😰' },
-  { label: 'Грусть', emoji: '😢' },
-  { label: 'Злость', emoji: '😠' },
-  { label: 'Радость', emoji: '😊' },
-  { label: 'Апатия', emoji: '😶' },
-  { label: 'Раздражение', emoji: '😤' },
-  { label: 'Страх', emoji: '😨' },
-  { label: 'Вина', emoji: '😔' },
-  { label: 'Стыд', emoji: '🫣' },
-  { label: 'Одиночество', emoji: '🥺' },
-  { label: 'Надежда', emoji: '🌱' },
+  { label: 'Спокойствие', src: `${NOTO}/1f60c/512.webp` },
+  { label: 'Тревога',     src: `${NOTO}/1f630/512.webp` },
+  { label: 'Грусть',      src: `${NOTO}/1f622/512.webp` },
+  { label: 'Злость',      src: `${NOTO}/1f620/512.webp` },
+  { label: 'Радость',     src: `${NOTO}/1f60a/512.webp` },
+  { label: 'Апатия',      src: `${NOTO}/1f636/512.webp` },
+  { label: 'Раздражение', src: `${NOTO}/1f624/512.webp` },
+  { label: 'Страх',       src: `${NOTO}/1f628/512.webp` },
+  { label: 'Вина',        src: `${NOTO}/1f614/512.webp` },
+  { label: 'Стыд',        src: `${NOTO}/1fae3/512.webp` },
+  { label: 'Одиночество', src: `${NOTO}/1f97a/512.webp` },
+  { label: 'Надежда',     src: `${NOTO}/1f331/512.webp` },
 ]
 
 const STRESS_FACTORS = [
@@ -258,19 +260,24 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
       <section>
         <h3 className="font-semibold text-slate-800 mb-3">Какие эмоции присутствовали сегодня?</h3>
         <div className="grid grid-cols-3 gap-2">
-          {EMOTIONS_LIST.map((e) => (
-            <button
-              key={e.label} type="button" onClick={() => toggleEmotion(e.label)}
-              className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border transition text-xs font-medium ${
-                form.emotions.includes(e.label)
-                  ? 'border-teal-500 bg-teal-50 text-teal-700'
-                  : 'border-slate-200 bg-white text-slate-600 hover:border-teal-200'
-              }`}
-            >
-              <span className="text-2xl">{e.emoji}</span>
-              {e.label}
-            </button>
-          ))}
+          {EMOTIONS_LIST.map((e) => {
+            const selected = form.emotions.includes(e.label)
+            return (
+              <button
+                key={e.label} type="button" onClick={() => toggleEmotion(e.label)}
+                className="flex flex-col items-center gap-2 p-3 rounded-2xl border transition text-xs font-semibold"
+                style={{
+                  borderColor: selected ? '#0d9488' : '#ede9e4',
+                  background: selected ? '#f0fdfa' : '#ffffff',
+                  color: selected ? '#0d9488' : '#1a2535',
+                  boxShadow: selected ? '0 0 0 3px #ccfbf1' : 'none',
+                }}
+              >
+                <img src={e.src} alt="" width={36} height={36} style={{ display: 'block' }} />
+                {e.label}
+              </button>
+            )
+          })}
         </div>
       </section>
 
@@ -442,10 +449,10 @@ function CrisisScreen({ onBack }: { onBack: () => void }) {
 
 // ── Main page ──────────────────────────────────────────────────────────────
 const BLOCK_META = [
-  { title: 'Тело', subtitle: 'Как ваше физическое состояние?' },
-  { title: 'Эмоции', subtitle: 'Что вы чувствовали сегодня?' },
-  { title: 'Контекст', subtitle: 'Что происходило вокруг?' },
-  { title: 'Свободный рассказ', subtitle: 'Расскажите своими словами' },
+  { title: 'Тело', subtitle: 'Прислушайся — тело знает больше, чем кажется', step: 'Тело' },
+  { title: 'Эмоции', subtitle: 'Всё что ты чувствуешь — важно и нормально', step: 'Эмоции' },
+  { title: 'Контекст', subtitle: 'Что происходило вокруг тебя сегодня?', step: 'Контекст' },
+  { title: 'Свободный рассказ', subtitle: 'Здесь нет правильных ответов — только твои слова', step: 'Рассказ' },
 ]
 
 const defaultForm: DeepFormData = {
@@ -572,31 +579,47 @@ export default function CheckinPage() {
   const progress = (block / TOTAL_BLOCKS) * 100
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#faf9f7' }}>
       {/* Top bar */}
-      <div className="bg-white border-b border-slate-100 px-4 pt-5 pb-3 max-w-lg mx-auto w-full sticky top-0 z-10">
+      <div className="px-4 pt-5 pb-3 max-w-lg mx-auto w-full sticky top-0 z-10" style={{ background: '#faf9f7' }}>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-slate-400 font-medium">Блок {block} из {TOTAL_BLOCKS}</span>
+          <span className="text-sm font-medium" style={{ color: '#9ca3af' }}>Блок {block} из {TOTAL_BLOCKS}</span>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/')}
-              className="text-slate-400 hover:text-slate-600 text-sm transition"
-            >
-              ← Главная
-            </button>
-            <button
-              onClick={() => router.push('/cabinet')}
-              className="text-slate-400 hover:text-slate-600 text-sm transition"
-            >
-              Кабинет →
-            </button>
+            <button onClick={() => router.push('/')} className="text-sm transition" style={{ color: '#9ca3af' }}>← Главная</button>
+            <button onClick={() => router.push('/cabinet')} className="text-sm transition" style={{ color: '#9ca3af' }}>Кабинет →</button>
           </div>
         </div>
-        <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
+        {/* Progress bar */}
+        <div className="h-1 rounded-full overflow-hidden mb-3" style={{ background: '#ede9e4' }}>
           <div
-            className="h-full bg-teal-500 rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
+            className="h-full rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%`, background: '#0d9488' }}
           />
+        </div>
+        {/* Step dots */}
+        <div className="flex justify-between">
+          {BLOCK_META.map((m, i) => {
+            const idx = i + 1
+            const done = idx < block
+            const active = idx === block
+            return (
+              <div key={m.step} className="flex flex-col items-center gap-1 flex-1">
+                <div
+                  className="w-2 h-2 rounded-full mx-auto transition-all duration-300"
+                  style={{
+                    background: done || active ? '#0d9488' : '#ede9e4',
+                    boxShadow: active ? '0 0 0 3px #ccfbf1' : 'none',
+                  }}
+                />
+                <span
+                  className="text-[10px] font-medium"
+                  style={{ color: active ? '#0d9488' : '#9ca3af' }}
+                >
+                  {m.step}
+                </span>
+              </div>
+            )
+          })}
         </div>
       </div>
 
@@ -608,8 +631,8 @@ export default function CheckinPage() {
           }`}
         >
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-slate-800">{meta.title}</h2>
-            <p className="text-slate-500 text-sm mt-0.5">{meta.subtitle}</p>
+            <h2 className="text-xl font-bold" style={{ color: '#1a2535' }}>{meta.title}</h2>
+            <p className="text-sm mt-1 leading-relaxed" style={{ color: '#64748b' }}>{meta.subtitle}</p>
           </div>
 
           <div>
@@ -632,7 +655,8 @@ export default function CheckinPage() {
             <button
               type="button"
               onClick={() => goToBlock(block - 1)}
-              className="flex-1 py-3.5 rounded-2xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition font-medium text-sm"
+              className="flex-1 py-3.5 rounded-2xl font-medium text-sm transition"
+              style={{ border: '1px solid #ede9e4', background: '#ffffff', color: '#64748b' }}
             >
               ← Назад
             </button>
@@ -643,7 +667,8 @@ export default function CheckinPage() {
               type="button"
               onClick={() => goToBlock(block + 1)}
               disabled={!canGoNext()}
-              className="flex-1 bg-teal-600 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition text-sm"
+              className="flex-1 text-white font-semibold py-3.5 rounded-2xl transition text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ background: '#0d9488' }}
             >
               Далее →
             </button>
@@ -652,11 +677,12 @@ export default function CheckinPage() {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 text-sm"
+              className="flex-1 text-white font-semibold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: '#0d9488' }}
             >
               {loading ? (
                 <>
-                  <span className="animate-spin inline-block">⏳</span>
+                  <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
                   Анализируем…
                 </>
               ) : (
