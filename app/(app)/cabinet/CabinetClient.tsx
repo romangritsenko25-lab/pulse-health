@@ -360,6 +360,53 @@ function CustomTooltip({ active, payload, label }: {
   )
 }
 
+// ── Week strip ─────────────────────────────────────────────────────────────
+function WeekStrip({ checkins }: { checkins: CheckinRow[] }) {
+  const today = new Date()
+  const monday = new Date(today)
+  monday.setDate(today.getDate() - ((today.getDay() + 6) % 7))
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
+    return d
+  })
+
+  const checkinDays = new Set(checkins.map((c) => new Date(c.created_at).toLocaleDateString('ru-RU')))
+  const DAY_LABELS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+  const todayStr = today.toLocaleDateString('ru-RU')
+
+  return (
+    <div className="bg-white rounded-2xl p-4" style={{ border: '1px solid #ede9e4' }}>
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Эта неделя</p>
+      <div className="flex justify-between">
+        {days.map((d, i) => {
+          const dStr = d.toLocaleDateString('ru-RU')
+          const done = checkinDays.has(dStr)
+          const isToday = dStr === todayStr
+          const isFuture = d > today
+          return (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <span className="text-[10px] font-medium text-slate-400">{DAY_LABELS[i]}</span>
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition"
+                style={{
+                  background: done ? '#0d9488' : isToday ? '#f0fdfa' : 'transparent',
+                  border: isToday ? '2px solid #0d9488' : done ? 'none' : '1.5px solid #d1d5db',
+                  color: done ? '#fff' : isToday ? '#0d9488' : isFuture ? '#e5e7eb' : '#9ca3af',
+                  opacity: isFuture ? 0.4 : 1,
+                }}
+              >
+                {done ? '✓' : d.getDate()}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 // ── Tabs ───────────────────────────────────────────────────────────────────
 const TABS = [
   { id: 'today', label: 'Сегодня' },
@@ -508,9 +555,6 @@ export default function CabinetClient() {
   const todayCheckin = checkins.find(
     (c) => new Date(c.created_at).toLocaleDateString('ru-RU') === todayStr
   )
-  const lastEntry = entries[0] ?? null
-  const threeDaysAgo = new Date(); threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
-  const recentEntry = lastEntry && new Date(lastEntry.created_at) >= threeDaysAgo ? lastEntry : null
   const reversedCheckins = [...checkins].reverse()
   const allSameDay = reversedCheckins.length > 1 && reversedCheckins.every(
     (c) => new Date(c.created_at).toLocaleDateString('ru-RU') === new Date(reversedCheckins[0].created_at).toLocaleDateString('ru-RU')
@@ -601,6 +645,7 @@ export default function CabinetClient() {
               <p className="text-slate-400 text-sm mt-0.5">
                 {new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
               </p>
+              <p className="text-slate-500 text-sm mt-2">Рады видеть тебя. Как ты сегодня?</p>
             </div>
 
             {/* 2. Стрик */}
@@ -619,7 +664,10 @@ export default function CabinetClient() {
               </div>
             )}
 
-            {/* 3. Блок чек-ина */}
+            {/* 3. Полоска недели */}
+            <WeekStrip checkins={checkins} />
+
+            {/* 4. Блок чек-ина */}
             {todayCheckin ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-5">
                 <div className="flex items-center gap-2.5 mb-3">
@@ -658,42 +706,6 @@ export default function CabinetClient() {
               </div>
             )}
 
-            {/* 4. Блок AI-ассистента */}
-            <div className="bg-white border border-slate-100 rounded-2xl p-5">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">AI-ассистент</p>
-              <p className="text-slate-700 text-sm font-medium mb-3">Хочешь поговорить?</p>
-              <button onClick={() => setTab('ai')}
-                className="text-teal-600 hover:text-teal-500 text-sm font-semibold transition">
-                Открыть ассистента →
-              </button>
-            </div>
-
-            {/* 5. Последняя запись журнала (за последние 3 дня) */}
-            {recentEntry ? (
-              <div className="bg-white border border-slate-100 rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Из дневника</p>
-                  <p className="text-xs text-slate-400">
-                    {new Date(recentEntry.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
-                  </p>
-                </div>
-                <p className="text-slate-700 text-sm leading-relaxed">
-                  {recentEntry.content.slice(0, 80)}{recentEntry.content.length > 80 ? '…' : ''}
-                </p>
-                <button onClick={() => setTab('journal')}
-                  className="mt-3 text-teal-600 hover:text-teal-500 text-xs font-semibold transition">
-                  Читать →
-                </button>
-              </div>
-            ) : (
-              <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-5 text-center">
-                <p className="text-slate-400 text-sm mb-3">Дневник пуст — начни вести записи</p>
-                <button onClick={() => { setTab('journal'); setShowNewEntry(true) }}
-                  className="text-teal-600 text-sm font-semibold hover:text-teal-500">
-                  Написать первую запись →
-                </button>
-              </div>
-            )}
           </div>
         )}
 

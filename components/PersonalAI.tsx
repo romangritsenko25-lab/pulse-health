@@ -30,7 +30,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
   const [limitState, setLimitState] = useState(5)
   const [limitReached, setLimitReached] = useState(false)
   const [addedTopics, setAddedTopics] = useState<Set<number>>(new Set())
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Load usage count + conversation list in parallel
@@ -54,7 +54,9 @@ export default function PersonalAI({ userName }: { userName: string }) {
   }, [userName])
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
   }, [messages])
 
   async function loadConversation(id: string) {
@@ -212,7 +214,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
       {/* Chat */}
       {!showHistory && (
         <>
-          <div className="flex-1 overflow-y-auto flex flex-col gap-3 pb-4">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-3 pb-4">
             {historyLoading ? (
               <div className="flex justify-center mt-8">
                 <span className="flex gap-1">
@@ -265,7 +267,6 @@ export default function PersonalAI({ userName }: { userName: string }) {
                 </div>
               </div>
             )}
-            <div ref={bottomRef} />
           </div>
 
           {/* Input */}
