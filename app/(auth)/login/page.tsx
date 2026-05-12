@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/Logo'
 
 // ── Quiz data ──────────────────────────────────────────────────────────────
 const EMOTIONS = ['Тревожно', 'Подавленно', 'Раздражённо', 'Устало', 'Нормально', 'Хорошо']
@@ -220,9 +220,8 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
-          <div className="fade-up flex flex-col items-center gap-3">
-            <Image src="/logo-icon.svg" alt="Metanoia AI" width={64} height={64} unoptimized style={{ borderRadius: '14px' }} />
-            <span className="text-lg font-bold text-teal-600">Metanoia <span className="font-normal">AI</span></span>
+          <div className="fade-up">
+            <Logo size="lg" />
           </div>
 
           <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">

@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
-import { DM_Sans } from 'next/font/google'
+import { DM_Sans, Playfair_Display } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 
 const dmSans = DM_Sans({ variable: '--font-dm-sans', subsets: ['latin'] })
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin'],
+  style: ['italic'],
+  weight: ['700'],
+})
 
 export const metadata: Metadata = {
   title: 'Metanoia AI',
@@ -12,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${dmSans.variable} h-full antialiased`}>
+    <html lang="ru" className={`${dmSans.variable} ${playfair.variable} h-full antialiased`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0d9488" />

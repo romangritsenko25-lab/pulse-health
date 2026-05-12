@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="80" fill="#0d9488"/>
-  <g transform="translate(256, 220)">
-    <ellipse cx="0" cy="-60" rx="70" ry="80" fill="white"/>
-    <path d="M-110 80 Q-110 20 0 20 Q110 20 110 80 L110 160 L-110 160 Z" fill="white"/>
-    <path d="M0 60 C-20 40 -45 45 -45 65 C-45 85 0 110 0 110 C0 110 45 85 45 65 C45 45 20 40 0 60Z" fill="#0d9488"/>
-  </g>
+  <rect width="512" height="512" rx="112" fill="#0d9488"/>
+  <text x="256" y="370" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-style="italic" font-weight="700"
+    font-size="360" fill="white">m</text>
 </svg>

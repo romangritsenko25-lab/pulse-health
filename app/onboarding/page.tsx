@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import { Logo } from '@/components/Logo'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -46,9 +46,8 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12" style={{ background: '#faf9f7' }}>
       {/* Logo */}
-      <div className="flex items-center gap-2 mb-10">
-        <Image src="/logo-icon.svg" alt="Metanoia AI" width={72} height={72} unoptimized style={{ borderRadius: '16px' }} />
-        <span className="font-bold text-teal-600 text-[17px] tracking-tight">Metanoia <span className="font-normal">AI</span></span>
+      <div className="mb-10">
+        <Logo size="lg" />
       </div>
 
       <div className="text-center mb-8">
