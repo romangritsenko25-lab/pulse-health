@@ -55,6 +55,7 @@ export default function SpecialistDashboard() {
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
   const [showColleagueModal, setShowColleagueModal] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
   const [activeTab, setActiveTab] = useState<'clients' | 'earnings'>('clients')
 
   useEffect(() => {
@@ -162,47 +163,68 @@ export default function SpecialistDashboard() {
       <ReferralBanner specialistId={specialistId} referralCode={specialist?.referral_code ?? ''} />
       <div className="max-w-2xl mx-auto px-4 py-8">
 
-        {/* Quick nav */}
-        <div className="flex items-center gap-2 mb-5 flex-wrap">
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-500 text-xs font-medium rounded-lg transition"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Мой дашборд
-          </button>
-          <button
-            onClick={() => router.push('/specialist/register')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-500 text-xs font-medium rounded-lg transition"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z" />
-            </svg>
-            Редактировать профиль
-          </button>
-          <a
-            href="/login"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-500 text-xs font-medium rounded-lg transition"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            Посмотреть лендинг
-          </a>
-        </div>
-
         {/* Header */}
-        <div className="mb-6">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
-          <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
-          {specialist && (
-            <p className="text-slate-500 text-sm mt-0.5">
-              {specialist.name} · {specialist.specialty}
-            </p>
-          )}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+            <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
+            {specialist && (
+              <p className="text-slate-500 text-sm mt-0.5">
+                {specialist.name} · {specialist.specialty}
+              </p>
+            )}
+          </div>
+
+          {/* Burger menu */}
+          <div className="relative shrink-0 ml-3">
+            <button
+              onClick={() => setShowMenu((v) => !v)}
+              className="p-2 rounded-xl border border-slate-200 bg-white hover:border-teal-400 text-slate-500 hover:text-teal-600 transition"
+              aria-label="Меню"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            {showMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
+                <div className="absolute right-0 top-full mt-1 z-50 bg-white border border-slate-100 rounded-2xl shadow-lg py-1 min-w-[210px]">
+                  <button
+                    onClick={() => { setShowMenu(false); router.push('/dashboard') }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left"
+                  >
+                    <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Мой дашборд
+                  </button>
+                  <button
+                    onClick={() => { setShowMenu(false); router.push('/specialist/register') }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left"
+                  >
+                    <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z" />
+                    </svg>
+                    Редактировать профиль
+                  </button>
+                  <div className="my-1 border-t border-slate-50" />
+                  <a
+                    href="/login"
+                    onClick={() => setShowMenu(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
+                  >
+                    <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Посмотреть лендинг
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Tabs */}
