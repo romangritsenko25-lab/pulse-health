@@ -631,8 +631,8 @@ export default function CabinetClient() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-6">
+      <div className={`flex-1 overflow-x-hidden ${tab === 'ai' ? 'overflow-hidden flex flex-col min-h-0' : 'overflow-y-auto'}`}>
+        <div className={`max-w-2xl w-full mx-auto px-4 ${tab === 'ai' ? 'flex flex-col flex-1 min-h-0' : 'py-6 pb-24 md:pb-6'}`}>
 
         {/* ── СЕГОДНЯ ── */}
         {tab === 'today' && (
@@ -765,7 +765,7 @@ export default function CabinetClient() {
                 <a href="/checkin" className="mt-3 inline-flex text-teal-600 text-sm font-semibold hover:text-teal-500">Пройти чек-ин →</a>
               </div>
             ) : (
-              <div className="bg-white border border-slate-100 rounded-2xl p-5">
+              <div className="bg-white border border-slate-100 rounded-2xl p-5 min-w-0 overflow-hidden">
                 <p className="text-sm font-semibold text-slate-700 mb-4">Самочувствие (30 дней)</p>
                 <ResponsiveContainer width="100%" height={200}>
                   <LineChart data={chartData}>

@@ -29,11 +29,17 @@
 }
 
 /* ── Base ──────────────────────────────────────────────────────────────────── */
+html {
+  overflow-x: hidden;
+}
+
 body {
   background: var(--bg-page);
   color: var(--text-primary);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */
