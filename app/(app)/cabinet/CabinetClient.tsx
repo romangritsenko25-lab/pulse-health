@@ -92,7 +92,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-4 sm:pb-0">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-20 sm:pb-0">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col gap-5 p-6">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-slate-800 text-lg">Новая запись</h2>
