@@ -162,37 +162,47 @@ export default function SpecialistDashboard() {
       <ReferralBanner specialistId={specialistId} referralCode={specialist?.referral_code ?? ''} />
       <div className="max-w-2xl mx-auto px-4 py-8">
 
+        {/* Quick nav */}
+        <div className="flex items-center gap-2 mb-5 flex-wrap">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-500 text-xs font-medium rounded-lg transition"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Мой дашборд
+          </button>
+          <button
+            onClick={() => router.push('/specialist/register')}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-500 text-xs font-medium rounded-lg transition"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z" />
+            </svg>
+            Редактировать профиль
+          </button>
+          <a
+            href="/login"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-teal-400 hover:text-teal-600 text-slate-500 text-xs font-medium rounded-lg transition"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Посмотреть лендинг
+          </a>
+        </div>
+
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
-            <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
-            {specialist && (
-              <p className="text-slate-500 text-sm mt-0.5">
-                {specialist.name} · {specialist.specialty}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="text-slate-400 hover:text-slate-600 text-xs transition"
-            >
-              Мой дашборд →
-            </button>
-            <button
-              onClick={() => router.push('/specialist/register')}
-              className="text-slate-400 hover:text-slate-600 text-xs transition"
-            >
-              Редактировать профиль
-            </button>
-            <a
-              href="/login"
-              className="text-slate-400 hover:text-slate-600 text-xs transition"
-            >
-              Посмотреть лендинг →
-            </a>
-          </div>
+        <div className="mb-6">
+          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+          <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
+          {specialist && (
+            <p className="text-slate-500 text-sm mt-0.5">
+              {specialist.name} · {specialist.specialty}
+            </p>
+          )}
         </div>
 
         {/* Tabs */}
