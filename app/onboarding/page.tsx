@@ -69,7 +69,7 @@ export default function OnboardingPage() {
         .ob-card:hover .ob-svg-wrap { transform: scale(1.06); }
         .ob-illo {
           background: #f0fdfa;
-          height: 210px;
+          height: 190px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -117,31 +117,31 @@ export default function OnboardingPage() {
           >
             <div className="ob-illo">
               <div className="ob-svg-wrap" style={{ opacity: 0, animation: 'fade-up 0.6s ease forwards, float 4s ease-in-out 0.6s infinite' }}>
-                <svg width="140" height="170" viewBox="0 0 140 170" fill="none">
-                  <ellipse cx="70" cy="158" rx="44" ry="8" fill="#ccfbf1"/>
-                  <rect x="52" y="112" width="14" height="44" rx="7" fill="#818cf8"/>
-                  <rect x="74" y="112" width="14" height="44" rx="7" fill="#818cf8"/>
-                  <rect x="40" y="74" width="60" height="44" rx="18" fill="#a5b4fc"/>
-                  <rect x="14" y="82" width="28" height="13" rx="6.5" fill="#F5C5A3"/>
-                  <rect x="98" y="82" width="28" height="13" rx="6.5" fill="#F5C5A3"/>
-                  <rect x="120" y="72" width="16" height="24" rx="4" fill="white" stroke="#e2e8f0" strokeWidth="1.5"/>
-                  <rect x="123" y="77" width="10" height="2" rx="1" fill="#0d9488" fillOpacity="0.5"/>
-                  <rect x="123" y="81" width="10" height="2" rx="1" fill="#0d9488" fillOpacity="0.5"/>
-                  <rect x="123" y="85" width="7" height="2" rx="1" fill="#0d9488" fillOpacity="0.5"/>
-                  <rect x="63" y="58" width="14" height="18" rx="7" fill="#F5C5A3"/>
-                  <circle cx="70" cy="44" r="22" fill="#F5C5A3"/>
-                  <path d="M48 38 Q48 18 70 18 Q92 18 92 38 Q89 26 81 21 Q70 16 59 21 Q51 26 48 38Z" fill="#5C3D2E"/>
-                  <ellipse cx="48" cy="45" rx="4" ry="5.5" fill="#F0B090"/>
-                  <ellipse cx="92" cy="45" rx="4" ry="5.5" fill="#F0B090"/>
-                  <circle cx="62" cy="43" r="3.5" fill="#3D2B1F"/>
-                  <circle cx="78" cy="43" r="3.5" fill="#3D2B1F"/>
-                  <circle cx="63" cy="42" r="1.2" fill="white"/>
-                  <circle cx="79" cy="42" r="1.2" fill="white"/>
-                  <path d="M62 53 Q70 60 78 53" stroke="#5C3D2E" strokeWidth="2" strokeLinecap="round" fill="none"/>
-                  <circle cx="100" cy="16" r="15" fill="white" stroke="#0d9488" strokeWidth="1.8"/>
-                  <path d="M93 13.5 C93 10.5 96 8.5 100 11 C104 8.5 107 10.5 107 13.5 C107 17 100 22 100 22 C100 22 93 17 93 13.5Z" fill="#0d9488"/>
-                  <circle cx="88" cy="27" r="4" fill="white" stroke="#0d9488" strokeWidth="1.5"/>
-                  <circle cx="82" cy="34" r="2.5" fill="white" stroke="#0d9488" strokeWidth="1.2"/>
+                <svg width="130" height="160" viewBox="0 0 130 160" fill="none">
+                  <ellipse cx="65" cy="145" rx="40" ry="7" fill="#ccfbf1"/>
+                  <ellipse cx="52" cy="130" rx="18" ry="9" fill="#0d9488" opacity="0.8"/>
+                  <ellipse cx="78" cy="130" rx="18" ry="9" fill="#0d9488" opacity="0.6"/>
+                  <rect x="44" y="90" width="42" height="42" rx="14" fill="#0d9488"/>
+                  <path d="M44 105 Q32 110 34 122" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                  <path d="M86 105 Q98 110 96 122" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                  <rect x="36" y="116" width="32" height="22" rx="4" fill="white"/>
+                  <rect x="36" y="116" width="3" height="22" rx="1.5" fill="#ccfbf1"/>
+                  <line x1="43" y1="123" x2="63" y2="123" stroke="#0d9488" strokeWidth="1.2" opacity="0.35"/>
+                  <line x1="43" y1="127" x2="63" y2="127" stroke="#0d9488" strokeWidth="1.2" opacity="0.35"/>
+                  <line x1="43" y1="131" x2="57" y2="131" stroke="#0d9488" strokeWidth="1.2" opacity="0.35"/>
+                  <rect x="91" y="114" width="3.5" height="16" rx="1.8" fill="#5eead4" transform="rotate(-20 91 114)"/>
+                  <rect x="59" y="73" width="12" height="18" rx="6" fill="#F5C5A3"/>
+                  <circle cx="65" cy="60" r="19" fill="#F5C5A3"/>
+                  <path d="M46 56 Q46 38 65 38 Q84 38 84 56 Q84 48 78 44 Q65 36 52 44 Q46 48 46 56Z" fill="#5C3D2E"/>
+                  <ellipse cx="46" cy="61" rx="3.5" ry="5" fill="#F0B090"/>
+                  <ellipse cx="84" cy="61" rx="3.5" ry="5" fill="#F0B090"/>
+                  <path d="M56 59 Q58.5 56 61 59" stroke="#5C3D2E" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+                  <path d="M69 59 Q71.5 56 74 59" stroke="#5C3D2E" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+                  <path d="M58 67 Q65 73 72 67" stroke="#5C3D2E" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                  <circle cx="90" cy="40" r="13" fill="white" stroke="#0d9488" strokeWidth="1.5"/>
+                  <path d="M83 37 C83 34 86 32 90 34 C94 32 97 34 97 37 C97 40 90 44.5 90 44.5 C90 44.5 83 40 83 37Z" fill="#0d9488" opacity="0.65"/>
+                  <circle cx="80" cy="52" r="3.5" fill="white" stroke="#0d9488" strokeWidth="1.2"/>
+                  <circle cx="76" cy="59" r="2.2" fill="white" stroke="#0d9488" strokeWidth="1"/>
                 </svg>
               </div>
             </div>
@@ -167,41 +167,41 @@ export default function OnboardingPage() {
           >
             <div className="ob-illo">
               <div className="ob-svg-wrap" style={{ opacity: 0, animation: 'fade-up 0.6s ease 0.15s forwards, float 4s ease-in-out 0.75s infinite' }}>
-                <svg width="140" height="170" viewBox="0 0 140 170" fill="none">
-                  <ellipse cx="70" cy="158" rx="44" ry="8" fill="#ccfbf1"/>
-                  <rect x="52" y="120" width="14" height="38" rx="7" fill="#1e3a5f" fillOpacity="0.85"/>
-                  <rect x="74" y="120" width="14" height="38" rx="7" fill="#1e3a5f" fillOpacity="0.85"/>
-                  <rect x="34" y="76" width="72" height="48" rx="18" fill="white" stroke="#e2e8f0" strokeWidth="2"/>
-                  <rect x="50" y="76" width="40" height="48" rx="8" fill="#0d9488"/>
-                  <path d="M58 76 L50 112 L70 100 L90 112 L82 76Z" fill="white"/>
-                  <rect x="10" y="86" width="26" height="13" rx="6.5" fill="#F5C5A3"/>
-                  <path d="M34 96 Q22 108 24 122 Q26 130 32 130" stroke="#0d9488" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-                  <circle cx="32" cy="131" r="5" fill="none" stroke="#0d9488" strokeWidth="2.2"/>
-                  <rect x="104" y="86" width="26" height="13" rx="6.5" fill="#F5C5A3"/>
-                  <rect x="108" y="98" width="22" height="30" rx="4" fill="white" stroke="#e2e8f0" strokeWidth="1.5"/>
-                  <rect x="114" y="93" width="10" height="8" rx="4" fill="#5eead4"/>
-                  <line x1="111" y1="110" x2="127" y2="110" stroke="#0d9488" strokeWidth="1.2" strokeOpacity="0.4"/>
-                  <line x1="111" y1="115" x2="127" y2="115" stroke="#0d9488" strokeWidth="1.2" strokeOpacity="0.4"/>
-                  <line x1="111" y1="120" x2="122" y2="120" stroke="#0d9488" strokeWidth="1.2" strokeOpacity="0.4"/>
-                  <path d="M112 124 L116 128 L124 121" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                  <rect x="56" y="84" width="20" height="13" rx="4" fill="#f0fdfa" stroke="#0d9488" strokeWidth="0.8"/>
-                  <line x1="59" y1="88" x2="73" y2="88" stroke="#0d9488" strokeWidth="1" strokeOpacity="0.5"/>
-                  <line x1="59" y1="92" x2="70" y2="92" stroke="#0d9488" strokeWidth="1" strokeOpacity="0.5"/>
-                  <rect x="63" y="58" width="14" height="20" rx="7" fill="#F5C5A3"/>
-                  <circle cx="70" cy="44" r="22" fill="#F5C5A3"/>
-                  <path d="M48 37 Q48 18 70 18 Q92 18 92 37 Q89 26 82 22 Q70 16 58 22 Q51 26 48 37Z" fill="#3D2B1F"/>
-                  <path d="M48 37 Q46 44 48 56" stroke="#3D2B1F" strokeWidth="6" strokeLinecap="round"/>
-                  <path d="M92 37 Q94 44 92 56" stroke="#3D2B1F" strokeWidth="6" strokeLinecap="round"/>
-                  <ellipse cx="48" cy="45" rx="4" ry="5.5" fill="#F0B090"/>
-                  <ellipse cx="92" cy="45" rx="4" ry="5.5" fill="#F0B090"/>
-                  <rect x="55" y="40" width="14" height="10" rx="4.5" fill="none" stroke="#5C3D2E" strokeWidth="1.8"/>
-                  <rect x="71" y="40" width="14" height="10" rx="4.5" fill="none" stroke="#5C3D2E" strokeWidth="1.8"/>
-                  <line x1="69" y1="45" x2="71" y2="45" stroke="#5C3D2E" strokeWidth="1.8"/>
-                  <line x1="48" y1="45" x2="55" y2="45" stroke="#5C3D2E" strokeWidth="1.8"/>
-                  <line x1="85" y1="45" x2="92" y2="45" stroke="#5C3D2E" strokeWidth="1.8"/>
-                  <circle cx="62" cy="46" r="3" fill="#3D2B1F"/>
-                  <circle cx="78" cy="46" r="3" fill="#3D2B1F"/>
-                  <path d="M62 56 Q70 63 78 56" stroke="#5C3D2E" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                <svg width="130" height="160" viewBox="0 0 130 160" fill="none">
+                  <ellipse cx="65" cy="145" rx="40" ry="7" fill="#ccfbf1"/>
+                  <rect x="50" y="120" width="14" height="26" rx="7" fill="#1e3a5f" opacity="0.8"/>
+                  <rect x="66" y="120" width="14" height="26" rx="7" fill="#1e3a5f" opacity="0.8"/>
+                  <rect x="38" y="82" width="54" height="42" rx="14" fill="white" stroke="#e2e8f0" strokeWidth="1.5"/>
+                  <rect x="50" y="82" width="30" height="42" rx="4" fill="#0d9488"/>
+                  <path d="M56 82 L50 110 L65 100 L80 110 L74 82" fill="white"/>
+                  <path d="M38 95 Q24 102 26 118" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                  <path d="M92 95 Q106 100 104 116" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                  <rect x="96" y="104" width="20" height="26" rx="3" fill="white" stroke="#e2e8f0" strokeWidth="1"/>
+                  <rect x="101" y="100" width="10" height="7" rx="3.5" fill="#5eead4"/>
+                  <line x1="99" y1="113" x2="113" y2="113" stroke="#0d9488" strokeWidth="1.1" opacity="0.4"/>
+                  <line x1="99" y1="117" x2="113" y2="117" stroke="#0d9488" strokeWidth="1.1" opacity="0.4"/>
+                  <line x1="99" y1="121" x2="110" y2="121" stroke="#0d9488" strokeWidth="1.1" opacity="0.4"/>
+                  <path d="M100 125 L103 128.5 L109 122" stroke="#0d9488" strokeWidth="1.4" strokeLinecap="round" fill="none"/>
+                  <path d="M42 100 Q34 110 36 120 Q38 126 44 126" stroke="#0d9488" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
+                  <circle cx="44" cy="127" r="4" fill="none" stroke="#0d9488" strokeWidth="2"/>
+                  <rect x="56" y="90" width="18" height="12" rx="3" fill="#f0fdfa" stroke="#0d9488" strokeWidth="0.8"/>
+                  <line x1="59" y1="94" x2="71" y2="94" stroke="#0d9488" strokeWidth="1" opacity="0.5"/>
+                  <line x1="59" y1="97" x2="68" y2="97" stroke="#0d9488" strokeWidth="1" opacity="0.5"/>
+                  <rect x="59" y="69" width="12" height="14" rx="6" fill="#F5C5A3"/>
+                  <circle cx="65" cy="56" r="19" fill="#F5C5A3"/>
+                  <path d="M46 50 Q46 34 65 34 Q84 34 84 50 Q82 40 72 36 Q65 33 58 36 Q48 40 46 50Z" fill="#3D2B1F"/>
+                  <path d="M46 50 Q44 56 46 64" stroke="#3D2B1F" strokeWidth="5" strokeLinecap="round"/>
+                  <path d="M84 50 Q86 56 84 64" stroke="#3D2B1F" strokeWidth="5" strokeLinecap="round"/>
+                  <ellipse cx="46" cy="57" rx="3.5" ry="5" fill="#F0B090"/>
+                  <ellipse cx="84" cy="57" rx="3.5" ry="5" fill="#F0B090"/>
+                  <rect x="52" y="51" width="12" height="9" rx="4" fill="none" stroke="#5C3D2E" strokeWidth="1.5"/>
+                  <rect x="66" y="51" width="12" height="9" rx="4" fill="none" stroke="#5C3D2E" strokeWidth="1.5"/>
+                  <line x1="64" y1="55" x2="66" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
+                  <line x1="46" y1="55" x2="52" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
+                  <line x1="78" y1="55" x2="84" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
+                  <circle cx="58" cy="56" r="2.5" fill="#3D2B1F"/>
+                  <circle cx="72" cy="56" r="2.5" fill="#3D2B1F"/>
+                  <path d="M58 65 Q65 71 72 65" stroke="#5C3D2E" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
                 </svg>
               </div>
             </div>
