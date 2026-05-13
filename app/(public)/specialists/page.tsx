@@ -335,33 +335,59 @@ export default function SpecialistsPage() {
       </section>
 
       {/* Join as specialist */}
-      <section className="py-16 px-4 bg-teal-600">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-teal-200 text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Вы психолог? Присоединяйтесь к платформе
-          </h2>
-          <p className="text-teal-100 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
-            Получайте клиентов через реферальную ссылку, зарабатывайте до 30% от подписок. Вывод от $30 или зачёт в подписку.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            {[
-              { icon: '🔗', text: 'Личная реферальная ссылка' },
-              { icon: '💰', text: 'До 30% от подписок клиентов' },
-              { icon: '💳', text: 'Вывод от $30 или в подписку' },
-            ].map((item) => (
-              <div key={item.text} className="flex items-center gap-2 text-white text-sm">
-                <span>{item.icon}</span>
-                <span>{item.text}</span>
-              </div>
-            ))}
+      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-10">
+            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-3">Для специалистов</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl sm:text-3xl font-bold mb-3">
+              Вы психолог или терапевт?
+            </h2>
+            <p style={{ color: '#64748b' }} className="text-sm leading-relaxed max-w-md mx-auto">
+              Место где вас найдут те, кто уже готов работать
+            </p>
           </div>
-          <a
-            href="/specialist/register"
-            className="inline-flex items-center px-6 py-3.5 bg-white hover:bg-teal-50 text-teal-600 font-bold rounded-2xl transition text-sm shadow-lg shadow-teal-800/20"
-          >
-            Зарегистрироваться как специалист →
-          </a>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+            <div style={{ background: '#ffffff', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5 flex flex-col gap-3">
+              <div style={{ background: '#f0fdfa', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
+                <span className="text-2xl">✅</span>
+              </div>
+              <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">Подготовленные клиенты</p>
+              <p style={{ color: '#64748b' }} className="text-sm leading-relaxed">
+                Клиент приходит с готовым PDF-анализом своего состояния. Первая сессия сразу по делу — без 30 минут сбора анамнеза.
+              </p>
+            </div>
+
+            <div style={{ background: '#ffffff', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5 flex flex-col gap-3">
+              <div style={{ background: '#f0fdfa', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
+                <span className="text-2xl">📈</span>
+              </div>
+              <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">Динамика между сессиями</p>
+              <p style={{ color: '#64748b' }} className="text-sm leading-relaxed">
+                Видите как меняется состояние клиента между встречами. Журнал, чек-ины, паттерны — всё в одном дашборде.
+              </p>
+            </div>
+
+            <div style={{ background: '#ffffff', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5 flex flex-col gap-3">
+              <div style={{ background: '#f0fdfa', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
+                <span className="text-2xl">🛡️</span>
+              </div>
+              <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">Профессиональный инструмент</p>
+              <p style={{ color: '#64748b' }} className="text-sm leading-relaxed">
+                Брендированный PDF с вашим именем. Реферальная ссылка для приглашения клиентов. Рейтинг среди коллег на платформе.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <a
+              href="/specialist/register"
+              style={{ background: '#0d9488' }}
+              className="inline-flex items-center px-8 py-3.5 hover:opacity-90 text-white font-bold rounded-2xl transition text-sm shadow-lg"
+            >
+              Присоединиться как специалист →
+            </a>
+          </div>
         </div>
       </section>
     </div>
