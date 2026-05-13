@@ -102,49 +102,6 @@ const BOOKS = [
   },
 ]
 
-const VIDEOS = [
-  {
-    id: '1',
-    title: 'Как справляться с тревожностью: техники из КПТ',
-    channel: 'Психология для жизни',
-    description: 'Объяснение механизмов тревоги и практические упражнения когнитивно-поведенческой терапии для ежедневного применения.',
-    videoUrl: 'https://www.youtube.com/results?search_query=тревожность+кпт+техники',
-    category: 'anxiety',
-  },
-  {
-    id: '2',
-    title: 'Первая сессия у психолога: чего ожидать',
-    channel: 'Metanoia AI',
-    description: 'Развенчиваем мифы о психотерапии и объясняем, как проходит первая встреча со специалистом и как к ней подготовиться.',
-    videoUrl: 'https://www.youtube.com/results?search_query=первая+сессия+психолог+что+ожидать',
-    category: 'therapy',
-  },
-  {
-    id: '3',
-    title: 'Что такое КПТ: когнитивно-поведенческая терапия за 10 минут',
-    channel: 'Наука о разуме',
-    description: 'Простое и понятное объяснение КПТ: как мысли влияют на эмоции и поведение, и почему это один из самых исследованных методов терапии.',
-    videoUrl: 'https://www.youtube.com/results?search_query=когнитивно+поведенческая+терапия+объяснение',
-    category: 'cbt',
-  },
-  {
-    id: '4',
-    title: 'Как работает психотерапия: нейробиология изменений',
-    channel: 'Психотерапия на практике',
-    description: 'Что происходит в мозге во время терапии, почему для изменений нужно время и как разговор со специалистом меняет нейронные связи.',
-    videoUrl: 'https://www.youtube.com/results?search_query=как+работает+психотерапия+нейробиология',
-    category: 'therapy',
-  },
-  {
-    id: '5',
-    title: 'Психосоматика: когда тело говорит за эмоции',
-    channel: 'Тело и разум',
-    description: 'Связь между психологическим состоянием и физическими симптомами. Как стресс и подавленные эмоции проявляются в теле.',
-    videoUrl: 'https://www.youtube.com/results?search_query=психосоматика+тело+эмоции',
-    category: 'psychosomatics',
-  },
-]
-
 const ARTICLES = [
   {
     id: '1',
@@ -179,6 +136,16 @@ const ARTICLES = [
 type Tab = 'books' | 'videos' | 'articles'
 type Book = typeof BOOKS[0]
 
+type Video = {
+  id: string
+  title: string
+  channel: string
+  description: string | null
+  youtube_id: string
+  category: string
+  duration: string | null
+}
+
 type Article = {
   id: string
   title: string
@@ -208,7 +175,9 @@ export default function MaterialsPage() {
   const [tab, setTab] = useState<Tab>('books')
   const [selected, setSelected] = useState<Book | null>(null)
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null)
   const [dbArticles, setDbArticles] = useState<Article[]>([])
+  const [dbVideos, setDbVideos] = useState<Video[]>([])
 
   useEffect(() => {
     const supabase = createClient()
@@ -218,11 +187,16 @@ export default function MaterialsPage() {
       .eq('published', true)
       .order('created_at')
       .then(({ data }) => { if (data) setDbArticles(data) })
+    supabase
+      .from('videos')
+      .select('*')
+      .order('created_at')
+      .then(({ data }) => { if (data) setDbVideos(data) })
   }, [])
 
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: 'books', label: 'Книги', count: BOOKS.length },
-    { id: 'videos', label: 'Видео и подкасты', count: VIDEOS.length },
+    { id: 'videos', label: 'Видео и подкасты', count: dbVideos.length },
     { id: 'articles', label: 'Статьи', count: dbArticles.length || ARTICLES.length },
   ]
 
@@ -299,35 +273,33 @@ export default function MaterialsPage() {
           {/* VIDEOS */}
           {tab === 'videos' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {VIDEOS.map((video) => (
+              {dbVideos.map((video) => (
                 <div
                   key={video.id}
-                  className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-teal-200 hover:shadow-sm transition flex flex-col"
+                  className="bg-white rounded-2xl overflow-hidden border border-slate-100 cursor-pointer hover:shadow-md transition"
+                  onClick={() => setSelectedVideo(video)}
                 >
-                  {/* Thumbnail placeholder */}
-                  <div className="bg-slate-100 aspect-video flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-2 text-slate-400">
-                      <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-                      </svg>
-                      <span className="text-xs">Видео</span>
+                  <div className="relative aspect-video bg-slate-900">
+                    <img
+                      src={`https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`}
+                      alt={video.title}
+                      className="w-full h-full object-cover opacity-80"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-14 h-14 bg-teal-600 rounded-full flex items-center justify-center shadow-lg">
+                        <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
                     </div>
+                    <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                      {video.duration}
+                    </span>
                   </div>
-                  <div className="p-4 flex flex-col gap-2 flex-1">
-                    <p className="font-semibold text-slate-800 text-sm leading-snug">{video.title}</p>
-                    <p className="text-teal-600 text-xs">{video.channel}</p>
-                    <p className="text-slate-400 text-xs leading-relaxed flex-1">{video.description}</p>
-                    <a
-                      href={video.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 flex items-center gap-2 px-3 py-2 bg-teal-50 hover:bg-teal-100 text-teal-600 text-xs font-semibold rounded-xl transition"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-                      </svg>
-                      Смотреть
-                    </a>
+                  <div className="p-4">
+                    <p className="text-xs text-teal-600 font-medium mb-1">{video.channel}</p>
+                    <h3 className="text-sm font-semibold text-slate-900 leading-snug mb-1">{video.title}</h3>
+                    <p className="text-xs text-slate-500 line-clamp-2">{video.description}</p>
                   </div>
                 </div>
               ))}
@@ -352,16 +324,22 @@ export default function MaterialsPage() {
                   </div>
                   <p className="font-semibold text-slate-800 text-sm mb-2 leading-snug">{article.title}</p>
                   <p className="text-slate-400 text-sm leading-relaxed">{article.excerpt}</p>
-                  {'content' in article && article.content ? (
-                    <button
-                      onClick={() => setSelectedArticle(article as Article)}
-                      className="text-teal-600 text-xs font-semibold mt-3 hover:text-teal-500 transition"
-                    >
-                      Читать →
-                    </button>
-                  ) : (
-                    <p className="text-teal-600 text-xs font-semibold mt-3">Читать статью →</p>
-                  )}
+                  <button
+                    onClick={() => setSelectedArticle({
+                      id: article.id,
+                      title: article.title,
+                      slug: 'slug' in article ? (article as Article).slug : '',
+                      excerpt: article.excerpt ?? null,
+                      content: 'content' in article ? (article as Article).content : null,
+                      category: article.category,
+                      reading_time: 'reading_time' in article
+                        ? (article as Article).reading_time
+                        : parseInt(String((article as typeof ARTICLES[0]).readTime)),
+                    })}
+                    className="text-teal-600 text-xs font-semibold mt-3 hover:text-teal-500 transition"
+                  >
+                    Читать →
+                  </button>
                 </div>
               ))}
             </div>
@@ -398,32 +376,36 @@ export default function MaterialsPage() {
                 {selectedArticle.excerpt}
               </p>
 
-              <div className="prose prose-slate max-w-none">
-                {(selectedArticle.content ?? '').split('\n').map((line, i) => {
-                  if (line.startsWith('## ')) {
+              {selectedArticle.content ? (
+                <div className="prose prose-slate max-w-none">
+                  {selectedArticle.content.split('\n').map((line, i) => {
+                    if (line.startsWith('## ')) {
+                      return (
+                        <h3 key={i} className="text-lg font-bold text-slate-900 mt-6 mb-3">
+                          {line.replace('## ', '')}
+                        </h3>
+                      )
+                    }
+                    if (line.startsWith('**') && line.endsWith('**')) {
+                      return (
+                        <p key={i} className="font-semibold text-slate-800 mt-3 mb-1">
+                          {line.replace(/\*\*/g, '')}
+                        </p>
+                      )
+                    }
+                    if (line.trim() === '') {
+                      return <br key={i} />
+                    }
                     return (
-                      <h3 key={i} className="text-lg font-bold text-slate-900 mt-6 mb-3">
-                        {line.replace('## ', '')}
-                      </h3>
-                    )
-                  }
-                  if (line.startsWith('**') && line.endsWith('**')) {
-                    return (
-                      <p key={i} className="font-semibold text-slate-800 mt-3 mb-1">
+                      <p key={i} className="text-slate-600 leading-relaxed mb-2">
                         {line.replace(/\*\*/g, '')}
                       </p>
                     )
-                  }
-                  if (line.trim() === '') {
-                    return <br key={i} />
-                  }
-                  return (
-                    <p key={i} className="text-slate-600 leading-relaxed mb-2">
-                      {line.replace(/\*\*/g, '')}
-                    </p>
-                  )
-                })}
-              </div>
+                  })}
+                </div>
+              ) : (
+                <p className="text-slate-600 leading-relaxed">{selectedArticle.excerpt}</p>
+              )}
 
               <div className="mt-8 pt-6 border-t border-slate-100">
                 <p className="text-sm text-slate-500 mb-4">
@@ -451,7 +433,6 @@ export default function MaterialsPage() {
             className="max-w-lg w-full bg-white rounded-2xl p-6 overflow-y-auto max-h-[90vh] relative"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close button */}
             <button
               onClick={() => setSelected(null)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition text-xl leading-none"
@@ -460,7 +441,6 @@ export default function MaterialsPage() {
               ×
             </button>
 
-            {/* Cover + title + author */}
             <div className="flex gap-4 mb-5">
               <div className="w-24 flex-shrink-0">
                 <BookCover title={selected.title} coverUrl={selected.cover_url} />
@@ -472,13 +452,11 @@ export default function MaterialsPage() {
               </div>
             </div>
 
-            {/* Summary */}
             <div className="mb-4">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">О чём книга</p>
               <p className="text-slate-700 text-sm leading-relaxed">{selected.summary}</p>
             </div>
 
-            {/* Insights */}
             <div className="mb-6">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Главные идеи</p>
               <ul className="flex flex-col gap-2">
@@ -490,7 +468,6 @@ export default function MaterialsPage() {
               </ul>
             </div>
 
-            {/* Buy button */}
             <a
               href={selected.affiliateUrl}
               target="_blank"
@@ -499,6 +476,41 @@ export default function MaterialsPage() {
             >
               Купить книгу →
             </a>
+          </div>
+        </div>
+      )}
+
+      {/* Video Modal */}
+      {selectedVideo && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedVideo(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-2xl w-full overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center p-4 border-b border-slate-100">
+              <div>
+                <p className="text-xs text-teal-600 font-medium">{selectedVideo.channel}</p>
+                <h3 className="font-semibold text-slate-900">{selectedVideo.title}</h3>
+              </div>
+              <button
+                onClick={() => setSelectedVideo(null)}
+                className="text-slate-400 hover:text-slate-600 text-2xl w-8 h-8 flex items-center justify-center flex-shrink-0"
+              >×</button>
+            </div>
+            <div className="aspect-video bg-slate-900">
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedVideo.youtube_id}?autoplay=1`}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <div className="p-4">
+              <p className="text-sm text-slate-600 leading-relaxed">{selectedVideo.description}</p>
+            </div>
           </div>
         </div>
       )}
