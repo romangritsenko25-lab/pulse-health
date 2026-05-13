@@ -10,6 +10,7 @@ interface SpecialistData {
   bio: string | null
   referral_code: string
   client_count: number
+  is_demo?: boolean
 }
 
 type RankInfo = {
@@ -93,7 +94,7 @@ function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) 
       <div className="flex items-center justify-between">
         <span className="text-xs text-slate-400">{pluralClients(sp.client_count)}</span>
         <a
-          href={`/join/${sp.referral_code}`}
+          href={sp.is_demo ? '/login' : `/join/${sp.referral_code}`}
           className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold rounded-xl transition"
         >
           Записаться
