@@ -83,52 +83,27 @@ export default function OnboardingPage() {
               style={{ opacity: 0, animation: 'fade-up 0.6s ease forwards, float 4s ease-in-out 0.6s infinite' }}
             >
               <svg width="130" height="160" viewBox="0 0 130 160" fill="none">
-                {/* Background */}
-                <circle cx="65" cy="80" r="68" fill="#f0fdfa"/>
-                {/* Shadow */}
-                <ellipse cx="65" cy="155" rx="25" ry="5" fill="#ccfbf1"/>
-                {/* Shoes */}
-                <ellipse cx="57" cy="150" rx="10" ry="5" fill="#5C3D2E"/>
-                <ellipse cx="75" cy="150" rx="10" ry="5" fill="#5C3D2E"/>
-                {/* Legs */}
-                <rect x="50" y="115" width="13" height="37" rx="5" fill="#818cf8"/>
-                <rect x="67" y="115" width="13" height="37" rx="5" fill="#818cf8"/>
-                {/* Body */}
-                <rect x="44" y="80" width="42" height="38" rx="10" fill="#a5b4fc"/>
-                {/* Left arm */}
-                <rect x="31" y="82" width="13" height="30" rx="6" fill="#a5b4fc"/>
-                {/* Right arm (raised to hold phone) */}
-                <rect x="86" y="82" width="13" height="26" rx="6" fill="#a5b4fc"/>
-                {/* Left hand */}
-                <circle cx="37" cy="114" r="6" fill="#F5C5A3"/>
-                {/* Right hand */}
-                <circle cx="92" cy="110" r="6" fill="#F5C5A3"/>
-                {/* Phone */}
-                <rect x="87" y="96" width="12" height="20" rx="2.5" fill="#1e293b"/>
-                <rect x="88.5" y="98" width="9" height="14" rx="1.5" fill="#7dd3fc"/>
-                {/* Neck */}
-                <rect x="59" y="72" width="12" height="12" rx="4" fill="#F5C5A3"/>
-                {/* Head */}
-                <circle cx="65" cy="57" r="19" fill="#F5C5A3"/>
-                {/* Ears */}
-                <circle cx="46" cy="59" r="5" fill="#F0B090"/>
-                <circle cx="84" cy="59" r="5" fill="#F0B090"/>
-                {/* Hair */}
-                <path d="M46 57 C46 34 84 34 84 57 L80 51 Q65 37 50 51Z" fill="#5C3D2E"/>
-                {/* Eyes */}
-                <circle cx="59" cy="57" r="2" fill="#3D2B1F"/>
-                <circle cx="71" cy="57" r="2" fill="#3D2B1F"/>
-                {/* Smile */}
-                <path d="M60 64 Q65 68 70 64" fill="none" stroke="#3D2B1F" strokeWidth="1.5" strokeLinecap="round"/>
-                {/* Speech bubble tail (drawn before circle) */}
-                <path d="M85 34 L79 46 L91 38Z" fill="white"/>
-                <polyline points="85,34 79,46 91,38" fill="none" stroke="#e2e8f0" strokeWidth="1.5" strokeLinejoin="round"/>
-                {/* Speech bubble */}
-                <circle cx="100" cy="24" r="17" fill="white" stroke="#e2e8f0" strokeWidth="1.5"/>
-                {/* Heart: two circles + triangle */}
-                <circle cx="96" cy="22" r="5" fill="#0d9488"/>
-                <circle cx="104" cy="22" r="5" fill="#0d9488"/>
-                <polygon points="91,26 100,34 109,26" fill="#0d9488"/>
+                <ellipse cx="65" cy="145" rx="40" ry="7" fill="#ccfbf1"/>
+                <rect x="83" y="110" width="12" height="38" rx="6" fill="#6366f1" opacity="0.8"/>
+                <rect x="99" y="110" width="12" height="38" rx="6" fill="#6366f1" opacity="0.8"/>
+                <rect x="74" y="72" width="46" height="42" rx="14" fill="#a5b4fc"/>
+                <path d="M74 85 Q62 92 65 108" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                <path d="M120 85 Q132 92 129 108" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                <rect x="120" y="100" width="14" height="20" rx="3" fill="white" stroke="#e2e8f0" strokeWidth="1"/>
+                <rect x="122" y="104" width="10" height="2" rx="1" fill="#0d9488" opacity="0.4"/>
+                <rect x="122" y="108" width="10" height="2" rx="1" fill="#0d9488" opacity="0.4"/>
+                <rect x="91" y="58" width="12" height="16" rx="6" fill="#F5C5A3"/>
+                <circle cx="97" cy="46" r="18" fill="#F5C5A3"/>
+                <path d="M79 41 Q79 25 97 25 Q115 25 115 41 Q113 32 105 28 Q97 24 89 28 Q81 32 79 41Z" fill="#5C3D2E"/>
+                <ellipse cx="79" cy="47" rx="3" ry="4.5" fill="#F0B090"/>
+                <ellipse cx="115" cy="47" rx="3" ry="4.5" fill="#F0B090"/>
+                <circle cx="91" cy="45" r="2.2" fill="#3D2B1F"/>
+                <circle cx="103" cy="45" r="2.2" fill="#3D2B1F"/>
+                <path d="M90 53 Q97 58 104 53" stroke="#5C3D2E" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                <circle cx="88" cy="40" r="13" fill="white" stroke="#0d9488" strokeWidth="1.5"/>
+                <path d="M83 37 C83 34 86 32 90 34 C94 32 97 34 97 37 C97 40 90 44.5 90 44.5 C90 44.5 83 40 83 37Z" fill="#0d9488" opacity="0.65"/>
+                <circle cx="80" cy="52" r="3.5" fill="white" stroke="#0d9488" strokeWidth="1.2"/>
+                <circle cx="76" cy="59" r="2.2" fill="white" stroke="#0d9488" strokeWidth="1"/>
               </svg>
             </div>
 
@@ -157,60 +132,36 @@ export default function OnboardingPage() {
               style={{ opacity: 0, animation: 'fade-up 0.6s ease 0.15s forwards, float 4s ease-in-out 0.75s infinite' }}
             >
               <svg width="130" height="160" viewBox="0 0 130 160" fill="none">
-                {/* Background */}
-                <circle cx="65" cy="80" r="68" fill="#f0fdfa"/>
-                {/* Shadow */}
-                <ellipse cx="65" cy="155" rx="25" ry="5" fill="#ccfbf1"/>
-                {/* Shoes */}
-                <ellipse cx="57" cy="150" rx="10" ry="5" fill="#3D2B1F"/>
-                <ellipse cx="75" cy="150" rx="10" ry="5" fill="#3D2B1F"/>
-                {/* Legs */}
-                <rect x="50" y="115" width="13" height="37" rx="5" fill="#0d9488"/>
-                <rect x="67" y="115" width="13" height="37" rx="5" fill="#0d9488"/>
-                {/* Underlying clothes */}
-                <rect x="44" y="80" width="42" height="38" rx="10" fill="#0d9488"/>
-                {/* White coat body */}
-                <rect x="40" y="80" width="50" height="42" rx="10" fill="white"/>
-                {/* V-neck opening */}
-                <polygon points="65,82 57,106 65,100 73,106 65,82" fill="#0d9488"/>
-                {/* Left coat arm */}
-                <rect x="27" y="82" width="14" height="30" rx="7" fill="white"/>
-                {/* Right coat arm */}
-                <rect x="89" y="82" width="14" height="30" rx="7" fill="white"/>
-                {/* Stethoscope tube */}
-                <path d="M52 80 Q42 88 38 100 Q36 110 43 116" fill="none" stroke="#0d9488" strokeWidth="3" strokeLinecap="round"/>
-                {/* Stethoscope chest piece */}
-                <circle cx="44" cy="118" r="5" fill="none" stroke="#0d9488" strokeWidth="2.5"/>
-                {/* Clipboard (before hands so hand appears on top) */}
-                <rect x="91" y="86" width="22" height="30" rx="3" fill="#f8f4ee"/>
-                <rect x="94" y="82" width="16" height="8" rx="3" fill="#94a3b8"/>
-                <line x1="94" y1="100" x2="110" y2="100" stroke="#cbd5e1" strokeWidth="1.5"/>
-                <line x1="94" y1="106" x2="110" y2="106" stroke="#cbd5e1" strokeWidth="1.5"/>
-                <line x1="94" y1="112" x2="110" y2="112" stroke="#cbd5e1" strokeWidth="1.5"/>
-                {/* Left hand */}
-                <circle cx="34" cy="114" r="6" fill="#F5C5A3"/>
-                {/* Right hand (gripping clipboard) */}
-                <circle cx="96" cy="114" r="6" fill="#F5C5A3"/>
-                {/* Neck */}
-                <rect x="59" y="72" width="12" height="12" rx="4" fill="#F5C5A3"/>
-                {/* Head */}
-                <circle cx="65" cy="57" r="19" fill="#F5C5A3"/>
-                {/* Ears */}
-                <circle cx="46" cy="59" r="5" fill="#F0B090"/>
-                <circle cx="84" cy="59" r="5" fill="#F0B090"/>
-                {/* Hair (darker) */}
-                <path d="M46 57 C46 34 84 34 84 57 L80 51 Q65 37 50 51Z" fill="#3D2B1F"/>
-                {/* Glasses */}
-                <rect x="51" y="51" width="12" height="8" rx="2.5" fill="none" stroke="#5C3D2E" strokeWidth="1.5"/>
-                <rect x="67" y="51" width="12" height="8" rx="2.5" fill="none" stroke="#5C3D2E" strokeWidth="1.5"/>
-                <line x1="63" y1="55" x2="67" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
-                <line x1="46" y1="55" x2="51" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
-                <line x1="79" y1="55" x2="84" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
-                {/* Eyes */}
-                <circle cx="57" cy="55" r="1.5" fill="#3D2B1F"/>
-                <circle cx="73" cy="55" r="1.5" fill="#3D2B1F"/>
-                {/* Smile */}
-                <path d="M60 64 Q65 67 70 64" fill="none" stroke="#3D2B1F" strokeWidth="1.5" strokeLinecap="round"/>
+                <ellipse cx="65" cy="145" rx="40" ry="7" fill="#ccfbf1"/>
+                <rect x="50" y="120" width="14" height="26" rx="7" fill="#1e3a5f" opacity="0.8"/>
+                <rect x="66" y="120" width="14" height="26" rx="7" fill="#1e3a5f" opacity="0.8"/>
+                <rect x="38" y="82" width="54" height="42" rx="14" fill="white" stroke="#e2e8f0" strokeWidth="1.5"/>
+                <rect x="50" y="82" width="30" height="42" rx="4" fill="#0d9488"/>
+                <path d="M56 82 L50 110 L65 100 L80 110 L74 82" fill="white"/>
+                <path d="M38 95 Q24 102 26 118" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                <path d="M92 95 Q106 100 104 116" stroke="#F5C5A3" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                <rect x="96" y="104" width="20" height="26" rx="3" fill="white" stroke="#e2e8f0" strokeWidth="1"/>
+                <rect x="101" y="100" width="10" height="7" rx="3.5" fill="#5eead4"/>
+                <line x1="99" y1="113" x2="113" y2="113" stroke="#0d9488" strokeWidth="1.1" opacity="0.4"/>
+                <line x1="99" y1="117" x2="113" y2="117" stroke="#0d9488" strokeWidth="1.1" opacity="0.4"/>
+                <line x1="99" y1="121" x2="110" y2="121" stroke="#0d9488" strokeWidth="1.1" opacity="0.4"/>
+                <path d="M40 90 Q32 100 34 112 Q36 118 40 118" stroke="#0d9488" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
+                <circle cx="40" cy="119" r="4" fill="none" stroke="#0d9488" strokeWidth="2"/>
+                <rect x="59" y="69" width="12" height="14" rx="6" fill="#F5C5A3"/>
+                <circle cx="65" cy="56" r="19" fill="#F5C5A3"/>
+                <path d="M46 50 Q46 34 65 34 Q84 34 84 50 Q82 40 72 36 Q65 33 58 36 Q48 40 46 50Z" fill="#3D2B1F"/>
+                <path d="M46 50 Q44 56 46 64" stroke="#3D2B1F" strokeWidth="5" strokeLinecap="round"/>
+                <path d="M84 50 Q86 56 84 64" stroke="#3D2B1F" strokeWidth="5" strokeLinecap="round"/>
+                <ellipse cx="46" cy="57" rx="3.5" ry="5" fill="#F0B090"/>
+                <ellipse cx="84" cy="57" rx="3.5" ry="5" fill="#F0B090"/>
+                <rect x="52" y="51" width="12" height="9" rx="4" fill="none" stroke="#5C3D2E" strokeWidth="1.5"/>
+                <rect x="66" y="51" width="12" height="9" rx="4" fill="none" stroke="#5C3D2E" strokeWidth="1.5"/>
+                <line x1="64" y1="55" x2="66" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
+                <line x1="46" y1="55" x2="52" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
+                <line x1="78" y1="55" x2="84" y2="55" stroke="#5C3D2E" strokeWidth="1.5"/>
+                <circle cx="58" cy="56" r="2.5" fill="#3D2B1F"/>
+                <circle cx="72" cy="56" r="2.5" fill="#3D2B1F"/>
+                <path d="M58 65 Q65 71 72 65" stroke="#5C3D2E" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
               </svg>
             </div>
 
