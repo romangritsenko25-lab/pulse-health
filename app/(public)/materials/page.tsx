@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 const BOOKS = [
   {
@@ -178,6 +179,16 @@ const ARTICLES = [
 type Tab = 'books' | 'videos' | 'articles'
 type Book = typeof BOOKS[0]
 
+type Article = {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  content: string | null
+  category: string
+  reading_time: number
+}
+
 function BookCover({ title, coverUrl }: { title: string; coverUrl?: string | null }) {
   if (coverUrl) {
     return (
@@ -196,11 +207,23 @@ function BookCover({ title, coverUrl }: { title: string; coverUrl?: string | nul
 export default function MaterialsPage() {
   const [tab, setTab] = useState<Tab>('books')
   const [selected, setSelected] = useState<Book | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [dbArticles, setDbArticles] = useState<Article[]>([])
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase
+      .from('articles')
+      .select('id, title, slug, excerpt, content, category, reading_time')
+      .eq('published', true)
+      .order('created_at')
+      .then(({ data }) => { if (data) setDbArticles(data) })
+  }, [])
 
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: 'books', label: 'Книги', count: BOOKS.length },
     { id: 'videos', label: 'Видео и подкасты', count: VIDEOS.length },
-    { id: 'articles', label: 'Статьи', count: ARTICLES.length },
+    { id: 'articles', label: 'Статьи', count: dbArticles.length || ARTICLES.length },
   ]
 
   return (
@@ -314,26 +337,109 @@ export default function MaterialsPage() {
           {/* ARTICLES */}
           {tab === 'articles' && (
             <div className="flex flex-col gap-4 max-w-2xl">
-              {ARTICLES.map((article) => (
+              {(dbArticles.length > 0 ? dbArticles : ARTICLES).map((article) => (
                 <div
                   key={article.id}
-                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-teal-200 hover:shadow-sm transition cursor-pointer"
+                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-teal-200 hover:shadow-sm transition"
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xs bg-teal-50 text-teal-600 font-semibold px-2 py-0.5 rounded-full">
                       {article.category}
                     </span>
-                    <span className="text-slate-300 text-xs">{article.readTime}</span>
+                    <span className="text-slate-300 text-xs">
+                      {'reading_time' in article ? `${article.reading_time} мин` : (article as typeof ARTICLES[0]).readTime}
+                    </span>
                   </div>
                   <p className="font-semibold text-slate-800 text-sm mb-2 leading-snug">{article.title}</p>
                   <p className="text-slate-400 text-sm leading-relaxed">{article.excerpt}</p>
-                  <p className="text-teal-600 text-xs font-semibold mt-3">Читать статью →</p>
+                  {'content' in article && article.content ? (
+                    <button
+                      onClick={() => setSelectedArticle(article as Article)}
+                      className="text-teal-600 text-xs font-semibold mt-3 hover:text-teal-500 transition"
+                    >
+                      Читать →
+                    </button>
+                  ) : (
+                    <p className="text-teal-600 text-xs font-semibold mt-3">Читать статью →</p>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </div>
       </section>
+
+      {/* Article Modal */}
+      {selectedArticle && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedArticle(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center rounded-t-2xl">
+              <span className="text-xs text-teal-600 font-medium uppercase tracking-wide">
+                {selectedArticle.reading_time} мин чтения
+              </span>
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="text-slate-400 hover:text-slate-600 text-2xl leading-none w-8 h-8 flex items-center justify-center"
+              >×</button>
+            </div>
+
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2 leading-tight">
+                {selectedArticle.title}
+              </h2>
+
+              <p className="text-slate-500 mb-6 leading-relaxed">
+                {selectedArticle.excerpt}
+              </p>
+
+              <div className="prose prose-slate max-w-none">
+                {(selectedArticle.content ?? '').split('\n').map((line, i) => {
+                  if (line.startsWith('## ')) {
+                    return (
+                      <h3 key={i} className="text-lg font-bold text-slate-900 mt-6 mb-3">
+                        {line.replace('## ', '')}
+                      </h3>
+                    )
+                  }
+                  if (line.startsWith('**') && line.endsWith('**')) {
+                    return (
+                      <p key={i} className="font-semibold text-slate-800 mt-3 mb-1">
+                        {line.replace(/\*\*/g, '')}
+                      </p>
+                    )
+                  }
+                  if (line.trim() === '') {
+                    return <br key={i} />
+                  }
+                  return (
+                    <p key={i} className="text-slate-600 leading-relaxed mb-2">
+                      {line.replace(/\*\*/g, '')}
+                    </p>
+                  )
+                })}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-slate-100">
+                <p className="text-sm text-slate-500 mb-4">
+                  Хочешь разобраться в своём состоянии перед встречей со специалистом?
+                </p>
+                <a
+                  href="/checkin"
+                  className="block w-full bg-teal-600 hover:bg-teal-500 text-white text-center py-3 rounded-xl font-medium transition"
+                >
+                  Пройти чек-ин за 10 минут →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Book Modal */}
       {selected && (
