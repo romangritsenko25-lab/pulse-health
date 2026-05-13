@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Logo } from '@/components/Logo'
-import HeroDrop from '@/components/HeroDrop'
 
 // ── Quiz data ──────────────────────────────────────────────────────────────
 const EMOTIONS = ['Тревожно', 'Подавленно', 'Раздражённо', 'Устало', 'Нормально', 'Хорошо']
@@ -95,7 +94,6 @@ export default function LoginPage() {
   const [emailLoading, setEmailLoading] = useState(false)
   const [emailError, setEmailError] = useState('')
 
-  const [heroReady, setHeroReady] = useState(false)
   const [authUser, setAuthUser] = useState<{ id: string; email?: string } | null>(null)
 
   const allAnswered = !!(emotion && duration && support)
@@ -167,6 +165,19 @@ export default function LoginPage() {
     <div className="min-h-screen">
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
+        @keyframes pulse-ring {
+          0%   { transform: translate(-50%, -50%) scale(0.95); opacity: 0.12; }
+          50%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.06; }
+          100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.12; }
+        }
+        .pr1 { animation: pulse-ring 6s  ease-in-out infinite; }
+        .pr2 { animation: pulse-ring 8s  ease-in-out infinite; }
+        .pr3 { animation: pulse-ring 10s ease-in-out infinite; }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        .circles-container { animation: fadeIn 1.5s ease-in-out; z-index: 0; }
         @keyframes fade-up {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -183,22 +194,45 @@ export default function LoginPage() {
 
       {/* ── Hero ───────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={{ background: '#faf9f7' }}>
-        <HeroDrop onComplete={() => setHeroReady(true)} />
+        {/* Concentric animated rings */}
+        <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
+          {[
+            { size: 300, cls: 'pr1' },
+            { size: 500, cls: 'pr2' },
+            { size: 700, cls: 'pr3' },
+          ].map(({ size, cls }) => (
+            <div
+              key={size}
+              className={cls}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: size,
+                height: size,
+                borderRadius: '50%',
+                border: '1px solid #0d9488',
+                backgroundColor: 'transparent',
+              }}
+            />
+          ))}
+        </div>
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
-          <div className={heroReady ? 'fade-up' : 'opacity-0'}>
+          <div className="fade-up">
             <Logo size="lg" showMark={false} />
           </div>
 
-          <h1 style={{ color: '#1e3a5f' }} className={`${heroReady ? 'fade-up-d1' : 'opacity-0'} text-3xl sm:text-4xl font-bold leading-tight`}>
+          <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">
             Что-то не так,<br />но сложно объяснить<br />даже себе?
           </h1>
 
-          <p style={{ color: '#64748b' }} className={`${heroReady ? 'fade-up-d2' : 'opacity-0'} text-base leading-relaxed max-w-sm`}>
+          <p style={{ color: '#64748b' }} className="fade-up-d2 text-base leading-relaxed max-w-sm">
             Пройди глубокий AI-опрос и получи структурированный анализ своего состояния. Подготовься к встрече со специалистом за 10 минут.
           </p>
 
-          <div className={`${heroReady ? 'fade-up-d3' : 'opacity-0'} flex flex-col sm:flex-row gap-3 w-full max-w-xs`}>
+          <div className="fade-up-d3 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
             {authUser ? (
               <a
                 href="/cabinet"
@@ -218,7 +252,7 @@ export default function LoginPage() {
             )}
           </div>
 
-          <p style={{ color: '#94a3b8' }} className={`${heroReady ? 'fade-up-d3' : 'opacity-0'} text-xs`}>Без кредитной карты · Бесплатно навсегда для первых опросов</p>
+          <p style={{ color: '#94a3b8' }} className="fade-up-d3 text-xs">Без кредитной карты · Бесплатно навсегда для первых опросов</p>
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-300">
