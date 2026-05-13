@@ -3,6 +3,9 @@
 # Deploy scripts (may contain sensitive data)
 deploy.ps1
 
+# Playwright session (contains cookies, never commit)
+scripts/session.json
+
 # dependencies
 /node_modules
 /.pnp
