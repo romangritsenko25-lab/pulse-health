@@ -20,9 +20,9 @@ const USER_LINKS = [
 ]
 
 const SPECIALIST_LINKS = [
-  { label: 'Дашборд', href: '/specialist/dashboard' },
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
+  { label: 'О нас', href: '/about' },
 ]
 
 export default function NavBar() {
@@ -50,7 +50,7 @@ export default function NavBar() {
 
   const navLinks = role === 'user' ? USER_LINKS : role === 'specialist' ? SPECIALIST_LINKS : PUBLIC_LINKS
   const ctaHref = role === 'user' ? '/cabinet' : role === 'specialist' ? '/specialist/dashboard' : null
-  const ctaLabel = role === 'user' ? 'В кабинет' : role === 'specialist' ? 'Дашборд' : 'Войти'
+  const ctaLabel = role === 'user' || role === 'specialist' ? 'В кабинет' : 'Войти'
 
   return (
     <>
