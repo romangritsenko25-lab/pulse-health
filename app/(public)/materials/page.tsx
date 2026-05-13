@@ -8,7 +8,10 @@ const BOOKS = [
     title: 'Тело помнит всё',
     author: 'Бессел ван дер Колк',
     description: 'Основополагающая книга о психотравме: как она формирует тело и разум и как вернуть себе жизнь через движение, отношения и осознанность.',
-    cover: null,
+    summary: 'Психиатр с 30-летним опытом объясняет почему травматический опыт буквально записывается в теле. Тревога, хроническое напряжение, необъяснимые боли — часто это следы прошлого которые разум забыл а тело помнит. Книга показывает путь от выживания к исцелению через понимание связи тела и психики.',
+    insights: '1. Тело хранит травму даже когда разум её "забыл" — телесные симптомы это язык непрожитого опыта. 2. Традиционная терапия разговорами работает не для всех — иногда нужно работать через тело. 3. Исцеление возможно в любом возрасте — мозг остаётся пластичным всю жизнь.',
+    for_whom: 'Тем кто переживал травму, хроническое напряжение или необъяснимые телесные симптомы',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'trauma',
   },
@@ -17,7 +20,10 @@ const BOOKS = [
     title: 'Почему я чувствую то, что ты чувствуешь',
     author: 'Йоахим Бауэр',
     description: 'Нейробиология эмпатии и зеркальных нейронов. Почему мы резонируем с другими людьми и как это влияет на наши отношения.',
-    cover: null,
+    summary: 'Нейробиолог объясняет как работает эмпатия на уровне мозга. Зеркальные нейроны буквально позволяют нам чувствовать то что чувствуют другие. Книга объясняет почему одни люди эмоционально истощаются в отношениях а другие нет — и как найти баланс между чуткостью и защитой себя.',
+    insights: '1. Эмпатия это не мягкость характера а нейробиологический механизм — его можно понять и регулировать. 2. Эмоциональное истощение в отношениях часто связано с гиперактивными зеркальными нейронами. 3. Границы это не эгоизм а необходимое условие здоровой эмпатии.',
+    for_whom: 'Тем кто чувствует чужую боль острее своей и эмоционально истощается от общения',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'neuroscience',
   },
@@ -26,7 +32,10 @@ const BOOKS = [
     title: 'Разум и мозг',
     author: 'Дэниэл Сигел',
     description: 'Как работает интеграция мозга, откуда берётся осознанность и как нейронаука объясняет связь между телом, умом и отношениями.',
-    cover: null,
+    summary: 'Нейропсихиатр Дэниел Сигел — создатель концепции "окна толерантности" — объясняет как устроен мозг простым языком. Почему мы теряем контроль над эмоциями, как формируются паттерны поведения и как осознанность буквально меняет структуру мозга.',
+    insights: '1. Окно толерантности — есть зона оптимального возбуждения где мы функционируем лучше всего. Выход за её пределы — тревога или апатия. 2. Отношения в детстве формируют нейронные связи которые определяют как мы реагируем на стресс во взрослом возрасте. 3. Осознанность это не просто практика — это тренировка префронтальной коры.',
+    for_whom: 'Всем кто хочет понять как работает психика и почему мы реагируем так а не иначе',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'neuroscience',
   },
@@ -35,7 +44,10 @@ const BOOKS = [
     title: 'Когнитивная терапия депрессии',
     author: 'Аарон Бек',
     description: 'Классический труд основателя КПТ. Как негативные автоматические мысли поддерживают депрессию и как работает когнитивная реструктуризация.',
-    cover: null,
+    summary: 'Аарон Бек — основатель когнитивно-поведенческой терапии — показывает как негативные автоматические мысли создают и поддерживают депрессию. Книга не просто теория — это практическое руководство с техниками которые используют психологи по всему миру.',
+    insights: '1. Депрессия это не слабость характера а искажённые паттерны мышления которые можно изменить. 2. Автоматические мысли возникают мгновенно и кажутся абсолютной правдой — но их можно научиться замечать и оспаривать. 3. КПТ работает не хуже антидепрессантов при лёгкой и умеренной депрессии.',
+    for_whom: 'Тем кто переживает депрессию или тревогу и хочет понять механизм своего состояния',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'cbt',
   },
@@ -44,7 +56,10 @@ const BOOKS = [
     title: 'Принятие и ответственность',
     author: 'Стивен Хайес',
     description: 'Терапия принятия и ответственности (ACT): как научиться жить с болезненными мыслями и чувствами, не позволяя им управлять жизнью.',
-    cover: null,
+    summary: 'Стивен Хайес создал терапию принятия и ответственности (ACT) после собственного панического расстройства. Главная идея: борьба с неприятными мыслями и чувствами только усиливает их. Принятие — не смирение, а освобождение сил для того что действительно важно.',
+    insights: '1. Попытки избавиться от тревоги часто её усиливают — принятие работает лучше борьбы. 2. Психологическая гибкость важнее позитивного мышления — можно чувствовать тревогу и всё равно действовать. 3. Ценности важнее целей — когда знаешь что важно, боль перестаёт управлять жизнью.',
+    for_whom: 'Тем кто устал бороться со своими мыслями и хочет жить несмотря на внутренний дискомфорт',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'act',
   },
@@ -53,7 +68,10 @@ const BOOKS = [
     title: 'Бегство от близости',
     author: 'Берри Уайнхолд',
     description: 'Избегающая привязанность, страх близости и созависимость. Как паттерны раннего детства влияют на взрослые отношения.',
-    cover: null,
+    summary: 'Книга о созависимости и контрзависимости — двух сторонах одной проблемы с близостью. Одни люди растворяются в отношениях теряя себя, другие избегают близости боясь поглощения. Авторы показывают корни этих паттернов и путь к зрелым отношениям.',
+    insights: '1. Страх близости и страх одиночества — две стороны одной травмы привязанности. 2. Контрзависимость (избегание близости) часто выглядит как сила и независимость — но это та же рана что и созависимость. 3. Здоровые отношения начинаются с отношений с собой.',
+    for_whom: 'Тем кто замечает повторяющиеся паттерны в отношениях и хочет понять их корни',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'relationships',
   },
@@ -62,7 +80,10 @@ const BOOKS = [
     title: 'Осколки детских травм',
     author: 'Донна Джексон Наказава',
     description: 'Как неблагоприятный детский опыт влияет на здоровье и психику во взрослой жизни. Путь к исцелению через понимание ACE-исследований.',
-    cover: null,
+    summary: 'Журналист и пациент в одном лице — Донна Наказава исследует науку о том как неблагоприятный детский опыт (ACE) буквально меняет биологию человека. Хронические болезни, тревожность, депрессия — часто имеют корни в детстве. Но книга не о жертвах — о том как исцелиться.',
+    insights: '1. Неблагоприятный детский опыт статистически увеличивает риск физических болезней во взрослом возрасте — тело и психика неразделимы. 2. Нейропластичность мозга означает что исцеление возможно в любом возрасте. 3. Осознание связи между прошлым и настоящим — первый шаг к изменениям.',
+    for_whom: 'Тем кто подозревает что детский опыт влияет на их здоровье и самочувствие сегодня',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'trauma',
   },
@@ -71,7 +92,10 @@ const BOOKS = [
     title: 'Токсичный позитив',
     author: 'Уитни Гудман',
     description: 'Почему постоянные призывы «будь позитивным» вредят, как признать болезненные чувства нормальными и перестать себя за них стыдить.',
-    cover: null,
+    summary: 'Психотерапевт Уитни Гудман объясняет как культура позитивного мышления мешает нам реально справляться с трудностями. "Всё будет хорошо", "думай о хорошем", "у других хуже" — эти фразы обесценивают реальный опыт и мешают исцелению.',
+    insights: '1. Токсичный позитив это отрицание реальных чувств под видом оптимизма — он изолирует и обесценивает. 2. Валидация чувств ("это действительно тяжело") исцеляет лучше чем позитивные установки. 3. Можно принимать трудную реальность и при этом двигаться вперёд — это не пессимизм а честность.',
+    for_whom: 'Тем кто устал притворяться что всё хорошо и хочет разрешить себе чувствовать',
+    cover_url: null,
     affiliateUrl: '#',
     category: 'self',
   },
@@ -152,8 +176,16 @@ const ARTICLES = [
 ]
 
 type Tab = 'books' | 'videos' | 'articles'
+type Book = typeof BOOKS[0]
 
-function BookCover({ title }: { title: string }) {
+function BookCover({ title, coverUrl }: { title: string; coverUrl?: string | null }) {
+  if (coverUrl) {
+    return (
+      <div className="w-full aspect-[2/3] rounded-xl overflow-hidden">
+        <img src={coverUrl} alt={title} className="w-full h-full object-cover" />
+      </div>
+    )
+  }
   const colors = ['bg-teal-100', 'bg-purple-100', 'bg-teal-100', 'bg-rose-100', 'bg-amber-100', 'bg-blue-100', 'bg-green-100', 'bg-pink-100']
   const idx = title.charCodeAt(0) % colors.length
   return (
@@ -165,6 +197,7 @@ function BookCover({ title }: { title: string }) {
 
 export default function MaterialsPage() {
   const [tab, setTab] = useState<Tab>('books')
+  const [selected, setSelected] = useState<Book | null>(null)
 
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: 'books', label: 'Книги', count: BOOKS.length },
@@ -223,19 +256,19 @@ export default function MaterialsPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
               {BOOKS.map((book) => (
                 <div key={book.id} className="flex flex-col gap-3">
-                  <BookCover title={book.title} />
+                  <BookCover title={book.title} coverUrl={book.cover_url} />
                   <div className="flex flex-col gap-1.5 flex-1">
                     <p className="font-semibold text-slate-800 text-sm leading-snug">{book.title}</p>
                     <p className="text-teal-600 text-xs">{book.author}</p>
                     <p className="text-slate-400 text-xs leading-relaxed line-clamp-2 flex-1">
                       {book.description}
                     </p>
-                    <a
-                      href={book.affiliateUrl}
+                    <button
+                      onClick={() => setSelected(book)}
                       className="mt-1 inline-flex items-center justify-center px-3 py-2 bg-teal-50 hover:bg-teal-100 text-teal-600 text-xs font-semibold rounded-xl transition"
                     >
                       Читать →
-                    </a>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -303,6 +336,68 @@ export default function MaterialsPage() {
           )}
         </div>
       </section>
+
+      {/* Book Modal */}
+      {selected && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="max-w-lg w-full bg-white rounded-2xl p-6 overflow-y-auto max-h-[90vh] relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setSelected(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition text-xl leading-none"
+              aria-label="Закрыть"
+            >
+              ×
+            </button>
+
+            {/* Cover + title + author */}
+            <div className="flex gap-4 mb-5">
+              <div className="w-24 flex-shrink-0">
+                <BookCover title={selected.title} coverUrl={selected.cover_url} />
+              </div>
+              <div className="flex flex-col justify-center gap-1">
+                <p className="font-bold text-slate-900 text-base leading-snug">{selected.title}</p>
+                <p className="text-teal-600 text-sm">{selected.author}</p>
+                <p className="text-slate-400 text-xs mt-1">{selected.for_whom}</p>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="mb-4">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">О чём книга</p>
+              <p className="text-slate-700 text-sm leading-relaxed">{selected.summary}</p>
+            </div>
+
+            {/* Insights */}
+            <div className="mb-6">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Главные идеи</p>
+              <ul className="flex flex-col gap-2">
+                {selected.insights.split(/(?=\d+\.)/).filter(Boolean).map((insight, i) => (
+                  <li key={i} className="text-slate-700 text-sm leading-relaxed">
+                    {insight.trim()}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Buy button */}
+            <a
+              href={selected.affiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-full px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition"
+            >
+              Купить книгу →
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
