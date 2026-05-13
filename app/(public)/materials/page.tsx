@@ -186,11 +186,9 @@ function BookCover({ title, coverUrl }: { title: string; coverUrl?: string | nul
       </div>
     )
   }
-  const colors = ['bg-teal-100', 'bg-purple-100', 'bg-teal-100', 'bg-rose-100', 'bg-amber-100', 'bg-blue-100', 'bg-green-100', 'bg-pink-100']
-  const idx = title.charCodeAt(0) % colors.length
   return (
-    <div className={`${colors[idx]} rounded-xl w-full aspect-[2/3] flex items-end p-3`}>
-      <span className="text-2xl">📖</span>
+    <div className="w-full aspect-[2/3] bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center">
+      <span className="text-white text-4xl font-bold">{title[0]}</span>
     </div>
   )
 }
