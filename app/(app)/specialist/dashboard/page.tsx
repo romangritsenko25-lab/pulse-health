@@ -165,7 +165,7 @@ export default function SpecialistDashboard() {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
             <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
             {specialist && (
               <p className="text-slate-500 text-sm mt-0.5">
@@ -186,6 +186,12 @@ export default function SpecialistDashboard() {
             >
               Редактировать профиль
             </button>
+            <a
+              href="/login"
+              className="text-slate-400 hover:text-slate-600 text-xs transition"
+            >
+              Посмотреть лендинг →
+            </a>
           </div>
         </div>
 
@@ -221,6 +227,18 @@ export default function SpecialistDashboard() {
         {/* Clients tab */}
         {activeTab === 'clients' && (
           <>
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+                <div className="text-2xl font-bold text-slate-800">{clients.length}</div>
+                <div className="text-xs text-slate-400 mt-0.5">Клиентов</div>
+              </div>
+              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+                <div className="text-2xl font-bold text-slate-800">{totalCheckins}</div>
+                <div className="text-xs text-slate-400 mt-0.5">Всего опросов</div>
+              </div>
+            </div>
+
             {/* Referral link */}
             <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5">
               <div className="flex items-center gap-2 mb-1">
@@ -238,22 +256,10 @@ export default function SpecialistDashboard() {
                 />
                 <button
                   onClick={copyLink}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+                  className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
                 >
                   {copied ? '✓ Скопировано' : 'Копировать'}
                 </button>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-3 mb-5">
-              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-slate-800">{clients.length}</div>
-                <div className="text-xs text-slate-400 mt-0.5">Клиентов</div>
-              </div>
-              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-slate-800">{totalCheckins}</div>
-                <div className="text-xs text-slate-400 mt-0.5">Всего опросов</div>
               </div>
             </div>
 
@@ -265,7 +271,7 @@ export default function SpecialistDashboard() {
               </div>
               <button
                 onClick={() => setShowColleagueModal(true)}
-                className="shrink-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition"
+                className="shrink-0 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold rounded-xl transition"
               >
                 Узнать подробнее
               </button>

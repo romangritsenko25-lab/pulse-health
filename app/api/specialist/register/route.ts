@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { name, specialty, photo_url } = await req.json()
+  const { name, specialty, photo_url, bio } = await req.json()
 
   if (!name || !specialty) {
     return NextResponse.json({ error: 'name and specialty required' }, { status: 400 })
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   if (existing) {
     const { error } = await supabase
       .from('specialists')
-      .update({ name, specialty, photo_url: photo_url ?? null })
+      .update({ name, specialty, photo_url: photo_url ?? null, bio: bio ?? null })
       .eq('id', user.id)
     if (error) {
       console.error('specialist update error:', error)
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
     name,
     specialty,
     photo_url: photo_url ?? null,
+    bio: bio ?? null,
     referral_code,
   })
 

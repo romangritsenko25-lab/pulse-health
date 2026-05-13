@@ -30,6 +30,28 @@ interface ReferralRow {
   amountKzt: number
 }
 
+type Currency = 'KZT' | 'RUB' | 'USD'
+
+const RATES: Record<Currency, number> = {
+  KZT: 1,
+  RUB: 0.19,
+  USD: 0.002,
+}
+const SYMBOLS: Record<Currency, string> = { KZT: '₸', RUB: '₽', USD: '$' }
+const MIN_KZT = 15000
+
+function formatAmount(amountKzt: number, currency: Currency): string {
+  const value = amountKzt * RATES[currency]
+  if (currency === 'USD') return `$${value.toFixed(2)}`
+  return `${Math.round(value).toLocaleString('ru')} ${SYMBOLS[currency]}`
+}
+
+function minWithdrawLabel(currency: Currency): string {
+  const value = MIN_KZT * RATES[currency]
+  if (currency === 'USD') return `$${value.toFixed(0)}`
+  return `${Math.round(value).toLocaleString('ru')} ${SYMBOLS[currency]}`
+}
+
 function maskEmail(email: string): string {
   const [local, domain] = email.split('@')
   if (!domain) return email
@@ -41,6 +63,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
   const [rows, setRows] = useState<ReferralRow[]>([])
   const [totalKzt, setTotalKzt] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [currency, setCurrency] = useState<Currency>('KZT')
 
   useEffect(() => {
     async function load() {
@@ -106,6 +129,26 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
 
   return (
     <div className="space-y-6">
+      {/* Currency selector */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-slate-500 font-medium">Валюта отображения</p>
+        <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
+          {(['KZT', 'RUB', 'USD'] as Currency[]).map((c) => (
+            <button
+              key={c}
+              onClick={() => setCurrency(c)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${
+                currency === c
+                  ? 'bg-white text-teal-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Metric cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
@@ -119,15 +162,16 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-          <p className="text-xs text-slate-500 mb-1">Накоплено KZT</p>
-          <p className="text-2xl font-bold text-teal-600">
-            {totalKzt.toLocaleString('ru-KZ')} ₸
+          <p className="text-xs text-slate-500 mb-1">Накоплено</p>
+          <p className="text-xl font-bold text-teal-600">
+            {formatAmount(totalKzt, currency)}
           </p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-          <p className="text-xs text-slate-500 mb-1">Выплаты</p>
-          <p className="text-2xl font-bold text-slate-400">скоро 🔜</p>
+          <p className="text-xs text-slate-500 mb-1">Мин. вывод</p>
+          <p className="text-lg font-bold text-slate-400">{minWithdrawLabel(currency)}</p>
+          <p className="text-xs text-slate-300 mt-0.5">≈ $30</p>
         </div>
       </div>
 
@@ -153,7 +197,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
                   Статус
                 </th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                  Начислено KZT
+                  Начислено ({currency})
                 </th>
               </tr>
             </thead>
@@ -180,9 +224,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
                     )}
                   </td>
                   <td className="px-4 py-3 text-right font-medium text-slate-700">
-                    {row.amountKzt > 0
-                      ? `${row.amountKzt.toLocaleString('ru-KZ')} ₸`
-                      : '—'}
+                    {row.amountKzt > 0 ? formatAmount(row.amountKzt, currency) : '—'}
                   </td>
                 </tr>
               ))}
