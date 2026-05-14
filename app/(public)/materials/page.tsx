@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -165,7 +165,7 @@ function BookCover({ title, coverUrl }: { title: string; coverUrl?: string | nul
     )
   }
   return (
-    <div className="w-full aspect-[2/3] bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center">
+    <div className="w-full aspect-[2/3] bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl flex items-center justify-center">
       <span className="text-white text-4xl font-bold">{title[0]}</span>
     </div>
   )
@@ -203,9 +203,9 @@ export default function MaterialsPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Header */}
-      <section className="py-14 px-4 bg-gradient-to-b from-teal-50 to-white">
+      <section className="py-14 px-4 bg-gradient-to-b from-indigo-50 to-white">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Материалы</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Материалы</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Библиотека знаний
           </h1>
@@ -225,14 +225,14 @@ export default function MaterialsPage() {
                 onClick={() => setTab(t.id)}
                 className={`flex items-center gap-1.5 px-4 py-4 text-sm font-medium border-b-2 transition-colors ${
                   tab === t.id
-                    ? 'border-teal-600 text-teal-600'
+                    ? 'border-indigo-600 text-indigo-600'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
                 {t.label}
                 <span
                   className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                    tab === t.id ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-400'
+                    tab === t.id ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-400'
                   }`}
                 >
                   {t.count}
@@ -254,13 +254,13 @@ export default function MaterialsPage() {
                   <BookCover title={book.title} coverUrl={book.cover_url} />
                   <div className="flex flex-col gap-1.5 flex-1">
                     <p className="font-semibold text-slate-800 text-sm leading-snug">{book.title}</p>
-                    <p className="text-teal-600 text-xs">{book.author}</p>
+                    <p className="text-indigo-600 text-xs">{book.author}</p>
                     <p className="text-slate-400 text-xs leading-relaxed line-clamp-2 flex-1">
                       {book.description}
                     </p>
                     <button
                       onClick={() => setSelected(book)}
-                      className="mt-1 inline-flex items-center justify-center px-3 py-2 bg-teal-50 hover:bg-teal-100 text-teal-600 text-xs font-semibold rounded-xl transition"
+                      className="mt-1 inline-flex items-center justify-center px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-semibold rounded-xl transition"
                     >
                       Читать →
                     </button>
@@ -286,7 +286,7 @@ export default function MaterialsPage() {
                       className="w-full h-full object-cover opacity-80"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-14 h-14 bg-teal-600 rounded-full flex items-center justify-center shadow-lg">
+                      <div className="w-14 h-14 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg">
                         <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z"/>
                         </svg>
@@ -297,7 +297,7 @@ export default function MaterialsPage() {
                     </span>
                   </div>
                   <div className="p-4">
-                    <p className="text-xs text-teal-600 font-medium mb-1">{video.channel}</p>
+                    <p className="text-xs text-indigo-600 font-medium mb-1">{video.channel}</p>
                     <h3 className="text-sm font-semibold text-slate-900 leading-snug mb-1">{video.title}</h3>
                     <p className="text-xs text-slate-500 line-clamp-2">{video.description}</p>
                   </div>
@@ -312,10 +312,10 @@ export default function MaterialsPage() {
               {(dbArticles.length > 0 ? dbArticles : ARTICLES).map((article) => (
                 <div
                   key={article.id}
-                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-teal-200 hover:shadow-sm transition"
+                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-indigo-200 hover:shadow-sm transition"
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs bg-teal-50 text-teal-600 font-semibold px-2 py-0.5 rounded-full">
+                    <span className="text-xs bg-indigo-50 text-indigo-600 font-semibold px-2 py-0.5 rounded-full">
                       {article.category}
                     </span>
                     <span className="text-slate-300 text-xs">
@@ -336,7 +336,7 @@ export default function MaterialsPage() {
                         ? (article as Article).reading_time
                         : parseInt(String((article as typeof ARTICLES[0]).readTime)),
                     })}
-                    className="text-teal-600 text-xs font-semibold mt-3 hover:text-teal-500 transition"
+                    className="text-indigo-600 text-xs font-semibold mt-3 hover:text-indigo-500 transition"
                   >
                     Читать →
                   </button>
@@ -358,7 +358,7 @@ export default function MaterialsPage() {
             onClick={e => e.stopPropagation()}
           >
             <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center rounded-t-2xl">
-              <span className="text-xs text-teal-600 font-medium uppercase tracking-wide">
+              <span className="text-xs text-indigo-600 font-medium uppercase tracking-wide">
                 {selectedArticle.reading_time} мин чтения
               </span>
               <button
@@ -413,7 +413,7 @@ export default function MaterialsPage() {
                 </p>
                 <a
                   href="/checkin"
-                  className="block w-full bg-teal-600 hover:bg-teal-500 text-white text-center py-3 rounded-xl font-medium transition"
+                  className="block w-full bg-indigo-600 hover:bg-indigo-500 text-white text-center py-3 rounded-xl font-medium transition"
                 >
                   Пройти чек-ин за 10 минут →
                 </a>
@@ -447,7 +447,7 @@ export default function MaterialsPage() {
               </div>
               <div className="flex flex-col justify-center gap-1">
                 <p className="font-bold text-slate-900 text-base leading-snug">{selected.title}</p>
-                <p className="text-teal-600 text-sm">{selected.author}</p>
+                <p className="text-indigo-600 text-sm">{selected.author}</p>
                 <p className="text-slate-400 text-xs mt-1">{selected.for_whom}</p>
               </div>
             </div>
@@ -472,7 +472,7 @@ export default function MaterialsPage() {
               href={selected.affiliateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-full px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition"
+              className="flex items-center justify-center w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition"
             >
               Купить книгу →
             </a>
@@ -492,7 +492,7 @@ export default function MaterialsPage() {
           >
             <div className="flex justify-between items-center p-4 border-b border-slate-100">
               <div>
-                <p className="text-xs text-teal-600 font-medium">{selectedVideo.channel}</p>
+                <p className="text-xs text-indigo-600 font-medium">{selectedVideo.channel}</p>
                 <h3 className="font-semibold text-slate-900">{selectedVideo.title}</h3>
               </div>
               <button

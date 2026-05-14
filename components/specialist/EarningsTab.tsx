@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -139,7 +139,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
               onClick={() => setCurrency(c)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${
                 currency === c
-                  ? 'bg-white text-teal-700 shadow-sm'
+                  ? 'bg-white text-indigo-700 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700'
               }`}
             >
@@ -153,17 +153,17 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
           <p className="text-xs text-slate-500 mb-1">Всего приглашено</p>
-          <p className="text-2xl font-bold text-teal-600">{totalInvited}</p>
+          <p className="text-2xl font-bold text-indigo-600">{totalInvited}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
           <p className="text-xs text-slate-500 mb-1">Стали Pro</p>
-          <p className="text-2xl font-bold text-teal-600">{totalConverted}</p>
+          <p className="text-2xl font-bold text-indigo-600">{totalConverted}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
           <p className="text-xs text-slate-500 mb-1">Накоплено</p>
-          <p className="text-xl font-bold text-teal-600">
+          <p className="text-xl font-bold text-indigo-600">
             {formatAmount(totalKzt, currency)}
           </p>
         </div>
@@ -214,7 +214,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
                   </td>
                   <td className="px-4 py-3">
                     {row.status === 'converted' ? (
-                      <span className="inline-flex items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 ring-1 ring-inset ring-teal-600/20">
+                      <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20">
                         Pro
                       </span>
                     ) : (

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -129,13 +129,13 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
             <h1 className="text-2xl font-bold text-slate-800">Дашборд</h1>
             <p className="text-slate-400 text-sm">Последние 7 дней</p>
           </div>
           <button
             onClick={() => router.push('/checkin')}
-            className="bg-teal-600 hover:bg-teal-500 text-white text-sm px-4 py-2 rounded-xl transition font-semibold"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-xl transition font-semibold"
           >
             + Новый опрос
           </button>
@@ -166,7 +166,7 @@ export default function DashboardPage() {
             <p className="text-slate-400 text-sm mb-4">Пройди первый опрос чтобы увидеть свою динамику</p>
             <button
               onClick={() => router.push('/checkin')}
-              className="bg-teal-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-teal-500 transition"
+              className="bg-indigo-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-indigo-500 transition"
             >
               Начать опрос
             </button>
@@ -194,12 +194,12 @@ export default function DashboardPage() {
 
             {/* AI trend insight */}
             {(trendLoading || trendInsight) && (
-              <div className="bg-teal-50 border border-teal-100 rounded-2xl px-5 py-4 mb-4 flex items-start gap-3">
+              <div className="bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-4 mb-4 flex items-start gap-3">
                 <span className="text-lg mt-0.5">🧠</span>
                 {trendLoading ? (
-                  <p className="text-sm text-teal-400 animate-pulse">Анализирую твои данные…</p>
+                  <p className="text-sm text-indigo-400 animate-pulse">Анализирую твои данные…</p>
                 ) : (
-                  <p className="text-sm text-teal-800 leading-relaxed">{trendInsight}</p>
+                  <p className="text-sm text-indigo-800 leading-relaxed">{trendInsight}</p>
                 )}
               </div>
             )}
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                         <span className="text-xs text-slate-400 max-w-[120px] truncate">{entry.mood.split(',')[0]}</span>
                       )}
                       <span className={`text-sm font-bold ${
-                        (entry.wellbeing ?? 5) >= 7 ? 'text-teal-500'
+                        (entry.wellbeing ?? 5) >= 7 ? 'text-indigo-500'
                           : (entry.wellbeing ?? 5) >= 4 ? 'text-amber-500'
                           : 'text-red-400'
                       }`}>

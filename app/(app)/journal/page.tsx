@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -119,7 +119,7 @@ function NewEntryModal({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Что сейчас происходит? Пиши свободно..."
-            className="w-full resize-none rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
+            className="w-full resize-none rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
             style={{ minHeight: 200 }}
           />
           <button
@@ -132,7 +132,7 @@ function NewEntryModal({
                 ? 'opacity-30 cursor-not-allowed bg-slate-100'
                 : listening
                 ? 'bg-red-500 shadow-lg shadow-red-200 animate-pulse'
-                : 'bg-teal-50 hover:bg-teal-100 text-teal-600'
+                : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-600'
             }`}
           >
             <svg className="w-4 h-4" fill={listening ? 'white' : 'currentColor'} viewBox="0 0 24 24">
@@ -164,8 +164,8 @@ function NewEntryModal({
                 title={m.label}
                 className={`w-11 h-11 rounded-xl text-xl transition border ${
                   mood === m.emoji
-                    ? 'border-teal-400 bg-teal-50 shadow-sm scale-110'
-                    : 'border-slate-100 bg-slate-50 hover:border-teal-200 hover:scale-105'
+                    ? 'border-indigo-400 bg-indigo-50 shadow-sm scale-110'
+                    : 'border-slate-100 bg-slate-50 hover:border-indigo-200 hover:scale-105'
                 }`}
               >
                 {m.emoji}
@@ -185,7 +185,7 @@ function NewEntryModal({
           <button
             onClick={save}
             disabled={!content.trim() || saving}
-            className="flex-1 py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white text-sm font-semibold transition"
+            className="flex-1 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold transition"
           >
             {saving ? 'Сохраняем…' : 'Сохранить'}
           </button>
@@ -203,14 +203,14 @@ function EntryCard({ entry }: { entry: Entry }) {
   const preview = entry.content.length > 100 ? entry.content.slice(0, 100) + '…' : entry.content
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-teal-200 hover:shadow-sm transition">
+    <div className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-indigo-200 hover:shadow-sm transition">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           {entry.mood && <span className="text-xl">{entry.mood}</span>}
           <p className="text-xs text-slate-400">{formatted} · {time}</p>
         </div>
         {entry.voice_input && (
-          <span className="text-xs text-teal-400 font-medium flex items-center gap-1">
+          <span className="text-xs text-indigo-400 font-medium flex items-center gap-1">
             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
             </svg>
@@ -257,7 +257,7 @@ export default function JournalPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <a href="/" className="text-slate-400 hover:text-teal-600 text-sm transition mb-2 inline-flex items-center gap-1">
+            <a href="/" className="text-slate-400 hover:text-indigo-600 text-sm transition mb-2 inline-flex items-center gap-1">
               ← Главная
             </a>
             <h1 className="text-2xl font-bold text-slate-900">Мой журнал</h1>
@@ -265,7 +265,7 @@ export default function JournalPage() {
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -288,7 +288,7 @@ export default function JournalPage() {
             <p className="text-slate-400 text-sm mb-6">Начни вести журнал — фиксируй мысли и настроение каждый день</p>
             <button
               onClick={() => setShowModal(true)}
-              className="px-5 py-3 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-2xl transition"
+              className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-2xl transition"
             >
               Написать первую запись
             </button>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
@@ -125,7 +125,7 @@ export default function UpgradePage() {
         )}
 
         <div className="text-center mb-8">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-2">Metanoia AI</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Metanoia AI</p>
           <h1 className="text-2xl font-bold text-slate-800">Выбери тариф</h1>
           <p className="text-slate-400 text-sm mt-1">Оплата через Paddle · Отмена в любой момент</p>
         </div>
@@ -134,11 +134,11 @@ export default function UpgradePage() {
           {PLANS.map((plan) => (
             <div key={plan.id}
               className={`bg-white rounded-2xl border p-6 relative ${
-                plan.highlight ? 'border-teal-400 shadow-md shadow-teal-100' : 'border-slate-200'
+                plan.highlight ? 'border-indigo-400 shadow-md shadow-indigo-100' : 'border-slate-200'
               }`}
             >
               {plan.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
                   Рекомендуем
                 </div>
               )}
@@ -157,7 +157,7 @@ export default function UpgradePage() {
               <ul className="flex flex-col gap-2 mb-5">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
-                    <span className="text-teal-500 font-bold text-xs">✓</span>
+                    <span className="text-indigo-500 font-bold text-xs">✓</span>
                     {f}
                   </li>
                 ))}
@@ -170,7 +170,7 @@ export default function UpgradePage() {
                   plan.current
                     ? 'bg-slate-100 text-slate-400 cursor-default'
                     : plan.highlight
-                    ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-sm'
+                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
                     : 'bg-slate-800 hover:bg-slate-700 text-white'
                 }`}
               >
@@ -225,7 +225,7 @@ function ReferralBlock() {
         />
         <button
           onClick={copy}
-          className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
         >
           {copied ? '✓' : 'Копировать'}
         </button>

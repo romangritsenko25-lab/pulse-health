@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 
 const BENEFITS = [
   {
@@ -35,9 +35,9 @@ export default function ForSpecialistsPage() {
     <div className="bg-white min-h-screen">
 
       {/* Hero */}
-      <section className="py-20 px-4 text-center bg-gradient-to-b from-teal-50 to-white">
+      <section className="py-20 px-4 text-center bg-gradient-to-b from-indigo-50 to-white">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-4">Для специалистов</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">Для специалистов</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight mb-5">
             Ваши клиенты приходят<br />уже подготовленными
           </h1>
@@ -47,7 +47,7 @@ export default function ForSpecialistsPage() {
           </p>
           <Link
             href="/specialist/register"
-            className="inline-flex items-center px-7 py-4 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-2xl transition shadow-lg shadow-teal-200 text-sm"
+            className="inline-flex items-center px-7 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition shadow-lg shadow-indigo-200 text-sm"
           >
             Создать профиль специалиста →
           </Link>
@@ -78,7 +78,7 @@ export default function ForSpecialistsPage() {
           <div className="flex flex-col gap-4">
             {STEPS.map((s) => (
               <div key={s.step} className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-teal-600 text-white text-sm font-bold flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-full bg-indigo-600 text-white text-sm font-bold flex items-center justify-center shrink-0">
                   {s.step}
                 </div>
                 <p className="text-slate-700 text-sm leading-relaxed pt-1">{s.text}</p>
@@ -90,7 +90,7 @@ export default function ForSpecialistsPage() {
 
       {/* Quote */}
       <section className="py-16 px-4">
-        <div className="max-w-lg mx-auto bg-teal-50 border border-teal-100 rounded-3xl p-8 text-center">
+        <div className="max-w-lg mx-auto bg-indigo-50 border border-indigo-100 rounded-3xl p-8 text-center">
           <p className="text-slate-700 text-base leading-relaxed italic mb-4">
             «Когда клиент уже назвал свои паттерны до сессии — мы начинаем там, где обычно заканчиваем через час»
           </p>
@@ -107,11 +107,11 @@ export default function ForSpecialistsPage() {
           </p>
           <Link
             href="/specialist/register"
-            className="w-full flex items-center justify-center py-4 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-2xl transition text-sm"
+            className="w-full flex items-center justify-center py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition text-sm"
           >
             Создать профиль специалиста
           </Link>
-          <Link href="/specialists" className="text-slate-400 hover:text-teal-600 text-xs transition">
+          <Link href="/specialists" className="text-slate-400 hover:text-indigo-600 text-xs transition">
             Посмотреть каталог специалистов →
           </Link>
         </div>

@@ -7,10 +7,12 @@
   --border:         #ede9e4;
   --border-mid:     #d9d4ce;
 
-  --teal:           #0d9488;
-  --teal-hover:     #0f766e;
-  --teal-light:     #f0fdfa;
-  --teal-mid:       #ccfbf1;
+  --primary:        #4f46e5;
+  --primary-hover:  #4338ca;
+  --primary-light:  #eef2ff;
+  --primary-mid:    #c7d2fe;
+  --cyan:           #06b6d4;
+  --cyan-light:     #ecfeff;
 
   --text-primary:   #1a2535;
   --text-secondary: #64748b;
@@ -25,7 +27,7 @@
   --color-background: var(--bg-page);
   --color-foreground: var(--text-primary);
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
-  --color-primary: var(--teal);
+  --color-primary: var(--primary);
 }
 
 /* ── Base ──────────────────────────────────────────────────────────────────── */

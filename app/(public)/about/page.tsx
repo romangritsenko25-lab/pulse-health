@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'О нас — Metanoia AI',
@@ -11,7 +11,7 @@ export default function AboutPage() {
       {/* Philosophy */}
       <section className="py-20 px-4">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Философия</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Философия</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-12">О Metanoia AI</h1>
           <div className="flex flex-col gap-10 text-slate-600 leading-relaxed">
             <div>
@@ -47,15 +47,15 @@ export default function AboutPage() {
       {/* Team */}
       <section className="py-16 px-4 bg-slate-50">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Команда</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Команда</p>
           <h2 className="text-2xl font-bold text-slate-800 mb-8">Кто за этим стоит</h2>
           <div className="bg-white rounded-2xl border border-slate-100 p-6 flex gap-5 items-start">
-            <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center shrink-0">
-              <span className="text-2xl font-bold text-teal-400">👤</span>
+            <div className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center shrink-0">
+              <span className="text-2xl font-bold text-indigo-400">👤</span>
             </div>
             <div>
               <p className="font-semibold text-slate-800">Основатель</p>
-              <p className="text-teal-600 text-sm mb-3">Продукт · Технологии</p>
+              <p className="text-indigo-600 text-sm mb-3">Продукт · Технологии</p>
               <p className="text-slate-500 text-sm leading-relaxed">
                 Строю Metanoia AI потому что сам прошёл через опыт поиска подходящего специалиста и понял: проблема не
                 в доступности психологов, а в том что первый шаг слишком сложен. Хочу сделать психологическую помощь
@@ -69,17 +69,17 @@ export default function AboutPage() {
       {/* Contacts */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Контакты</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Контакты</p>
           <h2 className="text-2xl font-bold text-slate-800 mb-6">Связаться с нами</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="mailto:istheproman2015@gmail.com"
-              className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-teal-200 hover:bg-teal-50 transition group"
+              className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-indigo-200 hover:bg-indigo-50 transition group"
             >
               <span className="text-2xl">✉️</span>
               <div>
                 <p className="text-xs text-slate-400 mb-0.5">Email</p>
-                <p className="text-sm font-semibold text-slate-700 group-hover:text-teal-600 transition">
+                <p className="text-sm font-semibold text-slate-700 group-hover:text-indigo-600 transition">
                   istheproman2015@gmail.com
                 </p>
               </div>
@@ -88,12 +88,12 @@ export default function AboutPage() {
               href="https://t.me/metanoia_ai"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-teal-200 hover:bg-teal-50 transition group"
+              className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-indigo-200 hover:bg-indigo-50 transition group"
             >
               <span className="text-2xl">✈️</span>
               <div>
                 <p className="text-xs text-slate-400 mb-0.5">Telegram</p>
-                <p className="text-sm font-semibold text-slate-700 group-hover:text-teal-600 transition">
+                <p className="text-sm font-semibold text-slate-700 group-hover:text-indigo-600 transition">
                   @metanoia_ai
                 </p>
               </div>

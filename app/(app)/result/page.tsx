@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -245,7 +245,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-teal-200 bg-teal-50 text-teal-600 font-semibold text-sm hover:bg-teal-100 transition flex items-center justify-center gap-2"
+        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition flex items-center justify-center gap-2"
       >
         <span>💬</span> Задать вопрос по анализу
       </button>
@@ -272,7 +272,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
               m.role === 'user'
-                ? 'bg-teal-600 text-white rounded-br-sm'
+                ? 'bg-indigo-600 text-white rounded-br-sm'
                 : 'bg-slate-100 text-slate-800 rounded-bl-sm'
             }`}>
               {m.content}
@@ -287,8 +287,8 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           </div>
         )}
         {limitReached && !loading && (
-          <div className="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 text-center">
-            <p className="text-xs text-teal-600 font-medium mb-1">Лимит бесплатных сообщений</p>
+          <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-center">
+            <p className="text-xs text-indigo-600 font-medium mb-1">Лимит бесплатных сообщений</p>
             <p className="text-xs text-slate-500">Обновись до Pro для безлимитного диалога</p>
           </div>
         )}
@@ -304,12 +304,12 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
           placeholder={limitReached ? 'Лимит исчерпан' : 'Задай вопрос…'}
           disabled={limitReached || loading}
-          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-300 disabled:opacity-50"
+          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
         />
         <button
           onClick={sendMessage}
           disabled={!input.trim() || loading || limitReached}
-          className="bg-teal-600 hover:bg-teal-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+          className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
         >
           →
         </button>
@@ -505,7 +505,7 @@ function ResultContent() {
           <button
             onClick={handleDownloadPdf}
             disabled={pdfLoading}
-            className="w-full bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
           >
             {pdfLoading
               ? <><span className="animate-spin inline-block">⏳</span> Генерируем…</>

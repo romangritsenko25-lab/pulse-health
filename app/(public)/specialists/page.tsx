@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useMemo } from 'react'
 
@@ -24,7 +24,7 @@ type RankInfo = {
 }
 
 function getRank(n: number): RankInfo {
-  if (n >= 30) return { label: 'Мастер',    icon: '🏆', bg: 'bg-teal-50',   text: 'text-teal-700',   border: 'border-teal-200',   next: null, current: 30 }
+  if (n >= 30) return { label: 'Мастер',    icon: '🏆', bg: 'bg-indigo-50',   text: 'text-indigo-700',   border: 'border-indigo-200',   next: null, current: 30 }
   if (n >= 15) return { label: 'Наставник', icon: '💎', bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200', next: 30,   current: 15 }
   if (n >= 5)  return { label: 'Эксперт',   icon: '🏅', bg: 'bg-blue-50',   text: 'text-blue-700',   border: 'border-blue-200',   next: 15,   current: 5  }
   if (n >= 1)  return { label: 'Практик',   icon: '⭐', bg: 'bg-amber-50',  text: 'text-amber-700',  border: 'border-amber-200',  next: 5,    current: 1  }
@@ -42,8 +42,8 @@ function Avatar({ name, photoUrl }: { name: string; photoUrl: string | null }) {
   if (photoUrl) return <img src={photoUrl} alt={name} className="w-14 h-14 rounded-2xl object-cover shrink-0" />
   const initials = name.split(' ').slice(0, 2).map((w) => w[0]).join('')
   return (
-    <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center shrink-0">
-      <span className="text-teal-600 font-bold text-lg">{initials}</span>
+    <div className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center shrink-0">
+      <span className="text-indigo-600 font-bold text-lg">{initials}</span>
     </div>
   )
 }
@@ -59,12 +59,12 @@ function RankBadge({ n }: { n: number }) {
 
 function RankProgress({ n }: { n: number }) {
   const r = getRank(n)
-  if (r.next === null) return <p className="text-xs text-teal-600 font-medium">Максимальный ранг 🏆</p>
+  if (r.next === null) return <p className="text-xs text-indigo-600 font-medium">Максимальный ранг 🏆</p>
   const pct = Math.min(100, ((n - r.current) / (r.next - r.current)) * 100)
   return (
     <div>
       <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
-        <div className="h-1 bg-teal-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
+        <div className="h-1 bg-indigo-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
       </div>
       <p className="text-xs text-slate-400 mt-1">{n} / {r.next} клиентов до следующего ранга</p>
     </div>
@@ -73,7 +73,7 @@ function RankProgress({ n }: { n: number }) {
 
 function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) {
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-teal-200 hover:shadow-sm transition">
+    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-indigo-200 hover:shadow-sm transition">
       <div className="flex items-start gap-4">
         <Avatar name={sp.name} photoUrl={sp.photo_url} />
         <div className="flex-1 min-w-0">
@@ -85,7 +85,7 @@ function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) 
               </span>
             )}
           </div>
-          <p className="text-teal-600 text-xs font-medium mt-0.5">{sp.specialty}</p>
+          <p className="text-indigo-600 text-xs font-medium mt-0.5">{sp.specialty}</p>
           <div className="mt-1.5"><RankBadge n={sp.client_count} /></div>
         </div>
       </div>
@@ -95,7 +95,7 @@ function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) 
         <span className="text-xs text-slate-400">{pluralClients(sp.client_count)}</span>
         <a
           href={sp.is_demo ? '/login' : `/join/${sp.referral_code}`}
-          className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold rounded-xl transition"
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition"
         >
           Записаться
         </a>
@@ -166,9 +166,9 @@ export default function SpecialistsPage() {
     <div className="bg-white min-h-screen">
 
       {/* Hero */}
-      <section className="py-14 px-4 bg-gradient-to-b from-teal-50 to-white">
+      <section className="py-14 px-4 bg-gradient-to-b from-indigo-50 to-white">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-3">Специалисты</p>
+          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-3">Специалисты</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
             Найдите своего психолога
           </h1>
@@ -182,7 +182,7 @@ export default function SpecialistsPage() {
       {(loading || top5.length > 0) && (
         <section className="py-10 px-4 bg-slate-50 border-y border-slate-100">
           <div className="max-w-5xl mx-auto">
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-widest mb-1">Рейтинг платформы</p>
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Рейтинг платформы</p>
             <h2 className="text-xl font-bold text-slate-800 mb-6">Топ-5 специалистов</h2>
             <div className="flex flex-col gap-3">
               {loading
@@ -233,7 +233,7 @@ export default function SpecialistsPage() {
               <select
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-teal-400"
+                className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-indigo-400"
               >
                 <option value="all">Все специальности</option>
                 {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -250,7 +250,7 @@ export default function SpecialistsPage() {
               <p className="text-4xl mb-3">👥</p>
               <p className="font-medium text-slate-600">Специалисты скоро появятся</p>
               <p className="text-sm mt-1">Будьте первым — зарегистрируйтесь как специалист</p>
-              <a href="/specialist/register" className="inline-block mt-5 px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition">
+              <a href="/specialist/register" className="inline-block mt-5 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition">
                 Присоединиться →
               </a>
             </div>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 
@@ -133,9 +133,9 @@ function MiniCalendar({
               onClick={() => onSelect(dateStr)}
               className={`flex flex-col items-center justify-center rounded-xl py-1 transition ${
                 isSelected
-                  ? 'bg-teal-600 text-white'
+                  ? 'bg-indigo-600 text-white'
                   : isToday
-                  ? 'bg-teal-50 text-teal-700 font-semibold'
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
                   : 'hover:bg-slate-100 text-slate-700'
               }`}
             >
@@ -178,7 +178,7 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
           {isToday && (
             <a
               href="/checkin"
-              className="inline-flex items-center gap-1.5 text-teal-600 hover:text-teal-500 text-sm font-semibold transition"
+              className="inline-flex items-center gap-1.5 text-indigo-600 hover:text-indigo-500 text-sm font-semibold transition"
             >
               Пройти чек-ин сегодня →
             </a>

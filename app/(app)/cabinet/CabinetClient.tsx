@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -105,13 +105,13 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
         <div className="relative">
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
             placeholder="Что сейчас происходит? Пиши свободно..."
-            className="w-full resize-none rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
+            className="w-full resize-none rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
             style={{ minHeight: 160, fontSize: 16 }} />
           <button type="button" onClick={toggle} disabled={!supported}
             className={`absolute bottom-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition ${
               !supported ? 'opacity-30 cursor-not-allowed bg-slate-100'
               : listening ? 'bg-red-500 shadow-lg animate-pulse'
-              : 'bg-teal-50 hover:bg-teal-100 text-teal-600'}`}>
+              : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-600'}`}>
             <svg className="w-4 h-4" fill={listening ? 'white' : 'currentColor'} viewBox="0 0 24 24">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
               <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
@@ -125,7 +125,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
           <div className="flex gap-2 flex-wrap">
             {MOODS.map((m) => (
               <button key={m.emoji} type="button" onClick={() => setMood(mood === m.emoji ? null : m.emoji)} title={m.label}
-                className={`w-11 h-11 rounded-xl text-xl transition border ${mood === m.emoji ? 'border-teal-400 bg-teal-50 scale-110' : 'border-slate-100 bg-slate-50 hover:border-teal-200'}`}>
+                className={`w-11 h-11 rounded-xl text-xl transition border ${mood === m.emoji ? 'border-indigo-400 bg-indigo-50 scale-110' : 'border-slate-100 bg-slate-50 hover:border-indigo-200'}`}>
                 {m.emoji}
               </button>
             ))}
@@ -134,7 +134,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
         <div className="flex gap-3">
           <button onClick={onClose} className="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Отмена</button>
           <button onClick={save} disabled={!content.trim() || saving}
-            className="flex-1 py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white text-sm font-semibold">
+            className="flex-1 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold">
             {saving ? 'Сохраняем…' : 'Сохранить'}
           </button>
         </div>
@@ -670,15 +670,15 @@ export default function CabinetClient() {
             {todayCheckin ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-5">
                 <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
-                    <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <p className="text-sm font-semibold text-slate-700">Чек-ин пройден сегодня</p>
                 </div>
                 <a href={`/cabinet?tab=dynamics`}
-                  className="inline-flex text-teal-600 hover:text-teal-500 text-sm font-semibold transition">
+                  className="inline-flex text-indigo-600 hover:text-indigo-500 text-sm font-semibold transition">
                   Посмотреть анализ →
                 </a>
               </div>
@@ -717,7 +717,7 @@ export default function CabinetClient() {
                 <p className="text-slate-400 text-sm mt-0.5">{entries.length} {entries.length === 1 ? 'запись' : entries.length < 5 ? 'записи' : 'записей'}</p>
               </div>
               <button onClick={() => setShowNewEntry(true)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm">
+                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -736,7 +736,7 @@ export default function CabinetClient() {
                 {entries.map((e) => {
                   const d = new Date(e.created_at)
                   return (
-                    <div key={e.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-teal-200 hover:shadow-sm transition">
+                    <div key={e.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-indigo-200 hover:shadow-sm transition">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           {e.mood && <span className="text-lg">{e.mood}</span>}
@@ -744,7 +744,7 @@ export default function CabinetClient() {
                             {d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })} · {d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
-                        {e.voice_input && <span className="text-xs text-teal-400 font-medium">🎙 Голос</span>}
+                        {e.voice_input && <span className="text-xs text-indigo-400 font-medium">🎙 Голос</span>}
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{e.content}</p>
                     </div>
@@ -762,7 +762,7 @@ export default function CabinetClient() {
             {checkins.length < 2 ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center">
                 <p className="text-slate-400 text-sm">Нужно минимум 2 чек-ина для графика</p>
-                <a href="/checkin" className="mt-3 inline-flex text-teal-600 text-sm font-semibold hover:text-teal-500">Пройти чек-ин →</a>
+                <a href="/checkin" className="mt-3 inline-flex text-indigo-600 text-sm font-semibold hover:text-indigo-500">Пройти чек-ин →</a>
               </div>
             ) : (
               <div className="bg-white border border-slate-100 rounded-2xl p-5 min-w-0 overflow-hidden">
@@ -811,15 +811,15 @@ export default function CabinetClient() {
             <div className="bg-white border border-slate-100 rounded-2xl p-6 flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3 text-sm text-slate-600">
-                  <span className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-xs font-bold flex-shrink-0">01</span>
+                  <span className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold flex-shrink-0">01</span>
                   Последний чек-ин — самочувствие, эмоции, стрессоры
                 </div>
                 <div className="flex items-center gap-3 text-sm text-slate-600">
-                  <span className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-xs font-bold flex-shrink-0">02</span>
+                  <span className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold flex-shrink-0">02</span>
                   Резюме состояния — AI-синтез без цитирования источников
                 </div>
                 <div className="flex items-center gap-3 text-sm text-slate-600">
-                  <span className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center text-xs font-bold flex-shrink-0">03</span>
+                  <span className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold flex-shrink-0">03</span>
                   Темы для обсуждения — конкретные, из вашего контекста
                 </div>
               </div>
@@ -833,7 +833,7 @@ export default function CabinetClient() {
               <button
                 onClick={handleCreatePdf}
                 disabled={pdfLoading}
-                className="flex items-center justify-center gap-2 w-full py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-2xl transition"
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-2xl transition"
               >
                 {pdfLoading ? (
                   <>

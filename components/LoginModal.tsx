@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -123,7 +123,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm placeholder:text-slate-400"
+              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none text-sm placeholder:text-slate-400"
             />
           )}
           <input
@@ -132,7 +132,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm placeholder:text-slate-400"
+            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none text-sm placeholder:text-slate-400"
           />
           <input
             type="password"
@@ -141,17 +141,17 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-teal-400 focus:outline-none text-sm placeholder:text-slate-400"
+            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none text-sm placeholder:text-slate-400"
           />
           {error && (
-            <p className={`text-xs text-center ${error.includes('Проверь') ? 'text-teal-600' : 'text-red-500'}`}>
+            <p className={`text-xs text-center ${error.includes('Проверь') ? 'text-indigo-600' : 'text-red-500'}`}>
               {error}
             </p>
           )}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
+            className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
           >
             {loading ? '…' : mode === 'login' ? 'Войти' : 'Создать аккаунт'}
           </button>
@@ -160,7 +160,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
         <button
           type="button"
           onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
-          className="text-slate-400 hover:text-teal-600 text-xs text-center transition"
+          className="text-slate-400 hover:text-indigo-600 text-xs text-center transition"
         >
           {mode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
         </button>

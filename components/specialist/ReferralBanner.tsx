@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -35,7 +35,7 @@ export default function ReferralBanner({ specialistId, referralCode }: Props) {
   }
 
   return (
-    <div className="rounded-xl bg-gradient-to-r from-teal-600 to-blue-900 p-6 mb-6 text-white">
+    <div className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-900 p-6 mb-6 text-white">
       <p className="text-lg font-semibold mb-1">
         Приглашайте пользователей и зарабатывайте 💰
       </p>
