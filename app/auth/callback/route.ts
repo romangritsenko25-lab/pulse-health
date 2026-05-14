@@ -103,18 +103,22 @@ export async function GET(request: NextRequest) {
   else if (profile.role === 'specialist') redirectPath = '/specialist/dashboard'
   else redirectPath = '/cabinet'
 
-  if (redirectPath === '/onboarding' && data.user.email) {
+  const isNewUser = redirectPath === '/onboarding' && !!data.user.email
+  console.log('[auth/callback]', { email: data.user.email, redirectPath, isNewUser })
+
+  if (isNewUser) {
     const name = (data.user.user_metadata?.name as string | undefined)
-      ?? data.user.email.split('@')[0]
-    await Promise.allSettled([
+      ?? data.user.email!.split('@')[0]
+    const results = await Promise.allSettled([
       resend.emails.send({
         from: 'Metanoia AI <noreply@metanoia.ai>',
-        to: data.user.email,
+        to: data.user.email!,
         subject: `Добро пожаловать в Metanoia, ${name}!`,
         html: welcomeEmailHtml(name),
       }),
-      sendTelegram(`🆕 <b>Новый пользователь</b>\nEmail: ${data.user.email}\nИмя: ${name}`),
+      sendTelegram(`Новый пользователь!\nEmail: ${data.user.email}\nИмя: ${name}`),
     ])
+    console.log('[auth/callback] notifications:', results.map(r => r.status))
   }
 
   const response = NextResponse.redirect(new URL(redirectPath, request.url))
