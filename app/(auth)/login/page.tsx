@@ -90,8 +90,6 @@ function PsychCard({ title, body }: { title: string; body: string }) {
 
 // ── Main page ──────────────────────────────────────────────────────────────
 export default function LoginPage() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [videoEnded, setVideoEnded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [emotion, setEmotion] = useState<string | null>(null)
   const [duration, setDuration] = useState<string | null>(null)
@@ -230,34 +228,14 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
-          <div className="fade-up" style={{ position: 'relative', width: 220, height: 220 }}>
-            {!videoEnded && (
-              <video
-                ref={videoRef}
-                autoPlay
-                muted
-                playsInline
-                onLoadedData={() => { if (videoRef.current) videoRef.current.currentTime = 2 }}
-                onEnded={() => setVideoEnded(true)}
-                style={{
-                  width: 220, height: 220,
-                  objectFit: 'cover',
-                  mixBlendMode: 'multiply',
-                }}
-              >
-                <source src="/hero-video.mp4" type="video/mp4" />
-              </video>
-            )}
-            {videoEnded && (
-              <Image
-                src="/Logo1.png"
-                alt="Metanoia"
-                width={110}
-                height={110}
-                className="rounded-2xl shadow-md"
-                style={{ animation: 'fade-up 0.6s ease-out forwards', margin: '0 auto', display: 'block' }}
-              />
-            )}
+          <div className="fade-up">
+            <Image
+              src="/Logo1.png"
+              alt="Metanoia"
+              width={110}
+              height={110}
+              className="rounded-2xl shadow-md"
+            />
           </div>
 
           <h1 className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight" style={{
