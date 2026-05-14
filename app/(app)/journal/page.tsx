@@ -1,16 +1,16 @@
-п»ї'use client'
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const MOODS = [
-  { emoji: 'рџ”', label: 'Р“СЂСѓСЃС‚РЅРѕ' },
-  { emoji: 'рџ°', label: 'РўСЂРµРІРѕР¶РЅРѕ' },
-  { emoji: 'рџђ', label: 'РќРµР№С‚СЂР°Р»СЊРЅРѕ' },
-  { emoji: 'рџ™‚', label: 'РќРµРїР»РѕС…Рѕ' },
-  { emoji: 'рџЉ', label: 'РҐРѕСЂРѕС€Рѕ' },
-  { emoji: 'рџ¤', label: 'Р Р°Р·РґСЂР°Р¶С‘РЅРЅРѕ' },
+  { emoji: '??', label: 'Грустно' },
+  { emoji: '??', label: 'Тревожно' },
+  { emoji: '??', label: 'Нейтрально' },
+  { emoji: '??', label: 'Неплохо' },
+  { emoji: '??', label: 'Хорошо' },
+  { emoji: '??', label: 'Раздражённо' },
 ]
 
 type Entry = {
@@ -21,7 +21,7 @@ type Entry = {
   created_at: string
 }
 
-// в”Ђв”Ђ Voice recording hook в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Voice recording hook ------------------------------------------------------
 function useSpeechRecognition(onResult: (text: string) => void) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recRef = useRef<any>(null)
@@ -64,7 +64,7 @@ function useSpeechRecognition(onResult: (text: string) => void) {
   return { listening, supported, toggle }
 }
 
-// в”Ђв”Ђ New entry modal в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- New entry modal -----------------------------------------------------------
 function NewEntryModal({
   onClose,
   onSaved,
@@ -105,7 +105,7 @@ function NewEntryModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-4 sm:pb-0">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col gap-5 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-slate-800 text-lg">РќРѕРІР°СЏ Р·Р°РїРёСЃСЊ</h2>
+          <h2 className="font-bold text-slate-800 text-lg">Новая запись</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -118,21 +118,21 @@ function NewEntryModal({
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Р§С‚Рѕ СЃРµР№С‡Р°СЃ РїСЂРѕРёСЃС…РѕРґРёС‚? РџРёС€Рё СЃРІРѕР±РѕРґРЅРѕ..."
-            className="w-full resize-none rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
+            placeholder="Что сейчас происходит? Пиши свободно..."
+            className="w-full resize-none rounded-2xl border border-slate-200 focus:border-blue-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
             style={{ minHeight: 200 }}
           />
           <button
             type="button"
             onClick={toggle}
             disabled={!supported}
-            title={supported ? (listening ? 'РћСЃС‚Р°РЅРѕРІРёС‚СЊ Р·Р°РїРёСЃСЊ' : 'Р”РёРєС‚РѕРІР°С‚СЊ') : 'Р‘СЂР°СѓР·РµСЂ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ РіРѕР»РѕСЃРѕРІРѕР№ РІРІРѕРґ'}
+            title={supported ? (listening ? 'Остановить запись' : 'Диктовать') : 'Браузер не поддерживает голосовой ввод'}
             className={`absolute bottom-3 right-3 w-9 h-9 rounded-xl flex items-center justify-center transition ${
               !supported
                 ? 'opacity-30 cursor-not-allowed bg-slate-100'
                 : listening
                 ? 'bg-red-500 shadow-lg shadow-red-200 animate-pulse'
-                : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-600'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-600'
             }`}
           >
             <svg className="w-4 h-4" fill={listening ? 'white' : 'currentColor'} viewBox="0 0 24 24">
@@ -144,17 +144,17 @@ function NewEntryModal({
           </button>
           {listening && (
             <p className="absolute bottom-14 right-3 text-xs text-red-500 font-medium bg-white px-2 py-1 rounded-lg border border-red-100">
-              РЎР»СѓС€Р°СЋвЂ¦
+              Слушаю…
             </p>
           )}
           {!supported && (
-            <p className="mt-1 text-xs text-slate-400">Р“РѕР»РѕСЃРѕРІРѕР№ РІРІРѕРґ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ РІ СЌС‚РѕРј Р±СЂР°СѓР·РµСЂРµ</p>
+            <p className="mt-1 text-xs text-slate-400">Голосовой ввод не поддерживается в этом браузере</p>
           )}
         </div>
 
         {/* Mood picker */}
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">РќР°СЃС‚СЂРѕРµРЅРёРµ</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Настроение</p>
           <div className="flex gap-2 flex-wrap">
             {MOODS.map((m) => (
               <button
@@ -164,8 +164,8 @@ function NewEntryModal({
                 title={m.label}
                 className={`w-11 h-11 rounded-xl text-xl transition border ${
                   mood === m.emoji
-                    ? 'border-indigo-400 bg-indigo-50 shadow-sm scale-110'
-                    : 'border-slate-100 bg-slate-50 hover:border-indigo-200 hover:scale-105'
+                    ? 'border-blue-400 bg-blue-50 shadow-sm scale-110'
+                    : 'border-slate-100 bg-slate-50 hover:border-blue-200 hover:scale-105'
                 }`}
               >
                 {m.emoji}
@@ -180,14 +180,14 @@ function NewEntryModal({
             onClick={onClose}
             className="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition"
           >
-            РћС‚РјРµРЅР°
+            Отмена
           </button>
           <button
             onClick={save}
             disabled={!content.trim() || saving}
-            className="flex-1 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold transition"
+            className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold transition"
           >
-            {saving ? 'РЎРѕС…СЂР°РЅСЏРµРјвЂ¦' : 'РЎРѕС…СЂР°РЅРёС‚СЊ'}
+            {saving ? 'Сохраняем…' : 'Сохранить'}
           </button>
         </div>
       </div>
@@ -195,26 +195,26 @@ function NewEntryModal({
   )
 }
 
-// в”Ђв”Ђ Entry card в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Entry card ----------------------------------------------------------------
 function EntryCard({ entry }: { entry: Entry }) {
   const date = new Date(entry.created_at)
   const formatted = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
   const time = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
-  const preview = entry.content.length > 100 ? entry.content.slice(0, 100) + 'вЂ¦' : entry.content
+  const preview = entry.content.length > 100 ? entry.content.slice(0, 100) + '…' : entry.content
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-indigo-200 hover:shadow-sm transition">
+    <div className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-blue-200 hover:shadow-sm transition">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           {entry.mood && <span className="text-xl">{entry.mood}</span>}
-          <p className="text-xs text-slate-400">{formatted} В· {time}</p>
+          <p className="text-xs text-slate-400">{formatted} · {time}</p>
         </div>
         {entry.voice_input && (
-          <span className="text-xs text-indigo-400 font-medium flex items-center gap-1">
+          <span className="text-xs text-blue-400 font-medium flex items-center gap-1">
             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
             </svg>
-            Р“РѕР»РѕСЃ
+            Голос
           </span>
         )}
       </div>
@@ -223,7 +223,7 @@ function EntryCard({ entry }: { entry: Entry }) {
   )
 }
 
-// в”Ђв”Ђ Main page в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Main page -----------------------------------------------------------------
 export default function JournalPage() {
   const [entries, setEntries] = useState<Entry[]>([])
   const [loading, setLoading] = useState(true)
@@ -257,20 +257,20 @@ export default function JournalPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <a href="/" className="text-slate-400 hover:text-indigo-600 text-sm transition mb-2 inline-flex items-center gap-1">
-              в†ђ Р“Р»Р°РІРЅР°СЏ
+            <a href="/" className="text-slate-400 hover:text-blue-600 text-sm transition mb-2 inline-flex items-center gap-1">
+              < Главная
             </a>
-            <h1 className="text-2xl font-bold text-slate-900">РњРѕР№ Р¶СѓСЂРЅР°Р»</h1>
-            <p className="text-slate-400 text-sm mt-1">{entries.length} {entries.length === 1 ? 'Р·Р°РїРёСЃСЊ' : entries.length < 5 ? 'Р·Р°РїРёСЃРё' : 'Р·Р°РїРёСЃРµР№'}</p>
+            <h1 className="text-2xl font-bold text-slate-900">Мой журнал</h1>
+            <p className="text-slate-400 text-sm mt-1">{entries.length} {entries.length === 1 ? 'запись' : entries.length < 5 ? 'записи' : 'записей'}</p>
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
-            РќРѕРІР°СЏ Р·Р°РїРёСЃСЊ
+            Новая запись
           </button>
         </div>
 
@@ -283,14 +283,14 @@ export default function JournalPage() {
           </div>
         ) : entries.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-5xl mb-4">рџ““</p>
-            <p className="font-semibold text-slate-700 mb-2">Р—Р°РїРёСЃРµР№ РїРѕРєР° РЅРµС‚</p>
-            <p className="text-slate-400 text-sm mb-6">РќР°С‡РЅРё РІРµСЃС‚Рё Р¶СѓСЂРЅР°Р» вЂ” С„РёРєСЃРёСЂСѓР№ РјС‹СЃР»Рё Рё РЅР°СЃС‚СЂРѕРµРЅРёРµ РєР°Р¶РґС‹Р№ РґРµРЅСЊ</p>
+            <p className="text-5xl mb-4">??</p>
+            <p className="font-semibold text-slate-700 mb-2">Записей пока нет</p>
+            <p className="text-slate-400 text-sm mb-6">Начни вести журнал — фиксируй мысли и настроение каждый день</p>
             <button
               onClick={() => setShowModal(true)}
-              className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-2xl transition"
+              className="px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-2xl transition"
             >
-              РќР°РїРёСЃР°С‚СЊ РїРµСЂРІСѓСЋ Р·Р°РїРёСЃСЊ
+              Написать первую запись
             </button>
           </div>
         ) : (

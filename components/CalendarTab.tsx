@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 
-// ── Types ──────────────────────────────────────────────────────────────────
+// -- Types ------------------------------------------------------------------
 interface DayActivity {
   checkin?: { time: string; wellbeing: number | null; mood: string | null; id: string }
   journal?: { time: string; preview: string; id: string }
@@ -11,14 +11,14 @@ interface DayActivity {
 }
 type ActivityMap = Record<string, DayActivity>
 
-const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+const WEEKDAYS = ['��', '��', '��', '��', '��', '��', '��']
 const MONTHS_RU = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+  '������', '�������', '����', '������', '���', '����',
+  '����', '������', '��������', '�������', '������', '�������',
 ]
 const MONTHS_GENITIVE = [
-  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+  '������', '�������', '�����', '������', '���', '����',
+  '����', '�������', '��������', '�������', '������', '�������',
 ]
 
 function toDateStr(y: number, m: number, d: number) {
@@ -34,14 +34,14 @@ function countActivity(day: DayActivity | undefined): number {
   return [day.checkin, day.journal, day.ai, day.pdf].filter(Boolean).length
 }
 
-// ── Activity dot color ─────────────────────────────────────────────────────
+// -- Activity dot color -----------------------------------------------------
 function dotColor(count: number): string {
-  if (count >= 3) return '#0d9488'
+  if (count >= 3) return '#2563eb'
   if (count === 2) return '#2dd4bf'
-  return '#99f6e4'
+  return '#bfdbfe'
 }
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// -- Icons ------------------------------------------------------------------
 function CheckinIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="#16a34a" strokeWidth={2} viewBox="0 0 24 24">
@@ -71,7 +71,7 @@ function PDFIcon() {
   )
 }
 
-// ── Mini calendar ──────────────────────────────────────────────────────────
+// -- Mini calendar ----------------------------------------------------------
 function MiniCalendar({
   year, month, selected, activity, onSelect, onPrev, onNext,
 }: {
@@ -133,9 +133,9 @@ function MiniCalendar({
               onClick={() => onSelect(dateStr)}
               className={`flex flex-col items-center justify-center rounded-xl py-1 transition ${
                 isSelected
-                  ? 'bg-indigo-600 text-white'
+                  ? 'bg-blue-600 text-white'
                   : isToday
-                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
+                  ? 'bg-blue-50 text-blue-700 font-semibold'
                   : 'hover:bg-slate-100 text-slate-700'
               }`}
             >
@@ -159,7 +159,7 @@ function MiniCalendar({
   )
 }
 
-// ── Day detail ─────────────────────────────────────────────────────────────
+// -- Day detail -------------------------------------------------------------
 function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityMap }) {
   const day = activity[dateStr]
   const [y, m, d] = dateStr.split('-').map(Number)
@@ -174,13 +174,13 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
 
       {!day ? (
         <div className="flex flex-col gap-3">
-          <p className="text-slate-400 text-sm">В этот день не было активности</p>
+          <p className="text-slate-400 text-sm">� ���� ���� �� ���� ����������</p>
           {isToday && (
             <a
               href="/checkin"
-              className="inline-flex items-center gap-1.5 text-indigo-600 hover:text-indigo-500 text-sm font-semibold transition"
+              className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-500 text-sm font-semibold transition"
             >
-              Пройти чек-ин сегодня →
+              ������ ���-�� ������� >
             </a>
           )}
         </div>
@@ -191,18 +191,18 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
             <div className="bg-green-50 border border-green-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-1">
                 <CheckinIcon />
-                <span className="text-xs font-semibold text-green-700 uppercase tracking-wide">Чек-ин</span>
+                <span className="text-xs font-semibold text-green-700 uppercase tracking-wide">���-��</span>
                 <span className="ml-auto text-xs text-slate-400">{day.checkin.time}</span>
               </div>
               <p className="text-sm text-slate-700">
-                Самочувствие {day.checkin.wellbeing ?? '—'}/10
-                {day.checkin.mood ? ` · ${day.checkin.mood}` : ''}
+                ������������ {day.checkin.wellbeing ?? '�'}/10
+                {day.checkin.mood ? ` � ${day.checkin.mood}` : ''}
               </p>
               <a
                 href={`/result?id=${day.checkin.id}`}
                 className="mt-2 inline-flex text-green-700 hover:text-green-600 text-xs font-semibold transition"
               >
-                Открыть анализ →
+                ������� ������ >
               </a>
             </div>
           )}
@@ -212,18 +212,18 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
             <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-1">
                 <AIIcon />
-                <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">AI-диалог</span>
+                <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">AI-������</span>
                 <span className="ml-auto text-xs text-slate-400">{day.ai.time}</span>
               </div>
               <p className="text-sm text-slate-700 line-clamp-1">&ldquo;{day.ai.title}&rdquo;</p>
               {day.ai.messages > 0 && (
-                <p className="text-xs text-slate-400 mt-0.5">{day.ai.messages} сообщений</p>
+                <p className="text-xs text-slate-400 mt-0.5">{day.ai.messages} ���������</p>
               )}
               <a
                 href={`/cabinet?tab=ai&conv=${day.ai.id}`}
                 className="mt-2 inline-flex text-blue-700 hover:text-blue-600 text-xs font-semibold transition"
               >
-                Открыть чат →
+                ������� ��� >
               </a>
             </div>
           )}
@@ -233,17 +233,17 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
             <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-1">
                 <JournalIcon />
-                <span className="text-xs font-semibold text-purple-700 uppercase tracking-wide">Дневник</span>
+                <span className="text-xs font-semibold text-purple-700 uppercase tracking-wide">�������</span>
                 <span className="ml-auto text-xs text-slate-400">{day.journal.time}</span>
               </div>
               <p className="text-sm text-slate-600 line-clamp-2 italic">
-                &ldquo;{day.journal.preview}{day.journal.preview.length >= 80 ? '…' : ''}&rdquo;
+                &ldquo;{day.journal.preview}{day.journal.preview.length >= 80 ? '�' : ''}&rdquo;
               </p>
               <a
                 href="/cabinet?tab=journal"
                 className="mt-2 inline-flex text-purple-700 hover:text-purple-600 text-xs font-semibold transition"
               >
-                Читать →
+                ������ >
               </a>
             </div>
           )}
@@ -256,7 +256,7 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
                 <span className="text-xs font-semibold text-orange-700 uppercase tracking-wide">PDF</span>
                 <span className="ml-auto text-xs text-slate-400">{day.pdf.time}</span>
               </div>
-              <p className="text-sm text-slate-700">PDF скачан · Подготовка к приёму</p>
+              <p className="text-sm text-slate-700">PDF ������ � ���������� � �����</p>
             </div>
           )}
         </div>
@@ -265,7 +265,7 @@ function DayDetail({ dateStr, activity }: { dateStr: string; activity: ActivityM
   )
 }
 
-// ── Main component ─────────────────────────────────────────────────────────
+// -- Main component ---------------------------------------------------------
 export default function CalendarTab() {
   const today = new Date()
   const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate())
@@ -305,7 +305,7 @@ export default function CalendarTab() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-xl font-bold text-slate-900">Календарь</h2>
+      <h2 className="text-xl font-bold text-slate-900">���������</h2>
 
       {/* Layout: side by side on md+, stacked on mobile */}
       <div className="flex flex-col md:flex-row gap-6">
@@ -325,7 +325,7 @@ export default function CalendarTab() {
         {/* Right: day detail */}
         <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-5 min-h-[180px]">
           {loading ? (
-            <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
+            <p className="text-slate-400 text-sm animate-pulse">���������</p>
           ) : (
             <DayDetail dateStr={selected} activity={activity} />
           )}

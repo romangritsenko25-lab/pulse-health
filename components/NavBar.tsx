@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -71,7 +71,7 @@ export default function NavBar() {
               href={l.href}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 pathname === l.href || (l.href !== '/login' && pathname.startsWith(l.href))
-                  ? 'text-indigo-600 bg-indigo-50'
+                  ? 'text-blue-600 bg-blue-50'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
@@ -87,7 +87,7 @@ export default function NavBar() {
                 onMouseEnter={() => setShowDropdown(true)}
                 onMouseLeave={() => setShowDropdown(false)}
                 onClick={() => window.location.href = ctaHref}
-                className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition shadow-sm"
               >
                 {ctaLabel}
               </button>
@@ -111,7 +111,7 @@ export default function NavBar() {
             </div>
           ) : (
             <button onClick={() => setShowLogin(true)}
-              className="hidden md:inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition shadow-sm">
+              className="hidden md:inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition shadow-sm">
               Войти
             </button>
           )}
@@ -144,7 +144,7 @@ export default function NavBar() {
                 onClick={() => setOpen(false)}
                 className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                   pathname === l.href
-                    ? 'text-indigo-600 bg-indigo-50'
+                    ? 'text-blue-600 bg-blue-50'
                     : 'text-slate-700 hover:bg-slate-50'
                 }`}
               >
@@ -154,7 +154,7 @@ export default function NavBar() {
             {ctaHref ? (
               <>
                 <Link href={ctaHref} onClick={() => setOpen(false)}
-                  className="mt-2 flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition">
+                  className="mt-2 flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition">
                   {ctaLabel}
                 </Link>
                 <button onClick={() => { setOpen(false); handleSignOut() }}
@@ -164,7 +164,7 @@ export default function NavBar() {
               </>
             ) : (
               <button onClick={() => { setOpen(false); setShowLogin(true) }}
-                className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition">
+                className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition">
                 Войти
               </button>
             )}

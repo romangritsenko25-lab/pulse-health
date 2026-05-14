@@ -1,11 +1,11 @@
-п»ї'use client'
+'use client'
 
 import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const FREE_MSG_LIMIT = 3
 
-// в”Ђв”Ђ Types в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Types ------------------------------------------------------------------
 interface AnalysisData {
   id: string
   crisis?: boolean
@@ -21,7 +21,7 @@ interface ChatMessage {
   content: string
 }
 
-// в”Ђв”Ђ PDF generation (client-side) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- PDF generation (client-side) -------------------------------------------
 type JournalData = { count: number; summary: string | null; themes: string[] }
 
 async function generatePdf(data: AnalysisData, specialistName?: string, specialistSpecialty?: string, journalData?: JournalData) {
@@ -44,10 +44,10 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
 
   const specialistBlock = specialistName
     ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
-        <span style="font-size:20px;">рџ‘©вЂЌвљ•пёЏ</span>
+        <span style="font-size:20px;">?????</span>
         <div>
-          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">РџРѕРґРіРѕС‚РѕРІР»РµРЅРѕ РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°</p>
-          <p style="font-size:13px;font-weight:700;color:#166534;margin:0;">${specialistName}${specialistSpecialty ? ` В· ${specialistSpecialty}` : ''}</p>
+          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для специалиста</p>
+          <p style="font-size:13px;font-weight:700;color:#166534;margin:0;">${specialistName}${specialistSpecialty ? ` · ${specialistSpecialty}` : ''}</p>
         </div>
       </div>`
     : ''
@@ -55,28 +55,28 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
   const html = `
     <div style="width:794px;padding:56px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
       <div style="border-bottom:2px solid #e2e8f0;padding-bottom:20px;margin-bottom:32px;">
-        <p style="font-size:10px;font-weight:700;color:#0d9488;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
-        <h1 style="font-size:22px;font-weight:700;color:#0f172a;margin:0 0 6px;line-height:1.3;">РџРѕРґРіРѕС‚РѕРІРєР° Рє РїСЂРёС‘РјСѓ Сѓ СЃРїРµС†РёР°Р»РёСЃС‚Р°</h1>
+        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
+        <h1 style="font-size:22px;font-weight:700;color:#0f172a;margin:0 0 6px;line-height:1.3;">Подготовка к приёму у специалиста</h1>
         <p style="font-size:12px;color:#94a3b8;margin:0;">${date}</p>
       </div>
       ${specialistBlock}
-      ${data.reflection ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">01 В· РћС‚СЂР°Р¶РµРЅРёРµ</p><p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;">${data.reflection}</p></div>` : ''}
-      ${data.patterns ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f0fdfa;border-radius:8px;border-left:4px solid #14b8a6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 В· РџР°С‚С‚РµСЂРЅС‹</p><p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p></div>` : ''}
-      ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 В· Р“РёРїРѕС‚РµР·Р°</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
-      ${specialist ? `<div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 В· РўРµРјС‹ РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°</p>${specialist}</div>` : ''}
-      ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#0d9488;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 В· РџРѕРґРґРµСЂР¶РєР°</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
+      ${data.reflection ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">01 · Отражение</p><p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;">${data.reflection}</p></div>` : ''}
+      ${data.patterns ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #14b8a6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 · Паттерны</p><p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p></div>` : ''}
+      ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
+      ${specialist ? `<div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 · Темы для специалиста</p>${specialist}</div>` : ''}
+      ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#2563eb;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
       ${journalData && journalData.count > 0 ? `
       <div style="margin-bottom:22px;padding:18px 20px;background:#f8fafc;border-radius:8px;border-left:4px solid #64748b;">
-        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">РР· РґРЅРµРІРЅРёРєР° Р·Р° 30 РґРЅРµР№ В· ${journalData.count} Р·Р°РїРёСЃРµР№</p>
+        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">Из дневника за 30 дней · ${journalData.count} записей</p>
         ${journalData.summary ? `<p style="font-size:13px;line-height:1.75;color:#334155;margin:0 0 12px;">${journalData.summary.replace(/\n/g, '<br/>')}</p>` : ''}
         ${journalData.themes.length > 0 ? `
         <div>
-          <p style="font-size:11px;font-weight:600;color:#64748b;margin:0 0 8px;">РўРµРјС‹ РёР· РґРЅРµРІРЅРёРєР°:</p>
+          <p style="font-size:11px;font-weight:600;color:#64748b;margin:0 0 8px;">Темы из дневника:</p>
           ${journalData.themes.slice(0, 3).map((t, i) => `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;"><div style="min-width:18px;height:18px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#64748b;">${i + 1}</div><p style="font-size:12px;line-height:1.5;color:#475569;margin:2px 0 0;flex:1;">${t}</p></div>`).join('')}
         </div>` : ''}
       </div>` : ''}
       <div style="border-top:1px solid #e2e8f0;padding-top:14px;">
-        <p style="font-size:10px;color:#94a3b8;line-height:1.6;margin:0;">РЎРѕСЃС‚Р°РІР»РµРЅРѕ AI-Р°СЃСЃРёСЃС‚РµРЅС‚РѕРј Metanoia AI. РќРµ СЏРІР»СЏРµС‚СЃСЏ РјРµРґРёС†РёРЅСЃРєРёРј Р·Р°РєР»СЋС‡РµРЅРёРµРј Рё РЅРµ Р·Р°РјРµРЅСЏРµС‚ РєРѕРЅСЃСѓР»СЊС‚Р°С†РёСЋ СЃРїРµС†РёР°Р»РёСЃС‚Р°.</p>
+        <p style="font-size:10px;color:#94a3b8;line-height:1.6;margin:0;">Составлено AI-ассистентом Metanoia AI. Не является медицинским заключением и не заменяет консультацию специалиста.</p>
       </div>
     </div>`
 
@@ -113,16 +113,16 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
 
 const SECTION_ACCENTS: Record<string, string> = {
   '01': '#3b82f6',
-  '02': '#0d9488',
+  '02': '#2563eb',
   '03': '#8b5cf6',
   '04': '#f59e0b',
 }
 
-// в”Ђв”Ђ Section в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Section ----------------------------------------------------------------
 function Section({ badge, title, children }: {
   badge: string; title: string; color?: string; children: React.ReactNode
 }) {
-  const accent = SECTION_ACCENTS[badge] ?? '#0d9488'
+  const accent = SECTION_ACCENTS[badge] ?? '#2563eb'
   return (
     <div
       className="rounded-2xl border overflow-hidden"
@@ -146,47 +146,47 @@ function Section({ badge, title, children }: {
   )
 }
 
-// в”Ђв”Ђ Crisis screen в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Crisis screen ----------------------------------------------------------
 function CrisisView({ onBack }: { onBack: () => void }) {
   return (
     <div className="min-h-screen bg-white flex flex-col max-w-lg mx-auto px-4 py-10">
       <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
-        <h2 className="text-xl font-bold text-red-700 mb-3">РўС‹ РЅРµ РѕРґРёРЅ(Р°)</h2>
+        <h2 className="text-xl font-bold text-red-700 mb-3">Ты не один(а)</h2>
         <p className="text-slate-700 text-sm leading-relaxed mb-5">
-          РЇ РІРёР¶Сѓ, С‡С‚Рѕ С‚РµР±Рµ СЃРµР№С‡Р°СЃ РѕС‡РµРЅСЊ С‚СЏР¶РµР»Рѕ. РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕР·РІРѕРЅРё РЅР° Р»РёРЅРёСЋ РїРѕРґРґРµСЂР¶РєРё вЂ” СЌС‚Рѕ Р±РµСЃРїР»Р°С‚РЅРѕ Рё Р°РЅРѕРЅРёРјРЅРѕ.
+          Я вижу, что тебе сейчас очень тяжело. Пожалуйста, позвони на линию поддержки — это бесплатно и анонимно.
         </p>
         <div className="flex flex-col gap-3">
           {[
-            { number: '150', label: 'РљР°Р·Р°С…СЃС‚Р°РЅ', href: 'tel:150' },
-            { number: '8-800-2000-122', label: 'Р РѕСЃСЃРёСЏ', href: 'tel:88002000122' },
-            { number: '7333', label: 'РЈРєСЂР°РёРЅР°', href: 'tel:7333' },
+            { number: '150', label: 'Казахстан', href: 'tel:150' },
+            { number: '8-800-2000-122', label: 'Россия', href: 'tel:88002000122' },
+            { number: '7333', label: 'Украина', href: 'tel:7333' },
           ].map((r) => (
             <a key={r.number} href={r.href}
               className="flex items-center gap-3 bg-white border border-red-100 rounded-xl px-4 py-3 text-red-700 font-semibold hover:bg-red-50 transition">
-              <span className="text-xl">рџ“ћ</span>
+              <span className="text-xl">??</span>
               <div>
                 <div className="font-bold text-sm">{r.number}</div>
-                <div className="text-xs text-slate-500">{r.label} вЂ” Р±РµСЃРїР»Р°С‚РЅРѕ, РєСЂСѓРіР»РѕСЃСѓС‚РѕС‡РЅРѕ</div>
+                <div className="text-xs text-slate-500">{r.label} — бесплатно, круглосуточно</div>
               </div>
             </a>
           ))}
         </div>
       </div>
       <button onClick={onBack} className="text-slate-400 text-sm text-center hover:text-slate-600 transition">
-        в†ђ Р’РµСЂРЅСѓС‚СЊСЃСЏ
+        < Вернуться
       </button>
     </div>
   )
 }
 
-// в”Ђв”Ђ AI Chat component в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- AI Chat component ------------------------------------------------------
 function AiChat({ analysis }: { analysis: AnalysisData }) {
-  // apiMessages вЂ” С‚РѕР»СЊРєРѕ С‚Рѕ С‡С‚Рѕ Р»РµС‚РёС‚ РІ Claude (РґРѕР»Р¶РЅРѕ РЅР°С‡РёРЅР°С‚СЊСЃСЏ СЃ user)
+  // apiMessages — только то что летит в Claude (должно начинаться с user)
   const [apiMessages, setApiMessages] = useState<ChatMessage[]>([])
-  // displayMessages вЂ” РІРєР»СЋС‡Р°РµС‚ РїСЂРёРІРµС‚СЃС‚РІРёРµ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
+  // displayMessages — включает приветствие для отображения
   const [displayMessages, setDisplayMessages] = useState<ChatMessage[]>([{
     role: 'assistant',
-    content: 'Р•СЃС‚СЊ РІРѕРїСЂРѕСЃС‹ РїРѕ Р°РЅР°Р»РёР·Сѓ? РЇ РіРѕС‚РѕРІ СЂР°Р·РѕР±СЂР°С‚СЊСЃСЏ РІРјРµСЃС‚Рµ вЂ” Р·Р°РґР°РІР°Р№.',
+    content: 'Есть вопросы по анализу? Я готов разобраться вместе — задавай.',
   }])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -230,12 +230,12 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
       const data = await res.json()
       const reply = res.ok && data.reply
         ? data.reply
-        : `РћС€РёР±РєР°: ${data.detail ?? data.error ?? 'server_error'}`
+        : `Ошибка: ${data.detail ?? data.error ?? 'server_error'}`
       const assistantMsg: ChatMessage = { role: 'assistant', content: reply }
       setApiMessages((prev) => [...prev, assistantMsg])
       setDisplayMessages((prev) => [...prev, assistantMsg])
     } catch {
-      setDisplayMessages((prev) => [...prev, { role: 'assistant', content: 'РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚. РџРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·.' }])
+      setDisplayMessages((prev) => [...prev, { role: 'assistant', content: 'Не удалось получить ответ. Попробуй ещё раз.' }])
     } finally {
       setLoading(false)
     }
@@ -245,9 +245,9 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50 text-indigo-600 font-semibold text-sm hover:bg-indigo-100 transition flex items-center justify-center gap-2"
+        className="w-full py-3.5 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50 text-blue-600 font-semibold text-sm hover:bg-blue-100 transition flex items-center justify-center gap-2"
       >
-        <span>рџ’¬</span> Р—Р°РґР°С‚СЊ РІРѕРїСЂРѕСЃ РїРѕ Р°РЅР°Р»РёР·Сѓ
+        <span>??</span> Задать вопрос по анализу
       </button>
     )
   }
@@ -257,13 +257,13 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-800">РЈС‚РѕС‡РЅСЏСЋС‰РёР№ РґРёР°Р»РѕРі</span>
-          <span className="text-xs text-slate-400">В·</span>
+          <span className="text-sm font-semibold text-slate-800">Уточняющий диалог</span>
+          <span className="text-xs text-slate-400">·</span>
           <span className={`text-xs font-medium ${limitReached ? 'text-red-400' : 'text-slate-400'}`}>
-            {limitReached ? 'Р›РёРјРёС‚ РёСЃС‡РµСЂРїР°РЅ' : `${FREE_MSG_LIMIT - userMsgCount} РёР· ${FREE_MSG_LIMIT}`}
+            {limitReached ? 'Лимит исчерпан' : `${FREE_MSG_LIMIT - userMsgCount} из ${FREE_MSG_LIMIT}`}
           </span>
         </div>
-        <button onClick={() => setOpen(false)} className="text-slate-300 hover:text-slate-500 text-lg transition">Г—</button>
+        <button onClick={() => setOpen(false)} className="text-slate-300 hover:text-slate-500 text-lg transition">?</button>
       </div>
 
       {/* Messages */}
@@ -272,7 +272,7 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
               m.role === 'user'
-                ? 'bg-indigo-600 text-white rounded-br-sm'
+                ? 'bg-blue-600 text-white rounded-br-sm'
                 : 'bg-slate-100 text-slate-800 rounded-bl-sm'
             }`}>
               {m.content}
@@ -282,14 +282,14 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
         {loading && (
           <div className="flex justify-start">
             <div className="bg-slate-100 text-slate-400 px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm">
-              <span className="animate-pulse">Р”СѓРјР°СЋвЂ¦</span>
+              <span className="animate-pulse">Думаю…</span>
             </div>
           </div>
         )}
         {limitReached && !loading && (
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-center">
-            <p className="text-xs text-indigo-600 font-medium mb-1">Р›РёРјРёС‚ Р±РµСЃРїР»Р°С‚РЅС‹С… СЃРѕРѕР±С‰РµРЅРёР№</p>
-            <p className="text-xs text-slate-500">РћР±РЅРѕРІРёСЃСЊ РґРѕ Pro РґР»СЏ Р±РµР·Р»РёРјРёС‚РЅРѕРіРѕ РґРёР°Р»РѕРіР°</p>
+          <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-center">
+            <p className="text-xs text-blue-600 font-medium mb-1">Лимит бесплатных сообщений</p>
+            <p className="text-xs text-slate-500">Обновись до Pro для безлимитного диалога</p>
           </div>
         )}
         <div ref={bottomRef} />
@@ -302,23 +302,23 @@ function AiChat({ analysis }: { analysis: AnalysisData }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-          placeholder={limitReached ? 'Р›РёРјРёС‚ РёСЃС‡РµСЂРїР°РЅ' : 'Р—Р°РґР°Р№ РІРѕРїСЂРѕСЃвЂ¦'}
+          placeholder={limitReached ? 'Лимит исчерпан' : 'Задай вопрос…'}
           disabled={limitReached || loading}
-          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50"
+          className="flex-1 text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50"
         />
         <button
           onClick={sendMessage}
           disabled={!input.trim() || loading || limitReached}
-          className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white rounded-xl px-4 py-2.5 text-sm font-semibold transition"
         >
-          в†’
+          >
         </button>
       </div>
     </div>
   )
 }
 
-// в”Ђв”Ђ Main content в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Main content -----------------------------------------------------------
 function ResultContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -394,7 +394,7 @@ function ResultContent() {
           const body = await res.json().catch(() => ({}))
           if (body.error === 'limit_reached') setJournalLimitReached(true)
         }
-      } catch { /* journal is optional вЂ” don't block PDF */ }
+      } catch { /* journal is optional — don't block PDF */ }
       await generatePdf(data, specialistName, specialistSpecialty, journalData)
       try {
         const { createClient: mkClient2 } = await import('@/lib/supabase/client')
@@ -413,7 +413,7 @@ function ResultContent() {
   if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#faf9f7' }}>
-        <p className="animate-pulse text-sm" style={{ color: '#9ca3af' }}>Р—Р°РіСЂСѓР·РєР°вЂ¦</p>
+        <p className="animate-pulse text-sm" style={{ color: '#9ca3af' }}>Загрузка…</p>
       </div>
     )
   }
@@ -431,8 +431,8 @@ function ResultContent() {
         {/* Header */}
         <div className="flex items-start justify-between mb-1">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#0d9488' }}>Metanoia AI</p>
-            <h1 className="text-2xl font-bold mt-0.5" style={{ color: '#1a2535' }}>РўРІРѕР№ Р°РЅР°Р»РёР·</h1>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#2563eb' }}>Metanoia AI</p>
+            <h1 className="text-2xl font-bold mt-0.5" style={{ color: '#1a2535' }}>Твой анализ</h1>
             <p className="text-sm mt-0.5" style={{ color: '#9ca3af' }}>{dateStr}</p>
           </div>
           <button onClick={() => router.push('/cabinet')}
@@ -441,30 +441,30 @@ function ResultContent() {
             onMouseEnter={e => (e.currentTarget.style.color = '#1a2535')}
             onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
           >
-            РљР°Р±РёРЅРµС‚ в†’
+            Кабинет >
           </button>
         </div>
 
         {data.reflection && (
-          <Section badge="01" title="РћС‚СЂР°Р¶РµРЅРёРµ">
+          <Section badge="01" title="Отражение">
             <p className="text-sm leading-relaxed" style={{ color: '#1a2535' }}>{data.reflection}</p>
           </Section>
         )}
 
         {data.patterns && (
-          <Section badge="02" title="РџР°С‚С‚РµСЂРЅС‹">
+          <Section badge="02" title="Паттерны">
             <p className="text-sm leading-relaxed" style={{ color: '#1a2535' }}>{data.patterns}</p>
           </Section>
         )}
 
         {data.hypothesis && (
-          <Section badge="03" title="Р“РёРїРѕС‚РµР·Р°">
+          <Section badge="03" title="Гипотеза">
             <p className="text-sm leading-relaxed italic" style={{ color: '#1a2535' }}>{data.hypothesis}</p>
           </Section>
         )}
 
         {data.forSpecialist && data.forSpecialist.length > 0 && (
-          <Section badge="04" title="РўРµРјС‹ РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°">
+          <Section badge="04" title="Темы для специалиста">
             <ul className="flex flex-col gap-2.5">
               {data.forSpecialist.map((topic, i) => (
                 <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: '#1a2535' }}>
@@ -484,10 +484,10 @@ function ResultContent() {
         {data.support && (
           <div
             className="rounded-2xl p-5 text-white"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' }}
           >
             <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ opacity: 0.7 }}>
-              05 В· РџРѕРґРґРµСЂР¶РєР°
+              05 · Поддержка
             </p>
             <p className="text-sm leading-relaxed font-medium">{data.support}</p>
           </div>
@@ -499,27 +499,27 @@ function ResultContent() {
         {/* PDF Download */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-3">
           <div>
-            <p className="font-semibold text-slate-800 text-sm">РЎРєР°С‡Р°С‚СЊ PDF РґР»СЏ РїСЂРёС‘РјР°</p>
-            <p className="text-slate-400 text-xs mt-0.5">РџРѕРєР°Р¶Рё СЃРїРµС†РёР°Р»РёСЃС‚Сѓ вЂ” СЃСЌРєРѕРЅРѕРјРёС‚ РІСЂРµРјСЏ РЅР° РѕР±СЉСЏСЃРЅРµРЅРёСЏ</p>
+            <p className="font-semibold text-slate-800 text-sm">Скачать PDF для приёма</p>
+            <p className="text-slate-400 text-xs mt-0.5">Покажи специалисту — сэкономит время на объяснения</p>
           </div>
           <button
             onClick={handleDownloadPdf}
             disabled={pdfLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
           >
             {pdfLoading
-              ? <><span className="animate-spin inline-block">вЏі</span> Р“РµРЅРµСЂРёСЂСѓРµРјвЂ¦</>
-              : 'в†“ РЎРєР°С‡Р°С‚СЊ PDF'}
+              ? <><span className="animate-spin inline-block">?</span> Генерируем…</>
+              : 'v Скачать PDF'}
           </button>
           {pdfError && (
-            <p className="text-red-500 text-xs text-center">РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ PDF. РџРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·.</p>
+            <p className="text-red-500 text-xs text-center">Не удалось создать PDF. Попробуй ещё раз.</p>
           )}
           {journalLimitReached && (
             <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-              <span className="mt-0.5">вљ пёЏ</span>
+              <span className="mt-0.5">??</span>
               <p>
-                <span className="font-semibold">Р›РёРјРёС‚ Р°РЅР°Р»РёР·Р° Р¶СѓСЂРЅР°Р»Р° РёСЃС‡РµСЂРїР°РЅ</span> вЂ” PDF СЃРѕР·РґР°РЅ Р±РµР· СЂР°Р·РґРµР»Р° РґРЅРµРІРЅРёРєР°.{' '}
-                <a href="/upgrade" className="underline font-semibold hover:text-amber-900">РџРµСЂРµР№С‚Рё РЅР° Pro</a> РґР»СЏ Р±РµР·Р»РёРјРёС‚РЅРѕРіРѕ РґРѕСЃС‚СѓРїР°.
+                <span className="font-semibold">Лимит анализа журнала исчерпан</span> — PDF создан без раздела дневника.{' '}
+                <a href="/upgrade" className="underline font-semibold hover:text-amber-900">Перейти на Pro</a> для безлимитного доступа.
               </p>
             </div>
           )}
@@ -531,12 +531,12 @@ function ResultContent() {
           onMouseEnter={e => (e.currentTarget.style.background = '#faf9f7')}
           onMouseLeave={e => (e.currentTarget.style.background = '#ffffff')}
         >
-          РџСЂРѕР№С‚Рё РµС‰С‘ СЂР°Р·
+          Пройти ещё раз
         </button>
 
         <p className="text-xs text-center leading-relaxed" style={{ color: '#9ca3af' }}>
-          РЎРѕСЃС‚Р°РІР»РµРЅРѕ AI-Р°СЃСЃРёСЃС‚РµРЅС‚РѕРј Metanoia AI.<br />
-          РќРµ СЏРІР»СЏРµС‚СЃСЏ РјРµРґРёС†РёРЅСЃРєРёРј Р·Р°РєР»СЋС‡РµРЅРёРµРј.
+          Составлено AI-ассистентом Metanoia AI.<br />
+          Не является медицинским заключением.
         </p>
       </div>
     </div>
@@ -547,7 +547,7 @@ export default function ResultPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-400 animate-pulse text-sm">Р—Р°РіСЂСѓР·РєР°вЂ¦</p>
+        <p className="text-slate-400 animate-pulse text-sm">Загрузка…</p>
       </div>
     }>
       <ResultContent />

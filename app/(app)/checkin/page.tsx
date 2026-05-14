@@ -1,12 +1,12 @@
-п»ї'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-// в”Ђв”Ђ Types в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Types ------------------------------------------------------------------
 interface DeepFormData {
-  // Block 1 вЂ” Body
+  // Block 1 — Body
   wellbeing: number
   wellbeingReason: string
   sleepHours: number
@@ -17,7 +17,7 @@ interface DeepFormData {
   energyAfternoon: number
   energyEvening: number
 
-  // Block 2 вЂ” Emotions
+  // Block 2 — Emotions
   emotions: string[]
   anxietyLevel: number
   anxietyAbout: string
@@ -25,49 +25,49 @@ interface DeepFormData {
   controlFeeling: number
   memorableMoment: string
 
-  // Block 3 вЂ” Context
+  // Block 3 — Context
   stressFactors: string[]
   socialContact: string
   eating: string
   substances: string
 
-  // Block 4 вЂ” Free narrative
+  // Block 4 — Free narrative
   freeText: string
 }
 
-// в”Ђв”Ђ Constants в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Constants --------------------------------------------------------------
 const TOTAL_BLOCKS = 4
 
-const BODY_PAINS = ['Р“РѕР»РѕРІР°', 'РЁРµСЏ/РїР»РµС‡Рё', 'РЎРїРёРЅР°', 'Р“СЂСѓРґСЊ', 'Р–РёРІРѕС‚', 'РќРѕРіРё', 'РќРµС‚ Р±РѕР»РµР№']
+const BODY_PAINS = ['Голова', 'Шея/плечи', 'Спина', 'Грудь', 'Живот', 'Ноги', 'Нет болей']
 
-const SLEEP_QUALITY = ['РћС‡РµРЅСЊ РїР»РѕС…Рѕ', 'РџР»РѕС…Рѕ', 'РќРѕСЂРјР°Р»СЊРЅРѕ', 'РҐРѕСЂРѕС€Рѕ', 'РћС‚Р»РёС‡РЅРѕ']
+const SLEEP_QUALITY = ['Очень плохо', 'Плохо', 'Нормально', 'Хорошо', 'Отлично']
 
 const NOTO = 'https://fonts.gstatic.com/s/e/notoemoji/latest'
 
 const EMOTIONS_LIST = [
-  { label: 'РЎРїРѕРєРѕР№СЃС‚РІРёРµ', src: `${NOTO}/1f60c/512.webp` },
-  { label: 'РўСЂРµРІРѕРіР°',     src: `${NOTO}/1f630/512.webp` },
-  { label: 'Р“СЂСѓСЃС‚СЊ',      src: `${NOTO}/1f622/512.webp` },
-  { label: 'Р—Р»РѕСЃС‚СЊ',      src: `${NOTO}/1f620/512.webp` },
-  { label: 'Р Р°РґРѕСЃС‚СЊ',     src: `${NOTO}/1f60a/512.webp` },
-  { label: 'РђРїР°С‚РёСЏ',      src: `${NOTO}/1f636/512.webp` },
-  { label: 'Р Р°Р·РґСЂР°Р¶РµРЅРёРµ', src: `${NOTO}/1f624/512.webp` },
-  { label: 'РЎС‚СЂР°С…',       src: `${NOTO}/1f628/512.webp` },
-  { label: 'Р’РёРЅР°',        src: `${NOTO}/1f614/512.webp` },
-  { label: 'РЎС‚С‹Рґ',        src: `${NOTO}/1fae3/512.webp` },
-  { label: 'РћРґРёРЅРѕС‡РµСЃС‚РІРѕ', src: `${NOTO}/1f97a/512.webp` },
-  { label: 'РќР°РґРµР¶РґР°',     src: `${NOTO}/1f331/512.webp` },
+  { label: 'Спокойствие', src: `${NOTO}/1f60c/512.webp` },
+  { label: 'Тревога',     src: `${NOTO}/1f630/512.webp` },
+  { label: 'Грусть',      src: `${NOTO}/1f622/512.webp` },
+  { label: 'Злость',      src: `${NOTO}/1f620/512.webp` },
+  { label: 'Радость',     src: `${NOTO}/1f60a/512.webp` },
+  { label: 'Апатия',      src: `${NOTO}/1f636/512.webp` },
+  { label: 'Раздражение', src: `${NOTO}/1f624/512.webp` },
+  { label: 'Страх',       src: `${NOTO}/1f628/512.webp` },
+  { label: 'Вина',        src: `${NOTO}/1f614/512.webp` },
+  { label: 'Стыд',        src: `${NOTO}/1fae3/512.webp` },
+  { label: 'Одиночество', src: `${NOTO}/1f97a/512.webp` },
+  { label: 'Надежда',     src: `${NOTO}/1f331/512.webp` },
 ]
 
 const STRESS_FACTORS = [
-  'Р Р°Р±РѕС‚Р° / СѓС‡С‘Р±Р°', 'РћС‚РЅРѕС€РµРЅРёСЏ', 'Р”РµРЅСЊРіРё', 'Р—РґРѕСЂРѕРІСЊРµ', 'РЎРµРјСЊСЏ',
-  'Р‘СѓРґСѓС‰РµРµ', 'РћРґРёРЅРѕС‡РµСЃС‚РІРѕ', 'РџРµСЂРµРіСЂСѓР·РєР°', 'РќРёС‡РµРіРѕ РѕСЃРѕР±РµРЅРЅРѕРіРѕ',
+  'Работа / учёба', 'Отношения', 'Деньги', 'Здоровье', 'Семья',
+  'Будущее', 'Одиночество', 'Перегрузка', 'Ничего особенного',
 ]
 
-const SOCIAL_OPTIONS = ['РќРё СЃ РєРµРј РЅРµ РѕР±С‰Р°Р»СЃСЏ', 'РџРѕРІРµСЂС…РЅРѕСЃС‚РЅРѕ', 'РќРѕСЂРјР°Р»СЊРЅРѕ', 'РҐРѕСЂРѕС€Рѕ РѕР±С‰Р°Р»СЃСЏ']
-const EATING_OPTIONS = ['РџРѕС‡С‚Рё РЅРµ РµР»', 'РџРѕРµР» РјР°Р»Рѕ', 'РќРѕСЂРјР°Р»СЊРЅРѕ', 'РҐРѕСЂРѕС€Рѕ']
+const SOCIAL_OPTIONS = ['Ни с кем не общался', 'Поверхностно', 'Нормально', 'Хорошо общался']
+const EATING_OPTIONS = ['Почти не ел', 'Поел мало', 'Нормально', 'Хорошо']
 
-// в”Ђв”Ђ Helpers в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Helpers ----------------------------------------------------------------
 function SliderRow({ label, value, onChange, min = 1, max = 10 }: {
   label: string; value: number; onChange: (v: number) => void; min?: number; max?: number
 }) {
@@ -75,12 +75,12 @@ function SliderRow({ label, value, onChange, min = 1, max = 10 }: {
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
         <span className="text-sm text-slate-600 font-medium">{label}</span>
-        <span className="text-sm font-bold text-indigo-600 w-6 text-right">{value}</span>
+        <span className="text-sm font-bold text-blue-600 w-6 text-right">{value}</span>
       </div>
       <input
         type="range" min={min} max={max} value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 accent-indigo-500 cursor-pointer"
+        className="w-full h-2 accent-blue-500 cursor-pointer"
       />
     </div>
   )
@@ -96,8 +96,8 @@ function ChipSelect({ options, selected, onToggle }: {
           key={opt} type="button" onClick={() => onToggle(opt)}
           className={`px-3 py-1.5 rounded-xl text-sm border transition font-medium ${
             selected.includes(opt)
-              ? 'border-indigo-500 bg-indigo-500 text-white'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+              ? 'border-blue-500 bg-blue-500 text-white'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300'
           }`}
         >
           {opt}
@@ -117,8 +117,8 @@ function PillSelect({ options, value, onChange }: {
           key={opt} type="button" onClick={() => onChange(opt)}
           className={`px-3 py-1.5 rounded-xl text-sm border transition font-medium ${
             value === opt
-              ? 'border-indigo-500 bg-indigo-500 text-white'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+              ? 'border-blue-500 bg-blue-500 text-white'
+              : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300'
           }`}
         >
           {opt}
@@ -136,7 +136,7 @@ function TagHints({ tags, onSelect }: { tags: string[]; onSelect: (t: string) =>
           key={tag}
           type="button"
           onClick={() => onSelect(tag)}
-          className="px-2.5 py-1 rounded-lg text-xs border border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition"
+          className="px-2.5 py-1 rounded-lg text-xs border border-slate-200 bg-white text-slate-500 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 transition"
         >
           + {tag}
         </button>
@@ -145,55 +145,55 @@ function TagHints({ tags, onSelect }: { tags: string[]; onSelect: (t: string) =>
   )
 }
 
-// в”Ђв”Ђ Block components в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Block components -------------------------------------------------------
 function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof DeepFormData>(k: K, v: DeepFormData[K]) => void }) {
   function togglePain(pain: string) {
     const pains = form.bodyPains
-    if (pain === 'РќРµС‚ Р±РѕР»РµР№') {
-      set('bodyPains', ['РќРµС‚ Р±РѕР»РµР№'])
+    if (pain === 'Нет болей') {
+      set('bodyPains', ['Нет болей'])
       return
     }
-    const filtered = pains.filter((p) => p !== 'РќРµС‚ Р±РѕР»РµР№')
+    const filtered = pains.filter((p) => p !== 'Нет болей')
     set('bodyPains', filtered.includes(pain) ? filtered.filter((p) => p !== pain) : [...filtered, pain])
   }
 
   return (
     <div className="flex flex-col gap-6">
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РћР±С‰РµРµ СЃР°РјРѕС‡СѓРІСЃС‚РІРёРµ</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Общее самочувствие</h3>
         <div className="flex items-center gap-4 mb-3">
-          <span className="text-5xl font-bold text-indigo-600">{form.wellbeing}</span>
+          <span className="text-5xl font-bold text-blue-600">{form.wellbeing}</span>
           <span className="text-slate-400 text-xl">/10</span>
         </div>
         <input
           type="range" min={1} max={10} value={form.wellbeing}
           onChange={(e) => set('wellbeing', Number(e.target.value))}
-          className="w-full h-2 accent-indigo-500 cursor-pointer mb-3"
+          className="w-full h-2 accent-blue-500 cursor-pointer mb-3"
         />
         <textarea
           value={form.wellbeingReason}
           onChange={(e) => set('wellbeingReason', e.target.value)}
-          placeholder="РџРѕС‡РµРјСѓ РёРјРµРЅРЅРѕ СЌС‚Р° С†РёС„СЂР°? (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)"
+          placeholder="Почему именно эта цифра? (необязательно)"
           rows={2}
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
         />
         <TagHints
-          tags={['Р±РѕР»РёС‚ РіРѕР»РѕРІР°', 'РЅР°РїСЂСЏР¶РµРЅРёРµ РІ РїР»РµС‡Р°С…', 'С‚СЏР¶РµСЃС‚СЊ РІ РіСЂСѓРґРё']}
+          tags={['болит голова', 'напряжение в плечах', 'тяжесть в груди']}
           onSelect={(t) => set('wellbeingReason', form.wellbeingReason ? `${form.wellbeingReason}, ${t}` : t)}
         />
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РЎРѕРЅ</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Сон</h3>
         <div className="mb-4">
           <SliderRow
-            label={`РљРѕР»РёС‡РµСЃС‚РІРѕ С‡Р°СЃРѕРІ: ${form.sleepHours} С‡`}
+            label={`Количество часов: ${form.sleepHours} ч`}
             value={form.sleepHours}
             onChange={(v) => set('sleepHours', v)}
             min={3} max={12}
           />
         </div>
-        <p className="text-sm text-slate-500 mb-2">РљР°С‡РµСЃС‚РІРѕ СЃРЅР°:</p>
+        <p className="text-sm text-slate-500 mb-2">Качество сна:</p>
         <PillSelect
           options={SLEEP_QUALITY}
           value={form.sleepQuality}
@@ -203,21 +203,21 @@ function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof D
           type="text"
           value={form.sleepIssues}
           onChange={(e) => set('sleepIssues', e.target.value)}
-          placeholder="Р§С‚Рѕ РјРµС€Р°Р»Рѕ СЃРїР°С‚СЊ? (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)"
-          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          placeholder="Что мешало спать? (необязательно)"
+          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">Р‘РѕР»Рё Рё РґРёСЃРєРѕРјС„РѕСЂС‚</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Боли и дискомфорт</h3>
         <div className="flex flex-wrap gap-2">
           {BODY_PAINS.map((pain) => (
             <button
               key={pain} type="button" onClick={() => togglePain(pain)}
               className={`px-3 py-1.5 rounded-xl text-sm border transition font-medium ${
                 form.bodyPains.includes(pain)
-                  ? 'border-indigo-500 bg-indigo-500 text-white'
-                  : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300'
               }`}
             >
               {pain}
@@ -227,11 +227,11 @@ function Block1Body({ form, set }: { form: DeepFormData; set: <K extends keyof D
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РЈСЂРѕРІРµРЅСЊ СЌРЅРµСЂРіРёРё (1вЂ“5)</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Уровень энергии (1–5)</h3>
         <div className="flex flex-col gap-4">
-          <SliderRow label="РЈС‚СЂРѕ" value={form.energyMorning} onChange={(v) => set('energyMorning', v)} min={1} max={5} />
-          <SliderRow label="Р”РµРЅСЊ" value={form.energyAfternoon} onChange={(v) => set('energyAfternoon', v)} min={1} max={5} />
-          <SliderRow label="Р’РµС‡РµСЂ" value={form.energyEvening} onChange={(v) => set('energyEvening', v)} min={1} max={5} />
+          <SliderRow label="Утро" value={form.energyMorning} onChange={(v) => set('energyMorning', v)} min={1} max={5} />
+          <SliderRow label="День" value={form.energyAfternoon} onChange={(v) => set('energyAfternoon', v)} min={1} max={5} />
+          <SliderRow label="Вечер" value={form.energyEvening} onChange={(v) => set('energyEvening', v)} min={1} max={5} />
         </div>
       </section>
     </div>
@@ -258,7 +258,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
   return (
     <div className="flex flex-col gap-6">
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РљР°РєРёРµ СЌРјРѕС†РёРё РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°Р»Рё СЃРµРіРѕРґРЅСЏ?</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Какие эмоции присутствовали сегодня?</h3>
         <div className="grid grid-cols-3 gap-2">
           {EMOTIONS_LIST.map((e) => {
             const selected = form.emotions.includes(e.label)
@@ -267,10 +267,10 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
                 key={e.label} type="button" onClick={() => toggleEmotion(e.label)}
                 className="flex flex-col items-center gap-2 p-3 rounded-2xl border transition text-xs font-semibold"
                 style={{
-                  borderColor: selected ? '#0d9488' : '#ede9e4',
-                  background: selected ? '#f0fdfa' : '#ffffff',
-                  color: selected ? '#0d9488' : '#1a2535',
-                  boxShadow: selected ? '0 0 0 3px #ccfbf1' : 'none',
+                  borderColor: selected ? '#2563eb' : '#ede9e4',
+                  background: selected ? '#eff6ff' : '#ffffff',
+                  color: selected ? '#2563eb' : '#1a2535',
+                  boxShadow: selected ? '0 0 0 3px #dbeafe' : 'none',
                 }}
               >
                 <img src={e.src} alt="" width={36} height={36} style={{ display: 'block' }} />
@@ -282,17 +282,17 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РўСЂРµРІРѕРіР°</h3>
-        <SliderRow label="РРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ С‚СЂРµРІРѕРіРё" value={form.anxietyLevel} onChange={(v) => set('anxietyLevel', v)} />
+        <h3 className="font-semibold text-slate-800 mb-3">Тревога</h3>
+        <SliderRow label="Интенсивность тревоги" value={form.anxietyLevel} onChange={(v) => set('anxietyLevel', v)} />
         <textarea
           value={form.anxietyAbout}
           onChange={(e) => set('anxietyAbout', e.target.value)}
-          placeholder="Рћ С‡С‘Рј С‚СЂРµРІРѕРіР°? (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)"
+          placeholder="О чём тревога? (необязательно)"
           rows={2}
-          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="mt-3 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
         />
         <TagHints
-          tags={['РёР·-Р·Р° СЂР°Р±РѕС‚С‹', 'РІ РѕС‚РЅРѕС€РµРЅРёСЏС…', 'Р±РµР· РїСЂРёС‡РёРЅС‹']}
+          tags={['из-за работы', 'в отношениях', 'без причины']}
           onSelect={(t) => set('anxietyAbout', form.anxietyAbout ? `${form.anxietyAbout}, ${t}` : t)}
         />
       </section>
@@ -300,7 +300,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
       <section>
         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
           <p className="text-slate-700 font-medium mb-3 text-sm leading-relaxed">
-            Р‘С‹Р»Рё Р»Рё Сѓ РІР°СЃ СЃРµРіРѕРґРЅСЏ РјС‹СЃР»Рё Рѕ С‚РѕРј, С‡С‚РѕР±С‹ РїСЂРёС‡РёРЅРёС‚СЊ СЃРµР±Рµ РІСЂРµРґ РёР»Рё РЅРµ С…РѕС‚РµС‚СЊ Р¶РёС‚СЊ?
+            Были ли у вас сегодня мысли о том, чтобы причинить себе вред или не хотеть жить?
           </p>
           <div className="flex gap-3">
             <button
@@ -311,7 +311,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
                   : 'border-slate-200 bg-white text-slate-700 hover:border-green-300'
               }`}
             >
-              РќРµС‚
+              Нет
             </button>
             <button
               type="button" onClick={() => handleSelfHarm(true)}
@@ -321,7 +321,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
                   : 'border-slate-200 bg-white text-slate-700 hover:border-red-300'
               }`}
             >
-              Р”Р°
+              Да
             </button>
           </div>
         </div>
@@ -329,20 +329,20 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
 
       <section>
         <SliderRow
-          label="РћС‰СѓС‰РµРЅРёРµ РєРѕРЅС‚СЂРѕР»СЏ РЅР°Рґ СЃРІРѕРµР№ Р¶РёР·РЅСЊСЋ"
+          label="Ощущение контроля над своей жизнью"
           value={form.controlFeeling}
           onChange={(v) => set('controlFeeling', v)}
         />
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-2">Р—Р°РїРѕРјРЅРёРІС€РёР№СЃСЏ РјРѕРјРµРЅС‚ РґРЅСЏ</h3>
+        <h3 className="font-semibold text-slate-800 mb-2">Запомнившийся момент дня</h3>
         <textarea
           value={form.memorableMoment}
           onChange={(e) => set('memorableMoment', e.target.value)}
-          placeholder="РћРґРёРЅ РјРѕРјРµРЅС‚, РєРѕС‚РѕСЂС‹Р№ Р·Р°РїРѕРјРЅРёР»СЃСЏ вЂ” С…РѕСЂРѕС€РµРµ РёР»Рё РїР»РѕС…РѕРµвЂ¦"
+          placeholder="Один момент, который запомнился — хорошее или плохое…"
           rows={2}
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
         />
       </section>
     </div>
@@ -358,28 +358,28 @@ function Block3Context({ form, set }: { form: DeepFormData; set: <K extends keyo
   return (
     <div className="flex flex-col gap-6">
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РЎС‚СЂРµСЃСЃ-С„Р°РєС‚РѕСЂС‹</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Стресс-факторы</h3>
         <ChipSelect options={STRESS_FACTORS} selected={form.stressFactors} onToggle={toggleStress} />
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РЎРѕС†РёР°Р»СЊРЅС‹Рµ РєРѕРЅС‚Р°РєС‚С‹</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Социальные контакты</h3>
         <PillSelect options={SOCIAL_OPTIONS} value={form.socialContact} onChange={(v) => set('socialContact', v)} />
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-3">РџРёС‚Р°РЅРёРµ</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">Питание</h3>
         <PillSelect options={EATING_OPTIONS} value={form.eating} onChange={(v) => set('eating', v)} />
       </section>
 
       <section>
-        <h3 className="font-semibold text-slate-800 mb-2">РђР»РєРѕРіРѕР»СЊ / Р»РµРєР°СЂСЃС‚РІР° <span className="text-slate-400 font-normal text-sm">(РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)</span></h3>
+        <h3 className="font-semibold text-slate-800 mb-2">Алкоголь / лекарства <span className="text-slate-400 font-normal text-sm">(необязательно)</span></h3>
         <input
           type="text"
           value={form.substances}
           onChange={(e) => set('substances', e.target.value)}
-          placeholder="РќР°РїСЂРёРјРµСЂ: РІС‹РїРёР» РІРёРЅРѕ, РїСЂРёРЅСЏР» Р°РЅС‚РёРґРµРїСЂРµСЃСЃР°РЅС‚..."
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          placeholder="Например: выпил вино, принял антидепрессант..."
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
       </section>
     </div>
@@ -390,49 +390,49 @@ function Block4Narrative({ form, set }: { form: DeepFormData; set: <K extends ke
   return (
     <div className="flex flex-col gap-4">
       <p className="text-slate-500 text-sm leading-relaxed">
-        Р Р°СЃСЃРєР°Р¶РёС‚Рµ СЃРІРѕРёРјРё СЃР»РѕРІР°РјРё вЂ” С‡С‚Рѕ СЃРµР№С‡Р°СЃ РїСЂРѕРёСЃС…РѕРґРёС‚ РІ РІР°С€РµР№ Р¶РёР·РЅРё? Р§С‚Рѕ РІР°СЃ Р±РµСЃРїРѕРєРѕРёС‚, С‡С‚Рѕ СЂР°РґСѓРµС‚, С‡С‚Рѕ РґР°РІРёС‚? Р­С‚Рѕ СѓРІРёРґРёС‚ С‚РѕР»СЊРєРѕ РІР°С€ AI-Р°СЃСЃРёСЃС‚РµРЅС‚ Рё РїРѕРјРѕР¶РµС‚ РїРѕРґРіРѕС‚РѕРІРёС‚СЊСЃСЏ Рє СЂР°Р·РіРѕРІРѕСЂСѓ СЃРѕ СЃРїРµС†РёР°Р»РёСЃС‚РѕРј.
+        Расскажите своими словами — что сейчас происходит в вашей жизни? Что вас беспокоит, что радует, что давит? Это увидит только ваш AI-ассистент и поможет подготовиться к разговору со специалистом.
       </p>
       <textarea
         value={form.freeText}
         onChange={(e) => set('freeText', e.target.value)}
-        placeholder="РќР°С‡РЅРёС‚Рµ РїРёСЃР°С‚СЊ СЃРІРѕР±РѕРґРЅРѕ, Р±РµР· СЃС‚СЂСѓРєС‚СѓСЂС‹вЂ¦"
+        placeholder="Начните писать свободно, без структуры…"
         rows={10}
-        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
       />
-      <p className="text-slate-400 text-xs text-right">{form.freeText.length} СЃРёРјРІРѕР»РѕРІ</p>
+      <p className="text-slate-400 text-xs text-right">{form.freeText.length} символов</p>
     </div>
   )
 }
 
-// в”Ђв”Ђ Crisis screen в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Crisis screen ----------------------------------------------------------
 function CrisisScreen({ onBack }: { onBack: () => void }) {
   return (
     <div className="min-h-screen bg-white flex flex-col max-w-lg mx-auto px-4 py-8">
       <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
-        <h2 className="text-xl font-bold text-red-700 mb-3">Р’С‹ РЅРµ РѕРґРЅРё</h2>
+        <h2 className="text-xl font-bold text-red-700 mb-3">Вы не одни</h2>
         <p className="text-slate-700 text-sm leading-relaxed mb-4">
-          Р•СЃР»Рё Сѓ РІР°СЃ РµСЃС‚СЊ РјС‹СЃР»Рё Рѕ РїСЂРёС‡РёРЅРµРЅРёРё СЃРµР±Рµ РІСЂРµРґР° вЂ” РїРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕР·РІРѕРЅРёС‚Рµ РЅР° Р»РёРЅРёСЋ РїСЃРёС…РѕР»РѕРіРёС‡РµСЃРєРѕР№ РїРѕРјРѕС‰Рё РїСЂСЏРјРѕ СЃРµР№С‡Р°СЃ. Р­С‚Рѕ Р±РµСЃРїР»Р°С‚РЅРѕ Рё Р°РЅРѕРЅРёРјРЅРѕ.
+          Если у вас есть мысли о причинении себе вреда — пожалуйста, позвоните на линию психологической помощи прямо сейчас. Это бесплатно и анонимно.
         </p>
         <div className="flex flex-col gap-3">
           <a href="tel:150" className="flex items-center gap-3 bg-white border border-red-200 rounded-xl px-4 py-3 text-red-700 font-semibold hover:bg-red-50 transition">
-            <span className="text-xl">рџ“ћ</span>
+            <span className="text-xl">??</span>
             <div>
               <div className="font-bold">150</div>
-              <div className="text-xs text-slate-500">РљР°Р·Р°С…СЃС‚Р°РЅ вЂ” Р±РµСЃРїР»Р°С‚РЅРѕ</div>
+              <div className="text-xs text-slate-500">Казахстан — бесплатно</div>
             </div>
           </a>
           <a href="tel:88002000122" className="flex items-center gap-3 bg-white border border-red-200 rounded-xl px-4 py-3 text-red-700 font-semibold hover:bg-red-50 transition">
-            <span className="text-xl">рџ“ћ</span>
+            <span className="text-xl">??</span>
             <div>
               <div className="font-bold">8-800-2000-122</div>
-              <div className="text-xs text-slate-500">Р РѕСЃСЃРёСЏ вЂ” Р±РµСЃРїР»Р°С‚РЅРѕ</div>
+              <div className="text-xs text-slate-500">Россия — бесплатно</div>
             </div>
           </a>
           <a href="tel:7333" className="flex items-center gap-3 bg-white border border-red-200 rounded-xl px-4 py-3 text-red-700 font-semibold hover:bg-red-50 transition">
-            <span className="text-xl">рџ“ћ</span>
+            <span className="text-xl">??</span>
             <div>
               <div className="font-bold">7333</div>
-              <div className="text-xs text-slate-500">РЈРєСЂР°РёРЅР°</div>
+              <div className="text-xs text-slate-500">Украина</div>
             </div>
           </a>
         </div>
@@ -441,25 +441,25 @@ function CrisisScreen({ onBack }: { onBack: () => void }) {
         onClick={onBack}
         className="text-slate-500 text-sm text-center hover:text-slate-700 transition"
       >
-        в†ђ Р’РµСЂРЅСѓС‚СЊСЃСЏ Рє РѕРїСЂРѕСЃСѓ
+        < Вернуться к опросу
       </button>
     </div>
   )
 }
 
-// в”Ђв”Ђ Main page в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+// -- Main page --------------------------------------------------------------
 const BLOCK_META = [
-  { title: 'РўРµР»Рѕ', subtitle: 'РџСЂРёСЃР»СѓС€Р°Р№СЃСЏ вЂ” С‚РµР»Рѕ Р·РЅР°РµС‚ Р±РѕР»СЊС€Рµ, С‡РµРј РєР°Р¶РµС‚СЃСЏ', step: 'РўРµР»Рѕ' },
-  { title: 'Р­РјРѕС†РёРё', subtitle: 'Р’СЃС‘ С‡С‚Рѕ С‚С‹ С‡СѓРІСЃС‚РІСѓРµС€СЊ вЂ” РІР°Р¶РЅРѕ Рё РЅРѕСЂРјР°Р»СЊРЅРѕ', step: 'Р­РјРѕС†РёРё' },
-  { title: 'РљРѕРЅС‚РµРєСЃС‚', subtitle: 'Р§С‚Рѕ РїСЂРѕРёСЃС…РѕРґРёР»Рѕ РІРѕРєСЂСѓРі С‚РµР±СЏ СЃРµРіРѕРґРЅСЏ?', step: 'РљРѕРЅС‚РµРєСЃС‚' },
-  { title: 'РЎРІРѕР±РѕРґРЅС‹Р№ СЂР°СЃСЃРєР°Р·', subtitle: 'Р—РґРµСЃСЊ РЅРµС‚ РїСЂР°РІРёР»СЊРЅС‹С… РѕС‚РІРµС‚РѕРІ вЂ” С‚РѕР»СЊРєРѕ С‚РІРѕРё СЃР»РѕРІР°', step: 'Р Р°СЃСЃРєР°Р·' },
+  { title: 'Тело', subtitle: 'Прислушайся — тело знает больше, чем кажется', step: 'Тело' },
+  { title: 'Эмоции', subtitle: 'Всё что ты чувствуешь — важно и нормально', step: 'Эмоции' },
+  { title: 'Контекст', subtitle: 'Что происходило вокруг тебя сегодня?', step: 'Контекст' },
+  { title: 'Свободный рассказ', subtitle: 'Здесь нет правильных ответов — только твои слова', step: 'Рассказ' },
 ]
 
 const defaultForm: DeepFormData = {
   wellbeing: 5,
   wellbeingReason: '',
   sleepHours: 7,
-  sleepQuality: 'РќРѕСЂРјР°Р»СЊРЅРѕ',
+  sleepQuality: 'Нормально',
   sleepIssues: '',
   bodyPains: [],
   energyMorning: 3,
@@ -539,8 +539,8 @@ export default function CheckinPage() {
         .insert({
           user_id: user.id,
           wellbeing: form.wellbeing,
-          sleep: `${form.sleepHours}С‡, ${form.sleepQuality}`,
-          energy: `СѓС‚СЂРѕ:${form.energyMorning} РґРµРЅСЊ:${form.energyAfternoon} РІРµС‡РµСЂ:${form.energyEvening}`,
+          sleep: `${form.sleepHours}ч, ${form.sleepQuality}`,
+          energy: `утро:${form.energyMorning} день:${form.energyAfternoon} вечер:${form.energyEvening}`,
           mood: form.emotions.join(', ') || null,
           notes: form.freeText || null,
           deep_data: form,
@@ -550,7 +550,7 @@ export default function CheckinPage() {
 
       if (insertError) {
         console.error('Checkin insert error:', insertError)
-        setError(`РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РґР°РЅРЅС‹Рµ: ${insertError.message}`)
+        setError(`Не удалось сохранить данные: ${insertError.message}`)
         setLoading(false)
         return
       }
@@ -566,7 +566,7 @@ export default function CheckinPage() {
       router.push(`/result?id=${data.id}`)
     } catch (err) {
       console.error('handleSubmit error:', err)
-      setError('РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ Р°РЅР°Р»РёР·. РџСЂРѕРІРµСЂСЊС‚Рµ СЃРѕРµРґРёРЅРµРЅРёРµ Рё РїРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР°.')
+      setError('Не удалось получить анализ. Проверьте соединение и попробуйте снова.')
       setLoading(false)
     }
   }
@@ -583,17 +583,17 @@ export default function CheckinPage() {
       {/* Top bar */}
       <div className="px-4 pt-5 pb-3 max-w-lg mx-auto w-full sticky top-0 z-10" style={{ background: '#faf9f7' }}>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium" style={{ color: '#9ca3af' }}>Р‘Р»РѕРє {block} РёР· {TOTAL_BLOCKS}</span>
+          <span className="text-sm font-medium" style={{ color: '#9ca3af' }}>Блок {block} из {TOTAL_BLOCKS}</span>
           <div className="flex items-center gap-3">
-            <button onClick={() => router.push('/')} className="text-sm transition" style={{ color: '#9ca3af' }}>в†ђ Р“Р»Р°РІРЅР°СЏ</button>
-            <button onClick={() => router.push('/cabinet')} className="text-sm transition" style={{ color: '#9ca3af' }}>РљР°Р±РёРЅРµС‚ в†’</button>
+            <button onClick={() => router.push('/')} className="text-sm transition" style={{ color: '#9ca3af' }}>< Главная</button>
+            <button onClick={() => router.push('/cabinet')} className="text-sm transition" style={{ color: '#9ca3af' }}>Кабинет ></button>
           </div>
         </div>
         {/* Progress bar */}
         <div className="h-1 rounded-full overflow-hidden mb-3" style={{ background: '#ede9e4' }}>
           <div
             className="h-full rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${progress}%`, background: '#0d9488' }}
+            style={{ width: `${progress}%`, background: '#2563eb' }}
           />
         </div>
         {/* Step dots */}
@@ -607,13 +607,13 @@ export default function CheckinPage() {
                 <div
                   className="w-2 h-2 rounded-full mx-auto transition-all duration-300"
                   style={{
-                    background: done || active ? '#0d9488' : '#ede9e4',
-                    boxShadow: active ? '0 0 0 3px #ccfbf1' : 'none',
+                    background: done || active ? '#2563eb' : '#ede9e4',
+                    boxShadow: active ? '0 0 0 3px #dbeafe' : 'none',
                   }}
                 />
                 <span
                   className="text-[10px] font-medium"
-                  style={{ color: active ? '#0d9488' : '#9ca3af' }}
+                  style={{ color: active ? '#2563eb' : '#9ca3af' }}
                 >
                   {m.step}
                 </span>
@@ -658,7 +658,7 @@ export default function CheckinPage() {
               className="flex-1 py-3.5 rounded-2xl font-medium text-sm transition"
               style={{ border: '1px solid #ede9e4', background: '#ffffff', color: '#64748b' }}
             >
-              в†ђ РќР°Р·Р°Рґ
+              < Назад
             </button>
           )}
 
@@ -668,9 +668,9 @@ export default function CheckinPage() {
               onClick={() => goToBlock(block + 1)}
               disabled={!canGoNext()}
               className="flex-1 text-white font-semibold py-3.5 rounded-2xl transition text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: '#0d9488' }}
+              style={{ background: '#2563eb' }}
             >
-              Р”Р°Р»РµРµ в†’
+              Далее >
             </button>
           ) : (
             <button
@@ -678,15 +678,15 @@ export default function CheckinPage() {
               onClick={handleSubmit}
               disabled={loading}
               className="flex-1 text-white font-semibold py-3.5 rounded-2xl transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: '#0d9488' }}
+              style={{ background: '#2563eb' }}
             >
               {loading ? (
                 <>
                   <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                  РђРЅР°Р»РёР·РёСЂСѓРµРјвЂ¦
+                  Анализируем…
                 </>
               ) : (
-                'РџРѕР»СѓС‡РёС‚СЊ Р°РЅР°Р»РёР·'
+                'Получить анализ'
               )}
             </button>
           )}
@@ -698,7 +698,7 @@ export default function CheckinPage() {
             onClick={handleSubmit}
             className="mt-3 text-slate-400 hover:text-slate-600 text-sm text-center w-full transition"
           >
-            РџСЂРѕРїСѓСЃС‚РёС‚СЊ Рё РїРѕР»СѓС‡РёС‚СЊ Р°РЅР°Р»РёР·
+            Пропустить и получить анализ
           </button>
         )}
       </div>

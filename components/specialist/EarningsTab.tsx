@@ -1,4 +1,4 @@
-п»ї'use client'
+'use client'
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -37,7 +37,7 @@ const RATES: Record<Currency, number> = {
   RUB: 0.19,
   USD: 0.002,
 }
-const SYMBOLS: Record<Currency, string> = { KZT: 'в‚ё', RUB: 'в‚Ѕ', USD: '$' }
+const SYMBOLS: Record<Currency, string> = { KZT: '?', RUB: '?', USD: '$' }
 const MIN_KZT = 15000
 
 function formatAmount(amountKzt: number, currency: Currency): string {
@@ -122,7 +122,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16 text-slate-400 text-sm">
-        Р—Р°РіСЂСѓР·РєР°...
+        Загрузка...
       </div>
     )
   }
@@ -131,7 +131,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
     <div className="space-y-6">
       {/* Currency selector */}
       <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-500 font-medium">Р’Р°Р»СЋС‚Р° РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ</p>
+        <p className="text-xs text-slate-500 font-medium">Валюта отображения</p>
         <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
           {(['KZT', 'RUB', 'USD'] as Currency[]).map((c) => (
             <button
@@ -139,7 +139,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
               onClick={() => setCurrency(c)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${
                 currency === c
-                  ? 'bg-white text-indigo-700 shadow-sm'
+                  ? 'bg-white text-blue-700 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700'
               }`}
             >
@@ -152,26 +152,26 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
       {/* Metric cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-          <p className="text-xs text-slate-500 mb-1">Р’СЃРµРіРѕ РїСЂРёРіР»Р°С€РµРЅРѕ</p>
-          <p className="text-2xl font-bold text-indigo-600">{totalInvited}</p>
+          <p className="text-xs text-slate-500 mb-1">Всего приглашено</p>
+          <p className="text-2xl font-bold text-blue-600">{totalInvited}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-          <p className="text-xs text-slate-500 mb-1">РЎС‚Р°Р»Рё Pro</p>
-          <p className="text-2xl font-bold text-indigo-600">{totalConverted}</p>
+          <p className="text-xs text-slate-500 mb-1">Стали Pro</p>
+          <p className="text-2xl font-bold text-blue-600">{totalConverted}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-          <p className="text-xs text-slate-500 mb-1">РќР°РєРѕРїР»РµРЅРѕ</p>
-          <p className="text-xl font-bold text-indigo-600">
+          <p className="text-xs text-slate-500 mb-1">Накоплено</p>
+          <p className="text-xl font-bold text-blue-600">
             {formatAmount(totalKzt, currency)}
           </p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-          <p className="text-xs text-slate-500 mb-1">РњРёРЅ. РІС‹РІРѕРґ</p>
+          <p className="text-xs text-slate-500 mb-1">Мин. вывод</p>
           <p className="text-lg font-bold text-slate-400">{minWithdrawLabel(currency)}</p>
-          <p className="text-xs text-slate-300 mt-0.5">в‰€ $30</p>
+          <p className="text-xs text-slate-300 mt-0.5">? $30</p>
         </div>
       </div>
 
@@ -179,7 +179,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
       {rows.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-200 bg-white p-12 text-center">
           <p className="text-slate-400 text-sm">
-            РџСЂРёРіР»Р°СЃРёС‚Рµ РїРµСЂРІРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ Р·Р°СЂР°Р±Р°С‚С‹РІР°С‚СЊ
+            Пригласите первого пользователя, чтобы начать зарабатывать
           </p>
         </div>
       ) : (
@@ -191,13 +191,13 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
                   Email
                 </th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                  Р”Р°С‚Р° СЂРµРіРёСЃС‚СЂР°С†РёРё
+                  Дата регистрации
                 </th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                  РЎС‚Р°С‚СѓСЃ
+                  Статус
                 </th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                  РќР°С‡РёСЃР»РµРЅРѕ ({currency})
+                  Начислено ({currency})
                 </th>
               </tr>
             </thead>
@@ -214,7 +214,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
                   </td>
                   <td className="px-4 py-3">
                     {row.status === 'converted' ? (
-                      <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/20">
+                      <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
                         Pro
                       </span>
                     ) : (
@@ -224,7 +224,7 @@ export default function EarningsTab({ specialistId }: { specialistId: string }) 
                     )}
                   </td>
                   <td className="px-4 py-3 text-right font-medium text-slate-700">
-                    {row.amountKzt > 0 ? formatAmount(row.amountKzt, currency) : 'вЂ”'}
+                    {row.amountKzt > 0 ? formatAmount(row.amountKzt, currency) : '—'}
                   </td>
                 </tr>
               ))}

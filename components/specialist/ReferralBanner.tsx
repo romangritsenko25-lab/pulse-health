@@ -1,4 +1,4 @@
-п»ї'use client'
+'use client'
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -35,18 +35,18 @@ export default function ReferralBanner({ specialistId, referralCode }: Props) {
   }
 
   return (
-    <div className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-900 p-6 mb-6 text-white">
+    <div className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-900 p-6 mb-6 text-white">
       <p className="text-lg font-semibold mb-1">
-        РџСЂРёРіР»Р°С€Р°Р№С‚Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рё Р·Р°СЂР°Р±Р°С‚С‹РІР°Р№С‚Рµ рџ’°
+        Приглашайте пользователей и зарабатывайте ??
       </p>
       <p className="text-sm text-white/80 mb-4">
-        20% РѕС‚ РєР°Р¶РґРѕР№ Pro-РїРѕРґРїРёСЃРєРё РІР°С€РµРіРѕ РїР°С†РёРµРЅС‚Р° вЂ” РІР°С€Рё
+        20% от каждой Pro-подписки вашего пациента — ваши
       </p>
       <button
         onClick={handleCopy}
         className="rounded-lg bg-white/20 hover:bg-white/30 transition-colors px-4 py-2 text-sm font-medium text-white"
       >
-        {copied ? 'РЎРєРѕРїРёСЂРѕРІР°РЅРѕ вњ“' : 'РЎРєРѕРїРёСЂРѕРІР°С‚СЊ СЃСЃС‹Р»РєСѓ'}
+        {copied ? 'Скопировано ?' : 'Скопировать ссылку'}
       </button>
     </div>
   )

@@ -1,19 +1,19 @@
-п»ї'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const SPECIALTIES = [
-  'РџСЃРёС…РѕР»РѕРі',
-  'РџСЃРёС…РѕС‚РµСЂР°РїРµРІС‚',
-  'РџСЃРёС…РёР°С‚СЂ',
-  'РљР»РёРЅРёС‡РµСЃРєРёР№ РїСЃРёС…РѕР»РѕРі',
-  'РќРµР№СЂРѕРїСЃРёС…РѕР»РѕРі',
-  'РђСЂС‚-С‚РµСЂР°РїРµРІС‚',
-  'РЎРµРјРµР№РЅС‹Р№ РїСЃРёС…РѕР»РѕРі',
-  'РљРџРў-С‚РµСЂР°РїРµРІС‚',
-  'Р”СЂСѓРіРѕРµ',
+  'Психолог',
+  'Психотерапевт',
+  'Психиатр',
+  'Клинический психолог',
+  'Нейропсихолог',
+  'Арт-терапевт',
+  'Семейный психолог',
+  'КПТ-терапевт',
+  'Другое',
 ]
 
 export default function SpecialistRegisterPage() {
@@ -71,7 +71,7 @@ export default function SpecialistRegisterPage() {
         .getPublicUrl(path)
       setPhotoUrl(publicUrl)
     } catch (err) {
-      setError('РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С„РѕС‚Рѕ. РџРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР°.')
+      setError('Ошибка загрузки фото. Попробуйте снова.')
     } finally {
       setUploading(false)
     }
@@ -98,7 +98,7 @@ export default function SpecialistRegisterPage() {
       if (!res.ok) throw new Error(data.error ?? 'registration_failed')
       router.push('/specialist/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'РћС€РёР±РєР° СЂРµРіРёСЃС‚СЂР°С†РёРё')
+      setError(err instanceof Error ? err.message : 'Ошибка регистрации')
     } finally {
       setLoading(false)
     }
@@ -107,7 +107,7 @@ export default function SpecialistRegisterPage() {
   if (checkingAuth) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-400 text-sm animate-pulse">Р—Р°РіСЂСѓР·РєР°вЂ¦</p>
+        <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
       </div>
     )
   }
@@ -115,12 +115,12 @@ export default function SpecialistRegisterPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Gradient header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-blue-900 px-4 py-10">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-900 px-4 py-10">
         <div className="max-w-lg mx-auto text-white">
-          <p className="text-xs font-bold uppercase tracking-widest mb-1 text-indigo-200">Metanoia AI</p>
-          <h1 className="text-2xl font-bold">РџРѕСЂС‚Р°Р» СЃРїРµС†РёР°Р»РёСЃС‚Р°</h1>
-          <p className="text-indigo-100 text-sm mt-1 opacity-90">
-            Р—Р°СЂРµРіРёСЃС‚СЂРёСЂСѓР№С‚РµСЃСЊ С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ СЂРµС„РµСЂР°Р»СЊРЅС‹Рµ СЃСЃС‹Р»РєРё РґР»СЏ РєР»РёРµРЅС‚РѕРІ
+          <p className="text-xs font-bold uppercase tracking-widest mb-1 text-blue-200">Metanoia AI</p>
+          <h1 className="text-2xl font-bold">Портал специалиста</h1>
+          <p className="text-blue-100 text-sm mt-1 opacity-90">
+            Зарегистрируйтесь чтобы получить реферальные ссылки для клиентов
           </p>
         </div>
       </div>
@@ -131,30 +131,30 @@ export default function SpecialistRegisterPage() {
             {/* Name */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                РРјСЏ Рё С„Р°РјРёР»РёСЏ
+                Имя и фамилия
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="РђРЅРЅР° РРІР°РЅРѕРІР°"
+                placeholder="Анна Иванова"
                 required
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
               />
             </div>
 
             {/* Specialty */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                РЎРїРµС†РёР°Р»СЊРЅРѕСЃС‚СЊ
+                Специальность
               </label>
               <select
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
                 required
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
               >
-                <option value="">Р’С‹Р±РµСЂРёС‚Рµ СЃРїРµС†РёР°Р»СЊРЅРѕСЃС‚СЊ</option>
+                <option value="">Выберите специальность</option>
                 {SPECIALTIES.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
@@ -164,7 +164,7 @@ export default function SpecialistRegisterPage() {
             {/* Photo */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                Р¤РѕС‚Рѕ <span className="font-normal text-slate-400">(РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)</span>
+                Фото <span className="font-normal text-slate-400">(необязательно)</span>
               </label>
               {/* Toggle */}
               <div className="flex gap-1 mb-3 bg-slate-100 rounded-xl p-1 w-fit">
@@ -177,7 +177,7 @@ export default function SpecialistRegisterPage() {
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  РЎ СѓСЃС‚СЂРѕР№СЃС‚РІР°
+                  С устройства
                 </button>
                 <button
                   type="button"
@@ -188,27 +188,27 @@ export default function SpecialistRegisterPage() {
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  РџРѕ СЃСЃС‹Р»РєРµ
+                  По ссылке
                 </button>
               </div>
 
               {photoSource === 'file' ? (
                 <div>
-                  <label className="flex flex-col items-center justify-center w-full h-28 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-indigo-400 transition">
+                  <label className="flex flex-col items-center justify-center w-full h-28 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition">
                     {uploading ? (
-                      <span className="text-sm text-slate-400 animate-pulse">Р—Р°РіСЂСѓР·РєР°вЂ¦</span>
+                      <span className="text-sm text-slate-400 animate-pulse">Загрузка…</span>
                     ) : photoUrl ? (
                       <div className="flex flex-col items-center gap-2">
-                        <img src={photoUrl} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-indigo-200" />
-                        <span className="text-xs text-indigo-600 font-medium">Р¤РѕС‚Рѕ Р·Р°РіСЂСѓР¶РµРЅРѕ В· РЅР°Р¶РјРёС‚Рµ С‡С‚РѕР±С‹ Р·Р°РјРµРЅРёС‚СЊ</span>
+                        <img src={photoUrl} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-blue-200" />
+                        <span className="text-xs text-blue-600 font-medium">Фото загружено · нажмите чтобы заменить</span>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-1 text-slate-400">
                         <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                         </svg>
-                        <span className="text-xs">РќР°Р¶РјРёС‚Рµ С‡С‚РѕР±С‹ РІС‹Р±СЂР°С‚СЊ С„РѕС‚Рѕ</span>
-                        <span className="text-xs text-slate-300">JPG, PNG РґРѕ 5 РњР‘</span>
+                        <span className="text-xs">Нажмите чтобы выбрать фото</span>
+                        <span className="text-xs text-slate-300">JPG, PNG до 5 МБ</span>
                       </div>
                     )}
                     <input
@@ -227,9 +227,9 @@ export default function SpecialistRegisterPage() {
                     value={photoUrl}
                     onChange={(e) => setPhotoUrl(e.target.value)}
                     placeholder="https://example.com/photo.jpg"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
                   />
-                  <p className="text-slate-400 text-xs mt-1">РџСЂСЏРјР°СЏ СЃСЃС‹Р»РєР° РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёРµ</p>
+                  <p className="text-slate-400 text-xs mt-1">Прямая ссылка на изображение</p>
                 </div>
               )}
             </div>
@@ -237,35 +237,35 @@ export default function SpecialistRegisterPage() {
             {/* Bio */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                Рћ СЃРµР±Рµ <span className="font-normal text-slate-400">(РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)</span>
+                О себе <span className="font-normal text-slate-400">(необязательно)</span>
               </label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="Р Р°СЃСЃРєР°Р¶РёС‚Рµ Рѕ РІР°С€РµРј РїРѕРґС…РѕРґРµ Рё СЃРїРµС†РёР°Р»РёР·Р°С†РёРё. РќР°РїСЂРёРјРµСЂ: СЂР°Р±РѕС‚Р°СЋ СЃ С‚СЂРµРІРѕР¶РЅС‹РјРё СЂР°СЃСЃС‚СЂРѕР№СЃС‚РІР°РјРё Рё РґРµРїСЂРµСЃСЃРёРµР№, РёСЃРїРѕР»СЊР·СѓСЋ РљРџРў Рё ACT..."
+                placeholder="Расскажите о вашем подходе и специализации. Например: работаю с тревожными расстройствами и депрессией, использую КПТ и ACT..."
                 rows={4}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
               />
-              <p className="text-slate-400 text-xs mt-1">РљР»РёРµРЅС‚С‹ СѓРІРёРґСЏС‚ СЌС‚Рѕ РѕРїРёСЃР°РЅРёРµ РЅР° РІР°С€РµР№ СЃС‚СЂР°РЅРёС†Рµ РїСЂРѕС„РёР»СЏ</p>
+              <p className="text-slate-400 text-xs mt-1">Клиенты увидят это описание на вашей странице профиля</p>
             </div>
 
             {/* Preview */}
             {(name || specialty || photoUrl) && (
-              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-center gap-4">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center gap-4">
                 {photoUrl ? (
                   <img
                     src={photoUrl}
                     alt=""
-                    className="w-12 h-12 rounded-full object-cover border-2 border-indigo-200"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-200"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-lg shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shrink-0">
                     {name ? name[0].toUpperCase() : '?'}
                   </div>
                 )}
                 <div>
-                  <p className="font-semibold text-slate-800 text-sm">{name || 'РРјСЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°'}</p>
-                  <p className="text-indigo-600 text-xs">{specialty || 'РЎРїРµС†РёР°Р»СЊРЅРѕСЃС‚СЊ'}</p>
+                  <p className="font-semibold text-slate-800 text-sm">{name || 'Имя специалиста'}</p>
+                  <p className="text-blue-600 text-xs">{specialty || 'Специальность'}</p>
                   {bio && <p className="text-slate-500 text-xs mt-1 line-clamp-2">{bio}</p>}
                 </div>
               </div>
@@ -279,19 +279,19 @@ export default function SpecialistRegisterPage() {
           <button
             type="submit"
             disabled={loading || !name.trim() || !specialty || uploading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3.5 rounded-2xl transition text-sm"
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold py-3.5 rounded-2xl transition text-sm"
           >
-            {loading ? 'РЎРѕС…СЂР°РЅРµРЅРёРµвЂ¦' : 'РЎРѕР·РґР°С‚СЊ РїСЂРѕС„РёР»СЊ СЃРїРµС†РёР°Р»РёСЃС‚Р°'}
+            {loading ? 'Сохранение…' : 'Создать профиль специалиста'}
           </button>
         </form>
 
         <div className="mt-6 bg-amber-50 border border-amber-100 rounded-2xl p-4">
-          <p className="text-amber-800 text-sm font-semibold mb-1">РљР°Рє СЌС‚Рѕ СЂР°Р±РѕС‚Р°РµС‚</p>
+          <p className="text-amber-800 text-sm font-semibold mb-1">Как это работает</p>
           <ul className="text-amber-700 text-xs space-y-1.5 list-disc list-inside">
-            <li>РџРѕСЃР»Рµ СЂРµРіРёСЃС‚СЂР°С†РёРё РІС‹ РїРѕР»СѓС‡РёС‚Рµ СѓРЅРёРєР°Р»СЊРЅСѓСЋ СЂРµС„РµСЂР°Р»СЊРЅСѓСЋ СЃСЃС‹Р»РєСѓ</li>
-            <li>РљР»РёРµРЅС‚ РїРµСЂРµС…РѕРґРёС‚ РїРѕ СЃСЃС‹Р»РєРµ Рё РІРёРґРёС‚ РІР°С€ РїСЂРѕС„РёР»СЊ</li>
-            <li>РџРѕСЃР»Рµ РІС…РѕРґР° С‡РµСЂРµР· Google вЂ” РєР»РёРµРЅС‚ РїРѕСЏРІР»СЏРµС‚СЃСЏ РІ РІР°С€РµРј РґР°С€Р±РѕСЂРґРµ</li>
-            <li>Р’С‹ РІРёРґРёС‚Рµ РёС… РѕРїСЂРѕСЃС‹ Рё РґРёРЅР°РјРёРєСѓ СЃРѕСЃС‚РѕСЏРЅРёСЏ</li>
+            <li>После регистрации вы получите уникальную реферальную ссылку</li>
+            <li>Клиент переходит по ссылке и видит ваш профиль</li>
+            <li>После входа через Google — клиент появляется в вашем дашборде</li>
+            <li>Вы видите их опросы и динамику состояния</li>
           </ul>
         </div>
       </div>

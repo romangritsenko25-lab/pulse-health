@@ -1,4 +1,4 @@
-п»ї'use client'
+'use client'
 
 import { useState, useEffect, useRef } from 'react'
 
@@ -11,7 +11,7 @@ interface Conversation {
 }
 
 function greeting(name: string): Msg {
-  return { role: 'assistant', content: `РџСЂРёРІРµС‚, ${name}! РЇ РїСЂРѕС‡РёС‚Р°Р» С‚РІРѕРё РїРѕСЃР»РµРґРЅРёРµ Р·Р°РїРёСЃРё. РљР°Рє С‚С‹ СЃРµР№С‡Р°СЃ?` }
+  return { role: 'assistant', content: `Привет, ${name}! Я прочитал твои последние записи. Как ты сейчас?` }
 }
 
 function fmtDate(iso: string) {
@@ -97,7 +97,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
 
     if (res.status === 429) {
       setLimitReached(true)
-      setMessages(prev => [...prev, { role: 'assistant', content: data.message ?? 'Р›РёРјРёС‚ СЃРѕРѕР±С‰РµРЅРёР№ РёСЃС‡РµСЂРїР°РЅ РЅР° СЃРµРіРѕРґРЅСЏ.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.message ?? 'Лимит сообщений исчерпан на сегодня.' }])
     } else if (data.text) {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -123,7 +123,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
         })
       }
     } else {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°. РџРѕРїСЂРѕР±СѓР№ СЃРЅРѕРІР°.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Произошла ошибка. Попробуй снова.' }])
     }
 
     setSending(false)
@@ -143,7 +143,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
   }
 
   const AIIcon = () => (
-    <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+    <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center shrink-0 mt-0.5">
       <svg width="14" height="14" viewBox="0 0 40 40" fill="none">
         <path d="M8 28 L8 10 L20 20 L32 10 L32 28" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
@@ -156,29 +156,29 @@ export default function PersonalAI({ userName }: { userName: string }) {
       <div className="flex items-center justify-between mb-4 gap-2 shrink-0" style={{ paddingTop: '1rem' }}>
         <button
           onClick={() => setShowHistory(h => !h)}
-          className="flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600 transition px-2 py-1.5 rounded-xl hover:bg-indigo-50"
+          className="flex items-center gap-1 text-xs text-slate-500 hover:text-blue-600 transition px-2 py-1.5 rounded-xl hover:bg-blue-50"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/>
           </svg>
-          РСЃС‚РѕСЂРёСЏ
+          История
         </button>
 
         <div className="text-center flex-1">
-          <h2 className="text-base font-bold text-slate-900">РўРІРѕР№ Р°СЃСЃРёСЃС‚РµРЅС‚</h2>
+          <h2 className="text-base font-bold text-slate-900">Твой ассистент</h2>
           <div className={`text-xs font-medium mt-0.5 ${used >= limitState ? 'text-red-400' : 'text-slate-400'}`}>
-            {used} / {limitState} СЃРµРіРѕРґРЅСЏ
+            {used} / {limitState} сегодня
           </div>
         </div>
 
         <button
           onClick={startNewChat}
-          className="flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600 transition px-2 py-1.5 rounded-xl hover:bg-indigo-50"
+          className="flex items-center gap-1 text-xs text-slate-500 hover:text-blue-600 transition px-2 py-1.5 rounded-xl hover:bg-blue-50"
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
           </svg>
-          РќРѕРІС‹Р№
+          Новый
         </button>
       </div>
 
@@ -186,7 +186,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
       {showHistory && (
         <div className="flex-1 overflow-y-auto">
           {conversations.length === 0 ? (
-            <div className="text-center text-slate-400 text-sm mt-8">РќРµС‚ СЃРѕС…СЂР°РЅС‘РЅРЅС‹С… С‡Р°С‚РѕРІ</div>
+            <div className="text-center text-slate-400 text-sm mt-8">Нет сохранённых чатов</div>
           ) : (
             <div className="flex flex-col gap-2">
               {conversations.map(c => (
@@ -195,8 +195,8 @@ export default function PersonalAI({ userName }: { userName: string }) {
                   onClick={() => loadConversation(c.id)}
                   className={`text-left px-4 py-3 rounded-2xl border transition ${
                     c.id === conversationId
-                      ? 'border-indigo-300 bg-indigo-50'
-                      : 'border-slate-100 bg-white hover:border-indigo-200 hover:bg-indigo-50/50'
+                      ? 'border-blue-300 bg-blue-50'
+                      : 'border-slate-100 bg-white hover:border-blue-200 hover:bg-blue-50/50'
                   }`}
                 >
                   <div className="text-xs text-slate-400 mb-1">{fmtDate(c.updated_at)}</div>
@@ -231,7 +231,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
                     {m.role === 'assistant' && <AIIcon />}
                     <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                       m.role === 'user'
-                        ? 'bg-indigo-600 text-white rounded-tr-sm'
+                        ? 'bg-blue-600 text-white rounded-tr-sm'
                         : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm shadow-sm'
                     }`}>
                       {m.content}
@@ -240,13 +240,13 @@ export default function PersonalAI({ userName }: { userName: string }) {
                   {m.role === 'assistant' && m.pdf_topic && (
                     <div className="ml-9 mt-1">
                       {addedTopics.has(i) ? (
-                        <span className="text-xs text-indigo-500 font-medium">вњ“ Р”РѕР±Р°РІР»РµРЅРѕ</span>
+                        <span className="text-xs text-blue-500 font-medium">? Добавлено</span>
                       ) : (
                         <button
                           onClick={() => addTopic(i, m.pdf_topic!)}
-                          className="text-xs text-indigo-600 border border-indigo-200 rounded-lg px-2.5 py-1 hover:bg-indigo-50 transition"
+                          className="text-xs text-blue-600 border border-blue-200 rounded-lg px-2.5 py-1 hover:bg-blue-50 transition"
                         >
-                          + Р”РѕР±Р°РІРёС‚СЊ РІ С‚РµРјС‹ РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°
+                          + Добавить в темы для специалиста
                         </button>
                       )}
                     </div>
@@ -272,8 +272,8 @@ export default function PersonalAI({ userName }: { userName: string }) {
           {/* Input */}
           {limitReached ? (
             <div className="text-center py-4 text-sm text-slate-400">
-              Р›РёРјРёС‚ РёСЃС‡РµСЂРїР°РЅ. Р’РѕР·РІСЂР°С‰Р°Р№СЃСЏ Р·Р°РІС‚СЂР° РёР»Рё{' '}
-              <a href="/upgrade" className="text-indigo-600 font-semibold hover:text-indigo-500">РїРµСЂРµР№РґРё РЅР° Pro</a>.
+              Лимит исчерпан. Возвращайся завтра или{' '}
+              <a href="/upgrade" className="text-blue-600 font-semibold hover:text-blue-500">перейди на Pro</a>.
             </div>
           ) : (
             <div className="flex gap-2 items-end bg-slate-50 pt-2 pb-16 md:pb-2 shrink-0">
@@ -281,15 +281,15 @@ export default function PersonalAI({ userName }: { userName: string }) {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKey}
-                placeholder="РќР°РїРёС€Рё С‡С‚Рѕ-РЅРёР±СѓРґСЊвЂ¦"
+                placeholder="Напиши что-нибудь…"
                 rows={1}
-                className="flex-1 resize-none px-4 py-3 rounded-2xl border border-slate-200 focus:border-indigo-400 focus:outline-none text-sm placeholder:text-slate-400 leading-relaxed"
+                className="flex-1 resize-none px-4 py-3 rounded-2xl border border-slate-200 focus:border-blue-400 focus:outline-none text-sm placeholder:text-slate-400 leading-relaxed"
                 style={{ maxHeight: 120, fontSize: 16 }}
               />
               <button
                 onClick={send}
                 disabled={!input.trim() || sending}
-                className="w-11 h-11 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 flex items-center justify-center transition shrink-0"
+                className="w-11 h-11 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 flex items-center justify-center transition shrink-0"
               >
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.269 20.876L5.999 12zm0 0h7.5" />

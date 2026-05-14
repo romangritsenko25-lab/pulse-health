@@ -46,9 +46,9 @@ function Chip({ label, selected, onClick }: { label: string; selected: boolean; 
     <button
       type="button"
       onClick={onClick}
-      style={selected ? { background: '#0d9488', borderColor: '#0d9488', color: 'white' } : {}}
+      style={selected ? { background: '#2563eb', borderColor: '#2563eb', color: 'white' } : {}}
       className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-        selected ? '' : 'bg-white border-slate-200 text-slate-700 hover:border-[#0d9488] hover:text-[#0d9488]'
+        selected ? '' : 'bg-white border-slate-200 text-slate-700 hover:border-[#2563eb] hover:text-[#2563eb]'
       }`}
     >
       {label}
@@ -60,7 +60,7 @@ function Chip({ label, selected, onClick }: { label: string; selected: boolean; 
 function ValueCard({ icon, title, body }: { icon: string; title: string; body: string }) {
   return (
     <div style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5 flex flex-col gap-2">
-      <div style={{ background: '#f0fdfa', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
+      <div style={{ background: '#eff6ff', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
         <span className="text-2xl">{icon}</span>
       </div>
       <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">{title}</p>
@@ -213,7 +213,7 @@ export default function LoginPage() {
                 width: size,
                 height: size,
                 borderRadius: '50%',
-                border: '1px solid #0d9488',
+                border: '1px solid #2563eb',
                 backgroundColor: 'transparent',
               }}
             />
@@ -223,7 +223,7 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up">
             <Image
-              src="/logo.jpg"
+              src="/Logo1.png"
               alt="Metanoia"
               width={110}
               height={110}
@@ -243,7 +243,7 @@ export default function LoginPage() {
             {authUser ? (
               <a
                 href="/cabinet"
-                style={{ background: '#0d9488' }}
+                style={{ background: '#2563eb' }}
                 className="w-full flex items-center justify-center hover:opacity-90 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg text-sm"
               >
                 В кабинет →
@@ -251,7 +251,7 @@ export default function LoginPage() {
             ) : (
               <button
                 onClick={scrollToLogin}
-                style={{ background: '#0d9488' }}
+                style={{ background: '#2563eb' }}
                 className="w-full hover:opacity-90 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg text-sm"
               >
                 Попробовать бесплатно
@@ -269,10 +269,10 @@ export default function LoginPage() {
       </section>
 
       {/* ── Мини-опрос ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4" style={{ background: '#f0fdfa' }}>
+      <section className="py-16 px-4" style={{ background: '#eff6ff' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
+            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
             <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Как ты себя чувствуешь прямо сейчас?</h2>
           </div>
 
@@ -313,20 +313,20 @@ export default function LoginPage() {
             {allAnswered && (
               <div
                 style={{
-                  background: '#f0fdfa',
-                  borderColor: '#99f6e4',
+                  background: '#eff6ff',
+                  borderColor: '#bfdbfe',
                   opacity: insightVisible ? 1 : 0,
                   transform: insightVisible ? 'translateY(0)' : 'translateY(8px)',
                 }}
                 className="border rounded-2xl p-6 transition-all duration-400"
               >
-                <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-3">Metanoia AI</p>
+                <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-3">Metanoia AI</p>
                 <p style={{ color: '#1e3a5f' }} className="text-sm leading-relaxed mb-5">
                   {getInsight(emotion!, duration!, support!)}
                 </p>
                 <button
                   onClick={scrollToLogin}
-                  style={{ background: '#0d9488' }}
+                  style={{ background: '#2563eb' }}
                   className="w-full hover:opacity-90 text-white font-semibold py-3 rounded-xl transition text-sm"
                 >
                   Получить полный анализ →
@@ -341,7 +341,7 @@ export default function LoginPage() {
       <section className="py-16 px-4" style={{ background: '#faf9f7' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Что ты получишь</p>
+            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Что ты получишь</p>
             <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Не просто опрос</h2>
           </div>
           <div className="flex flex-col gap-4">
@@ -368,7 +368,7 @@ export default function LoginPage() {
       <section className="py-16 px-4" style={{ background: '#ffffff' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-2">Почему это работает</p>
+            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Почему это работает</p>
             <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Немного психологии</h2>
           </div>
           <div className="flex flex-col gap-4">
@@ -393,10 +393,10 @@ export default function LoginPage() {
         <div className="max-w-lg mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p style={{ color: '#0d9488' }} className="text-xs font-bold uppercase tracking-widest mb-1">Материалы</p>
+              <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-1">Материалы</p>
               <h2 style={{ color: '#1e3a5f' }} className="text-xl font-bold">Книги и видео для самопознания</h2>
             </div>
-            <a href="/materials" style={{ color: '#0d9488' }} className="text-sm font-semibold hover:opacity-70 transition shrink-0">
+            <a href="/materials" style={{ color: '#2563eb' }} className="text-sm font-semibold hover:opacity-70 transition shrink-0">
               Смотреть все →
             </a>
           </div>
@@ -418,7 +418,7 @@ export default function LoginPage() {
           <a
             href="/materials"
             style={{ borderColor: '#e2e8f0', color: '#64748b' }}
-            className="flex items-center justify-center w-full py-3 bg-white border hover:border-[#0d9488] hover:text-[#0d9488] text-sm font-semibold rounded-2xl transition"
+            className="flex items-center justify-center w-full py-3 bg-white border hover:border-[#2563eb] hover:text-[#2563eb] text-sm font-semibold rounded-2xl transition"
           >
             Смотреть все материалы
           </a>
@@ -426,7 +426,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Teal CTA ───────────────────────────────────────────────── */}
-      <section style={{ background: '#0d9488' }} className="py-12 px-4 text-center">
+      <section style={{ background: '#2563eb' }} className="py-12 px-4 text-center">
         <div className="max-w-lg mx-auto flex flex-col items-center gap-5">
           <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
             Понимай себя между сессиями
@@ -436,7 +436,7 @@ export default function LoginPage() {
           </p>
           <button
             onClick={scrollToLogin}
-            style={{ color: '#0d9488' }}
+            style={{ color: '#2563eb' }}
             className="bg-white hover:opacity-90 font-semibold py-3.5 px-10 rounded-2xl transition text-sm shadow-lg"
           >
             Начать бесплатно
@@ -445,7 +445,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Login section ──────────────────────────────────────────── */}
-      <section ref={loginRef} className="py-16 px-4" style={{ background: '#f0fdfa' }}>
+      <section ref={loginRef} className="py-16 px-4" style={{ background: '#eff6ff' }}>
         <div className="max-w-sm mx-auto flex flex-col items-center gap-5">
           <div className="text-center">
             <h2 className="text-2xl font-bold" style={{ color: '#1a2535' }}>Начни прямо сейчас — бесплатно</h2>
@@ -461,7 +461,7 @@ export default function LoginPage() {
             style={{ color: '#1a2535', border: '1px solid #ede9e4', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
           >
             {loading ? (
-              <span className="animate-spin inline-block w-5 h-5 border-2 rounded-full" style={{ borderColor: '#0d9488', borderTopColor: 'transparent' }} />
+              <span className="animate-spin inline-block w-5 h-5 border-2 rounded-full" style={{ borderColor: '#2563eb', borderTopColor: 'transparent' }} />
             ) : (
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -489,7 +489,7 @@ export default function LoginPage() {
                 required
                 className="w-full px-4 py-3 rounded-2xl text-sm outline-none transition"
                 style={{ background: '#ffffff', border: '1px solid #ede9e4', color: '#1a2535' }}
-                onFocus={e => (e.currentTarget.style.borderColor = '#0d9488')}
+                onFocus={e => (e.currentTarget.style.borderColor = '#2563eb')}
                 onBlur={e => (e.currentTarget.style.borderColor = '#ede9e4')}
               />
             )}
@@ -501,7 +501,7 @@ export default function LoginPage() {
               required
               className="w-full px-4 py-3 rounded-2xl text-sm outline-none transition"
               style={{ background: '#ffffff', border: '1px solid #ede9e4', color: '#1a2535' }}
-              onFocus={e => (e.currentTarget.style.borderColor = '#0d9488')}
+              onFocus={e => (e.currentTarget.style.borderColor = '#2563eb')}
               onBlur={e => (e.currentTarget.style.borderColor = '#ede9e4')}
             />
             <input
@@ -513,13 +513,13 @@ export default function LoginPage() {
               minLength={6}
               className="w-full px-4 py-3 rounded-2xl text-sm outline-none transition"
               style={{ background: '#ffffff', border: '1px solid #ede9e4', color: '#1a2535' }}
-              onFocus={e => (e.currentTarget.style.borderColor = '#0d9488')}
+              onFocus={e => (e.currentTarget.style.borderColor = '#2563eb')}
               onBlur={e => (e.currentTarget.style.borderColor = '#ede9e4')}
             />
             {emailError && (
               <p
                 className="text-xs text-center"
-                style={{ color: emailError.includes('Проверь') ? '#0d9488' : '#ef4444' }}
+                style={{ color: emailError.includes('Проверь') ? '#2563eb' : '#ef4444' }}
               >
                 {emailError}
               </p>
@@ -528,7 +528,7 @@ export default function LoginPage() {
               type="submit"
               disabled={emailLoading}
               className="w-full py-3.5 hover:opacity-90 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
-              style={{ background: '#0d9488', boxShadow: '0 4px 12px rgba(13,148,136,0.25)' }}
+              style={{ background: '#2563eb', boxShadow: '0 4px 12px rgba(37,99,235,0.25)' }}
             >
               {emailLoading ? '…' : emailMode === 'login' ? 'Войти' : 'Создать аккаунт'}
             </button>
@@ -539,7 +539,7 @@ export default function LoginPage() {
             onClick={() => { setEmailMode(emailMode === 'login' ? 'register' : 'login'); setEmailError('') }}
             className="text-xs transition"
             style={{ color: '#9ca3af' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#0d9488')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#2563eb')}
             onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
           >
             {emailMode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}

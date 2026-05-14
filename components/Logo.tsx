@@ -3,7 +3,7 @@ import Image from 'next/image'
 export function LogoMark({ size = 32 }: { size?: number }) {
   return (
     <Image
-      src="/logo.jpg"
+      src="/Logo1.png"
       alt="Metanoia"
       width={size}
       height={size}
@@ -29,7 +29,7 @@ export function Logo({
     <div style={{ display: 'flex', alignItems: 'center', gap: showMark ? cfg.gap : 0 }}>
       {showMark && (
         <Image
-          src="/logo.jpg"
+          src="/Logo1.png"
           alt="Metanoia"
           width={cfg.icon}
           height={cfg.icon}
@@ -43,7 +43,7 @@ export function Logo({
             fontStyle: 'italic',
             fontWeight: 700,
             fontSize: cfg.name,
-            background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
+            background: 'linear-gradient(135deg, #1d4ed8, #06b6d4)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',

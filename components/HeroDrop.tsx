@@ -90,7 +90,7 @@ export default function HeroDrop({ onComplete }: { onComplete: () => void }) {
       ctx.bezierCurveTo( r * 0.55, -r * 0.3,  r * 0.9,  r * 0.5, 0,  r)
       ctx.bezierCurveTo(-r * 0.9,  r * 0.5, -r * 0.55, -r * 0.3, 0, -r * 1.2)
       ctx.closePath()
-      ctx.fillStyle = '#0d9488'
+      ctx.fillStyle = '#2563eb'
       ctx.fill()
       // Specular highlight
       ctx.beginPath()
@@ -139,7 +139,7 @@ export default function HeroDrop({ onComplete }: { onComplete: () => void }) {
         ctx.globalAlpha = alpha
         ctx.beginPath()
         ctx.ellipse(cx, cy, r, r * 0.32, 0, 0, Math.PI * 2)
-        ctx.strokeStyle = '#0d9488'
+        ctx.strokeStyle = '#2563eb'
         ctx.lineWidth = rp.lw
         ctx.stroke()
         ctx.restore()
@@ -159,7 +159,7 @@ export default function HeroDrop({ onComplete }: { onComplete: () => void }) {
         ctx.globalAlpha = alpha
         ctx.beginPath()
         ctx.arc(x, y, r, 0, Math.PI * 2)
-        ctx.fillStyle = '#0d9488'
+        ctx.fillStyle = '#2563eb'
         ctx.fill()
         ctx.restore()
       }

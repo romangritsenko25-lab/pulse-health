@@ -1,4 +1,4 @@
-п»ї'use client'
+'use client'
 
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
@@ -11,14 +11,14 @@ const PLANS = [
     id: 'free',
     name: 'Free',
     price: '$0',
-    period: 'РЅР°РІСЃРµРіРґР°',
+    period: 'навсегда',
     features: [
-      '3 РѕРїСЂРѕСЃР°',
-      'AI-Р°РЅР°Р»РёР· (5 СЃРµРєС†РёР№)',
-      '3 РІРѕРїСЂРѕСЃР° Рє AI РїРѕСЃР»Рµ Р°РЅР°Р»РёР·Р°',
-      'PDF-РѕС‚С‡С‘С‚',
+      '3 опроса',
+      'AI-анализ (5 секций)',
+      '3 вопроса к AI после анализа',
+      'PDF-отчёт',
     ],
-    cta: 'РўРµРєСѓС‰РёР№ РїР»Р°РЅ',
+    cta: 'Текущий план',
     current: true,
     paddleId: null,
   },
@@ -26,33 +26,33 @@ const PLANS = [
     id: 'pro',
     name: 'Pro',
     price: '$9',
-    period: 'РІ РјРµСЃСЏС†',
+    period: 'в месяц',
     features: [
-      'Р‘РµР·Р»РёРјРёС‚РЅС‹Рµ РѕРїСЂРѕСЃС‹',
-      'Р“Р»СѓР±РѕРєРёР№ AI-Р°РЅР°Р»РёР·',
-      'Р‘РµР·Р»РёРјРёС‚РЅС‹Р№ С‡Р°С‚ СЃ AI',
-      'PDF-РѕС‚С‡С‘С‚С‹',
-      'РСЃС‚РѕСЂРёСЏ Р±РµР· РѕРіСЂР°РЅРёС‡РµРЅРёР№',
-      'Р•Р¶РµРЅРµРґРµР»СЊРЅС‹Р№ email-РѕС‚С‡С‘С‚',
+      'Безлимитные опросы',
+      'Глубокий AI-анализ',
+      'Безлимитный чат с AI',
+      'PDF-отчёты',
+      'История без ограничений',
+      'Еженедельный email-отчёт',
     ],
-    cta: 'РќР°С‡Р°С‚СЊ Pro',
+    cta: 'Начать Pro',
     current: false,
     highlight: true,
     paddleId: process.env.NEXT_PUBLIC_PADDLE_PRO_PRICE_ID,
   },
   {
     id: 'specialist',
-    name: 'Р”Р»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°',
+    name: 'Для специалиста',
     price: '$29',
-    period: 'РІ РјРµСЃСЏС†',
+    period: 'в месяц',
     features: [
-      'Р’СЃС‘ РёР· Pro',
-      'Р РµС„РµСЂР°Р»СЊРЅР°СЏ СЃСЃС‹Р»РєР° РґР»СЏ РєР»РёРµРЅС‚РѕРІ',
-      'Р”Рѕ 50 РєР»РёРµРЅС‚РѕРІ',
-      'РЎРІРѕРґРЅС‹Р№ РґР°С€Р±РѕСЂРґ',
-      'РџСЂРёРѕСЂРёС‚РµС‚РЅР°СЏ РїРѕРґРґРµСЂР¶РєР°',
+      'Всё из Pro',
+      'Реферальная ссылка для клиентов',
+      'До 50 клиентов',
+      'Сводный дашборд',
+      'Приоритетная поддержка',
     ],
-    cta: 'Р”Р»СЏ СЃРїРµС†РёР°Р»РёСЃС‚РѕРІ',
+    cta: 'Для специалистов',
     current: false,
     paddleId: process.env.NEXT_PUBLIC_PADDLE_SPECIALIST_PRICE_ID,
   },
@@ -83,11 +83,11 @@ export default function UpgradePage() {
 
   function handlePaddle(priceId: string | null | undefined) {
     if (!priceId) {
-      alert('РћРїР»Р°С‚Р° РµС‰С‘ РЅРµ РїРѕРґРєР»СЋС‡РµРЅР°. Paddle Р±СѓРґРµС‚ РЅР°СЃС‚СЂРѕРµРЅ РІ Р±Р»РёР¶Р°Р№С€РµРµ РІСЂРµРјСЏ.')
+      alert('Оплата ещё не подключена. Paddle будет настроен в ближайшее время.')
       return
     }
     if (typeof window === 'undefined' || !window.Paddle) {
-      alert('Paddle РЅРµ Р·Р°РіСЂСѓР¶РµРЅ. РџРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·.')
+      alert('Paddle не загружен. Попробуй ещё раз.')
       return
     }
     setLoading(priceId)
@@ -111,35 +111,35 @@ export default function UpgradePage() {
 
       <div className="max-w-lg mx-auto px-4 py-8">
         <button onClick={() => router.back()} className="text-slate-400 hover:text-slate-600 text-sm mb-6 transition">
-          в†ђ РќР°Р·Р°Рґ
+          < Назад
         </button>
 
         {fromPaywall && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 mb-6 flex items-start gap-3">
-            <span className="text-xl">вљ пёЏ</span>
+            <span className="text-xl">??</span>
             <div>
-              <p className="font-semibold text-amber-800 text-sm">Р‘РµСЃРїР»Р°С‚РЅС‹Р№ Р»РёРјРёС‚ РёСЃС‡РµСЂРїР°РЅ</p>
-              <p className="text-amber-700 text-xs mt-0.5">РўС‹ РёСЃРїРѕР»СЊР·РѕРІР°Р»(Р°) 3 Р±РµСЃРїР»Р°С‚РЅС‹С… РѕРїСЂРѕСЃР°. РћР±РЅРѕРІРёСЃСЊ РґРѕ Pro РґР»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ.</p>
+              <p className="font-semibold text-amber-800 text-sm">Бесплатный лимит исчерпан</p>
+              <p className="text-amber-700 text-xs mt-0.5">Ты использовал(а) 3 бесплатных опроса. Обновись до Pro для продолжения.</p>
             </div>
           </div>
         )}
 
         <div className="text-center mb-8">
-          <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Metanoia AI</p>
-          <h1 className="text-2xl font-bold text-slate-800">Р’С‹Р±РµСЂРё С‚Р°СЂРёС„</h1>
-          <p className="text-slate-400 text-sm mt-1">РћРїР»Р°С‚Р° С‡РµСЂРµР· Paddle В· РћС‚РјРµРЅР° РІ Р»СЋР±РѕР№ РјРѕРјРµРЅС‚</p>
+          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Metanoia AI</p>
+          <h1 className="text-2xl font-bold text-slate-800">Выбери тариф</h1>
+          <p className="text-slate-400 text-sm mt-1">Оплата через Paddle · Отмена в любой момент</p>
         </div>
 
         <div className="flex flex-col gap-4">
           {PLANS.map((plan) => (
             <div key={plan.id}
               className={`bg-white rounded-2xl border p-6 relative ${
-                plan.highlight ? 'border-indigo-400 shadow-md shadow-indigo-100' : 'border-slate-200'
+                plan.highlight ? 'border-blue-400 shadow-md shadow-blue-100' : 'border-slate-200'
               }`}
             >
               {plan.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                  Р РµРєРѕРјРµРЅРґСѓРµРј
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Рекомендуем
                 </div>
               )}
 
@@ -150,14 +150,14 @@ export default function UpgradePage() {
                 </div>
                 <div className="text-right">
                   <span className="text-3xl font-bold text-slate-800">{plan.price}</span>
-                  {plan.period !== 'РЅР°РІСЃРµРіРґР°' && <span className="text-slate-400 text-xs">/РјРµСЃ</span>}
+                  {plan.period !== 'навсегда' && <span className="text-slate-400 text-xs">/мес</span>}
                 </div>
               </div>
 
               <ul className="flex flex-col gap-2 mb-5">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
-                    <span className="text-indigo-500 font-bold text-xs">вњ“</span>
+                    <span className="text-blue-500 font-bold text-xs">?</span>
                     {f}
                   </li>
                 ))}
@@ -170,11 +170,11 @@ export default function UpgradePage() {
                   plan.current
                     ? 'bg-slate-100 text-slate-400 cursor-default'
                     : plan.highlight
-                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
+                    ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm'
                     : 'bg-slate-800 hover:bg-slate-700 text-white'
                 }`}
               >
-                {loading === plan.paddleId ? 'РћС‚РєСЂС‹РІР°РµРјвЂ¦' : plan.cta}
+                {loading === plan.paddleId ? 'Открываем…' : plan.cta}
               </button>
             </div>
           ))}
@@ -184,7 +184,7 @@ export default function UpgradePage() {
         <ReferralBlock />
 
         <p className="text-slate-300 text-xs text-center mt-6">
-          Р‘РµР·РѕРїР°СЃРЅР°СЏ РѕРїР»Р°С‚Р° В· РќРµ СЏРІР»СЏРµС‚СЃСЏ РјРµРґРёС†РёРЅСЃРєРёРј СЃРµСЂРІРёСЃРѕРј
+          Безопасная оплата · Не является медицинским сервисом
         </p>
       </div>
     </div>
@@ -216,8 +216,8 @@ function ReferralBlock() {
 
   return (
     <div className="mt-6 bg-white border border-slate-200 rounded-2xl p-5">
-      <p className="font-semibold text-slate-800 text-sm mb-1">Р РµС„РµСЂР°Р»СЊРЅР°СЏ СЃСЃС‹Р»РєР°</p>
-      <p className="text-slate-400 text-xs mb-3">РџСЂРёРіР»Р°СЃРё РґСЂСѓРіР° вЂ” РѕР±Р° РїРѕР»СѓС‡РёС‚Рµ Р±РѕРЅСѓСЃРЅС‹Р№ РѕРїСЂРѕСЃ</p>
+      <p className="font-semibold text-slate-800 text-sm mb-1">Реферальная ссылка</p>
+      <p className="text-slate-400 text-xs mb-3">Пригласи друга — оба получите бонусный опрос</p>
       <div className="flex gap-2">
         <input
           readOnly value={link}
@@ -225,9 +225,9 @@ function ReferralBlock() {
         />
         <button
           onClick={copy}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+          className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
         >
-          {copied ? 'вњ“' : 'РљРѕРїРёСЂРѕРІР°С‚СЊ'}
+          {copied ? '?' : 'Копировать'}
         </button>
       </div>
     </div>
