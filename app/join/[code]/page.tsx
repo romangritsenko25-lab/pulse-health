@@ -82,7 +82,7 @@ export default function JoinPage() {
           <p className="text-slate-500 text-sm mb-5">Попросите специалиста отправить актуальную ссылку</p>
           <button
             onClick={() => router.push('/login')}
-            className="text-indigo-600 text-sm font-semibold hover:underline"
+            className="text-blue-600 text-sm font-semibold hover:underline"
           >
             Войти в Metanoia AI →
           </button>
@@ -94,7 +94,7 @@ export default function JoinPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-10">
       {/* Branding */}
-      <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-8">Metanoia AI</p>
+      <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-8">Metanoia AI</p>
 
       {/* Specialist card */}
       <div className="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-100 p-8 max-w-sm w-full mb-6">
@@ -104,16 +104,16 @@ export default function JoinPage() {
             <img
               src={specialist.photo_url}
               alt={specialist.name}
-              className="w-20 h-20 rounded-full object-cover border-4 border-indigo-100"
+              className="w-20 h-20 rounded-full object-cover border-4 border-blue-100"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-600">
+            <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-3xl font-bold text-blue-600">
               {specialist?.name[0].toUpperCase()}
             </div>
           )}
           <div>
             <p className="text-lg font-bold text-slate-800">{specialist?.name}</p>
-            <p className="text-indigo-600 text-sm font-medium">{specialist?.specialty}</p>
+            <p className="text-blue-600 text-sm font-medium">{specialist?.specialty}</p>
           </div>
         </div>
 
@@ -133,7 +133,7 @@ export default function JoinPage() {
             'PDF-документ для приёма',
           ].map((item) => (
             <li key={item} className="flex items-center gap-2 text-sm text-slate-600">
-              <span className="text-indigo-500 font-bold text-xs">✓</span>
+              <span className="text-blue-500 font-bold text-xs">✓</span>
               {item}
             </li>
           ))}

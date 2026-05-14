@@ -1,4 +1,4 @@
-'use client'
+п»ї'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ import {
 import PersonalAI from '@/components/PersonalAI'
 import CalendarTab from '@/components/CalendarTab'
 
-// -- Types ------------------------------------------------------------------
+// в”Ђв”Ђ Types в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 interface Profile { name: string | null; email: string | null }
 interface CheckinRow {
   id: string; wellbeing: number | null; mood: string | null; created_at: string
@@ -20,12 +20,12 @@ interface JournalEntry {
 }
 
 const MOODS = [
-  { emoji: '??', label: 'Грустно' }, { emoji: '??', label: 'Тревожно' },
-  { emoji: '??', label: 'Нейтрально' }, { emoji: '??', label: 'Неплохо' },
-  { emoji: '??', label: 'Хорошо' }, { emoji: '??', label: 'Раздражённо' },
+  { emoji: 'рџ”', label: 'Р“СЂСѓСЃС‚РЅРѕ' }, { emoji: 'рџ°', label: 'РўСЂРµРІРѕР¶РЅРѕ' },
+  { emoji: 'рџђ', label: 'РќРµР№С‚СЂР°Р»СЊРЅРѕ' }, { emoji: 'рџ™‚', label: 'РќРµРїР»РѕС…Рѕ' },
+  { emoji: 'рџЉ', label: 'РҐРѕСЂРѕС€Рѕ' }, { emoji: 'рџ¤', label: 'Р Р°Р·РґСЂР°Р¶С‘РЅРЅРѕ' },
 ]
 
-// -- Streak -----------------------------------------------------------------
+// в”Ђв”Ђ Streak в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function calcStreak(checkins: CheckinRow[]): number {
   if (!checkins.length) return 0
   const days = new Set(checkins.map((c) => new Date(c.created_at).toLocaleDateString('ru-RU')))
@@ -39,7 +39,7 @@ function calcStreak(checkins: CheckinRow[]): number {
   return streak
 }
 
-// -- Voice hook -------------------------------------------------------------
+// в”Ђв”Ђ Voice hook в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function useSpeech(onResult: (t: string) => void) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref = useRef<any>(null)
@@ -68,7 +68,7 @@ function useSpeech(onResult: (t: string) => void) {
   return { listening, supported, toggle }
 }
 
-// -- New Entry Modal --------------------------------------------------------
+// в”Ђв”Ђ New Entry Modal в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e: JournalEntry) => void }) {
   const [content, setContent] = useState('')
   const [mood, setMood] = useState<string | null>(null)
@@ -95,7 +95,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-20 sm:pb-0">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col gap-5 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-slate-800 text-lg">Новая запись</h2>
+          <h2 className="font-bold text-slate-800 text-lg">РќРѕРІР°СЏ Р·Р°РїРёСЃСЊ</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -104,7 +104,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
         </div>
         <div className="relative">
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
-            placeholder="Что сейчас происходит? Пиши свободно..."
+            placeholder="Р§С‚Рѕ СЃРµР№С‡Р°СЃ РїСЂРѕРёСЃС…РѕРґРёС‚? РџРёС€Рё СЃРІРѕР±РѕРґРЅРѕ..."
             className="w-full resize-none rounded-2xl border border-slate-200 focus:border-blue-400 focus:outline-none p-4 text-sm text-slate-800 placeholder:text-slate-400 leading-relaxed"
             style={{ minHeight: 160, fontSize: 16 }} />
           <button type="button" onClick={toggle} disabled={!supported}
@@ -121,7 +121,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
           </button>
         </div>
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Настроение</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">РќР°СЃС‚СЂРѕРµРЅРёРµ</p>
           <div className="flex gap-2 flex-wrap">
             {MOODS.map((m) => (
               <button key={m.emoji} type="button" onClick={() => setMood(mood === m.emoji ? null : m.emoji)} title={m.label}
@@ -132,10 +132,10 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">Отмена</button>
+          <button onClick={onClose} className="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50">РћС‚РјРµРЅР°</button>
           <button onClick={save} disabled={!content.trim() || saving}
             className="flex-1 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold">
-            {saving ? 'Сохраняем…' : 'Сохранить'}
+            {saving ? 'РЎРѕС…СЂР°РЅСЏРµРјвЂ¦' : 'РЎРѕС…СЂР°РЅРёС‚СЊ'}
           </button>
         </div>
       </div>
@@ -143,7 +143,7 @@ function NewEntryModal({ onClose, onSaved }: { onClose: () => void; onSaved: (e:
   )
 }
 
-// -- PDF data types ---------------------------------------------------------
+// в”Ђв”Ђ PDF data types в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 interface PdfCheckin {
   wellbeing?: number | null
   sleep?: string | null
@@ -184,21 +184,21 @@ async function generateProfessionalPdf(data: PdfData) {
 
   const { checkin, resume, topics, specialist, userName, date } = data
 
-  const emotionsStr = checkin.emotions?.length ? checkin.emotions.join(', ') : '—'
-  const checkinDate = checkin.date ? new Date(checkin.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'
+  const emotionsStr = checkin.emotions?.length ? checkin.emotions.join(', ') : 'вЂ”'
+  const checkinDate = checkin.date ? new Date(checkin.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : 'вЂ”'
   const cleanResume = cleanMarkdown(resume)
 
-  // Bug 2: energy formatting — filter nulls, format "Утро: X · День: X · Вечер: X"
+  // Bug 2: energy formatting вЂ” filter nulls, format "РЈС‚СЂРѕ: X В· Р”РµРЅСЊ: X В· Р’РµС‡РµСЂ: X"
   const energyParts = [
-    checkin.energyMorning != null ? `Утро: ${checkin.energyMorning}` : null,
-    checkin.energyDay != null ? `День: ${checkin.energyDay}` : null,
-    checkin.energyEvening != null ? `Вечер: ${checkin.energyEvening}` : null,
+    checkin.energyMorning != null ? `РЈС‚СЂРѕ: ${checkin.energyMorning}` : null,
+    checkin.energyDay != null ? `Р”РµРЅСЊ: ${checkin.energyDay}` : null,
+    checkin.energyEvening != null ? `Р’РµС‡РµСЂ: ${checkin.energyEvening}` : null,
   ].filter(Boolean)
-  const energyStr = energyParts.length ? energyParts.join(' · ') : 'Не указано'
+  const energyStr = energyParts.length ? energyParts.join(' В· ') : 'РќРµ СѓРєР°Р·Р°РЅРѕ'
 
-  // Bug 1: anxiety/control — show "Не указано" when null
-  const anxietyStr = checkin.anxiety != null ? `${checkin.anxiety}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">Не указано</span>'
-  const controlStr = checkin.control != null ? `${checkin.control}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">Не указано</span>'
+  // Bug 1: anxiety/control вЂ” show "РќРµ СѓРєР°Р·Р°РЅРѕ" when null
+  const anxietyStr = checkin.anxiety != null ? `${checkin.anxiety}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">РќРµ СѓРєР°Р·Р°РЅРѕ</span>'
+  const controlStr = checkin.control != null ? `${checkin.control}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">РќРµ СѓРєР°Р·Р°РЅРѕ</span>'
 
   const topicsHtml = topics.map((t, i) => `
     <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
@@ -210,16 +210,16 @@ async function generateProfessionalPdf(data: PdfData) {
   const specialistBlock = specialist?.name
     ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
         <div>
-          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для</p>
-          <p style="font-size:14px;font-weight:700;color:#1d4ed8;margin:0;">${specialist.name} · ${specialist.specialty}</p>
+          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">РџРѕРґРіРѕС‚РѕРІР»РµРЅРѕ РґР»СЏ</p>
+          <p style="font-size:14px;font-weight:700;color:#1d4ed8;margin:0;">${specialist.name} В· ${specialist.specialty}</p>
         </div>
       </div>`
     : ''
 
-  // Bug 3: stressors — show only if not empty
+  // Bug 3: stressors вЂ” show only if not empty
   const stressorsBlock = checkin.stressors?.length
     ? `<div style="margin-bottom:${checkin.freeText ? '14px' : '0'};">
-        <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Стрессоры</p>
+        <p style="font-size:10px;color:#64748b;margin:0 0 4px;">РЎС‚СЂРµСЃСЃРѕСЂС‹</p>
         <p style="font-size:13px;color:#1e3a5f;margin:0;">${checkin.stressors.join(', ')}</p>
       </div>`
     : ''
@@ -228,72 +228,72 @@ async function generateProfessionalPdf(data: PdfData) {
 
   const html = `
     <div style="width:794px;padding:52px 60px 80px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e3a5f;box-sizing:border-box;">
-      <!-- ШАПКА -->
+      <!-- РЁРђРџРљРђ -->
       <div style="border-bottom:2px solid #dbeafe;padding-bottom:22px;margin-bottom:28px;">
         <p style="font-size:22px;font-weight:800;color:#2563eb;margin:0 0 4px;letter-spacing:-0.5px;">Metanoia AI</p>
-        <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0 0 6px;">Подготовка к приёму у специалиста</p>
-        <p style="font-size:11px;color:#94a3b8;margin:0;">${userName} · ${date}</p>
+        <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0 0 6px;">РџРѕРґРіРѕС‚РѕРІРєР° Рє РїСЂРёС‘РјСѓ Сѓ СЃРїРµС†РёР°Р»РёСЃС‚Р°</p>
+        <p style="font-size:11px;color:#94a3b8;margin:0;">${userName} В· ${date}</p>
       </div>
 
       ${specialistBlock}
 
-      <!-- 01 ЧЕК-ИН -->
+      <!-- 01 Р§Р•Рљ-РРќ -->
       <div style="margin-bottom:24px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">01 · Последний чек-ин <span style="color:#94a3b8;font-weight:400;font-size:9px;">${checkinDate}</span></p>
+        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">01 В· РџРѕСЃР»РµРґРЅРёР№ С‡РµРє-РёРЅ <span style="color:#94a3b8;font-weight:400;font-size:9px;">${checkinDate}</span></p>
         <div style="background:#f8fafc;border-radius:10px;padding:18px 20px;margin-bottom:14px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:12px;">
             <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Самочувствие</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.wellbeing ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">РЎР°РјРѕС‡СѓРІСЃС‚РІРёРµ</p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.wellbeing ?? 'вЂ”'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
             </div>
             <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Тревога</p>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">РўСЂРµРІРѕРіР°</p>
               <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${anxietyStr}</p>
             </div>
             <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Сон</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.sleep ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;"> ч</span></p>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">РЎРѕРЅ</p>
+              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.sleep ?? 'вЂ”'}<span style="font-size:11px;font-weight:400;color:#94a3b8;"> С‡</span></p>
             </div>
             <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Контроль</p>
+              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">РљРѕРЅС‚СЂРѕР»СЊ</p>
               <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${controlStr}</p>
             </div>
           </div>
           <div style="border-top:1px solid #e2e8f0;padding-top:10px;margin-top:2px;">
-            <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Энергия (утро / день / вечер)</p>
+            <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Р­РЅРµСЂРіРёСЏ (СѓС‚СЂРѕ / РґРµРЅСЊ / РІРµС‡РµСЂ)</p>
             <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0;">${energyStr}</p>
           </div>
         </div>
         <div style="margin-bottom:8px;">
-          <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Эмоции</p>
+          <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Р­РјРѕС†РёРё</p>
           <p style="font-size:13px;color:#1e3a5f;margin:0;">${emotionsStr}</p>
         </div>
         ${stressorsBlock}
         ${checkin.freeText ? `<div style="background:#fffbeb;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:0 8px 8px 0;margin-top:8px;">
-          <p style="font-size:10px;font-weight:700;color:#92400e;margin:0 0 6px;">Своими словами:</p>
+          <p style="font-size:10px;font-weight:700;color:#92400e;margin:0 0 6px;">РЎРІРѕРёРјРё СЃР»РѕРІР°РјРё:</p>
           <p style="font-size:12px;line-height:1.65;color:#78350f;margin:0;">${checkin.freeText}</p>
         </div>` : ''}
       </div>
 
-      <!-- 02 РЕЗЮМЕ -->
+      <!-- 02 Р Р•Р—Р®РњР• -->
       <div style="margin-bottom:24px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">02 · Резюме состояния</p>
+        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">02 В· Р РµР·СЋРјРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ</p>
         <div style="background:#eff6ff;border-radius:10px;padding:18px 20px;border:1px solid #dbeafe;">
           <p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;white-space:pre-wrap;">${cleanResume}</p>
         </div>
       </div>
 
-      <!-- 03 ТЕМЫ -->
+      <!-- 03 РўР•РњР« -->
       ${topics.length > 0 ? `<div style="margin-bottom:28px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">03 · Темы для обсуждения</p>
+        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">03 В· РўРµРјС‹ РґР»СЏ РѕР±СЃСѓР¶РґРµРЅРёСЏ</p>
         <div style="background:#f8fafc;border-radius:10px;padding:16px 20px;">
           ${topicsHtml}
         </div>
       </div>` : ''}
 
-      <!-- ФУТЕР -->
+      <!-- Р¤РЈРўР•Р  -->
       <div style="border-top:1px solid #e2e8f0;padding-top:14px;margin-top:4px;">
-        <p style="font-size:11px;color:#94a3b8;margin:0 0 3px;">Составлено AI-ассистентом Metanoia AI · Не является медицинским заключением</p>
+        <p style="font-size:11px;color:#94a3b8;margin:0 0 3px;">РЎРѕСЃС‚Р°РІР»РµРЅРѕ AI-Р°СЃСЃРёСЃС‚РµРЅС‚РѕРј Metanoia AI В· РќРµ СЏРІР»СЏРµС‚СЃСЏ РјРµРґРёС†РёРЅСЃРєРёРј Р·Р°РєР»СЋС‡РµРЅРёРµРј</p>
         <p style="font-size:10px;color:#cbd5e1;margin:0;">${nowStr}</p>
       </div>
     </div>`
@@ -314,7 +314,7 @@ async function generateProfessionalPdf(data: PdfData) {
   const pageH = pdf.internal.pageSize.getHeight()
   const imgH = (canvas.height * pageW) / canvas.width
 
-  // Bug 5: page breaks — add white overlay at top of new pages to avoid cut text
+  // Bug 5: page breaks вЂ” add white overlay at top of new pages to avoid cut text
   const topMargin = 10
   let remaining = imgH
   let yPos = 0
@@ -334,12 +334,12 @@ async function generateProfessionalPdf(data: PdfData) {
   pdf.save(filename)
 }
 
-// -- Chart helpers ----------------------------------------------------------
+// в”Ђв”Ђ Chart helpers в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 const LABEL_MAP: Record<string, string> = {
-  wellbeing: 'Самочувствие',
-  anxiety: 'Тревога',
-  energy: 'Энергия',
-  mood: 'Настроение',
+  wellbeing: 'РЎР°РјРѕС‡СѓРІСЃС‚РІРёРµ',
+  anxiety: 'РўСЂРµРІРѕРіР°',
+  energy: 'Р­РЅРµСЂРіРёСЏ',
+  mood: 'РќР°СЃС‚СЂРѕРµРЅРёРµ',
 }
 
 function CustomTooltip({ active, payload, label }: {
@@ -360,7 +360,7 @@ function CustomTooltip({ active, payload, label }: {
   )
 }
 
-// -- Week strip -------------------------------------------------------------
+// в”Ђв”Ђ Week strip в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function WeekStrip({ checkins }: { checkins: CheckinRow[] }) {
   const today = new Date()
   const monday = new Date(today)
@@ -373,12 +373,12 @@ function WeekStrip({ checkins }: { checkins: CheckinRow[] }) {
   })
 
   const checkinDays = new Set(checkins.map((c) => new Date(c.created_at).toLocaleDateString('ru-RU')))
-  const DAY_LABELS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+  const DAY_LABELS = ['РџРЅ', 'Р’С‚', 'РЎСЂ', 'Р§С‚', 'РџС‚', 'РЎР±', 'Р’СЃ']
   const todayStr = today.toLocaleDateString('ru-RU')
 
   return (
     <div className="bg-white rounded-2xl p-4" style={{ border: '1px solid #ede9e4' }}>
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Эта неделя</p>
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Р­С‚Р° РЅРµРґРµР»СЏ</p>
       <div className="flex justify-between">
         {days.map((d, i) => {
           const dStr = d.toLocaleDateString('ru-RU')
@@ -397,7 +397,7 @@ function WeekStrip({ checkins }: { checkins: CheckinRow[] }) {
                   opacity: isFuture ? 0.4 : 1,
                 }}
               >
-                {done ? '?' : d.getDate()}
+                {done ? 'вњ“' : d.getDate()}
               </div>
             </div>
           )
@@ -407,18 +407,18 @@ function WeekStrip({ checkins }: { checkins: CheckinRow[] }) {
   )
 }
 
-// -- Tabs -------------------------------------------------------------------
+// в”Ђв”Ђ Tabs в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 const TABS = [
-  { id: 'today', label: 'Сегодня' },
-  { id: 'journal', label: 'Журнал' },
-  { id: 'dynamics', label: 'Динамика' },
-  { id: 'ai', label: 'Мой AI' },
+  { id: 'today', label: 'РЎРµРіРѕРґРЅСЏ' },
+  { id: 'journal', label: 'Р–СѓСЂРЅР°Р»' },
+  { id: 'dynamics', label: 'Р”РёРЅР°РјРёРєР°' },
+  { id: 'ai', label: 'РњРѕР№ AI' },
   { id: 'pdf', label: 'PDF' },
-  { id: 'calendar', label: 'Календарь' },
+  { id: 'calendar', label: 'РљР°Р»РµРЅРґР°СЂСЊ' },
 ] as const
 type TabId = typeof TABS[number]['id']
 
-// -- Bottom nav SVG icons ----------------------------------------------------
+// в”Ђв”Ђ Bottom nav SVG icons в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 function IconHome({ active }: { active: boolean }) {
   const c = active ? '#2563eb' : '#9ca3af'
   return (
@@ -467,7 +467,7 @@ function IconMore({ active }: { active: boolean }) {
   )
 }
 
-// -- Main -------------------------------------------------------------------
+// в”Ђв”Ђ Main в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
 export default function CabinetClient() {
   const router = useRouter()
   const [tab, setTab] = useState<TabId>('today')
@@ -514,7 +514,7 @@ export default function CabinetClient() {
     setPdfError(null)
     try {
       const res = await fetch('/api/pdf-data')
-      if (!res.ok) throw new Error('Ошибка загрузки данных')
+      if (!res.ok) throw new Error('РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РґР°РЅРЅС‹С…')
       const data: PdfData = await res.json()
       await generateProfessionalPdf(data)
 
@@ -524,7 +524,7 @@ export default function CabinetClient() {
         await supabase.from('pdf_downloads').insert({ user_id: user.id })
       }
     } catch (e) {
-      setPdfError(e instanceof Error ? e.message : 'Неизвестная ошибка')
+      setPdfError(e instanceof Error ? e.message : 'РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°')
     } finally {
       setPdfLoading(false)
     }
@@ -543,13 +543,13 @@ export default function CabinetClient() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
+        <p className="text-slate-400 text-sm animate-pulse">Р—Р°РіСЂСѓР·РєР°вЂ¦</p>
       </div>
     )
   }
 
-  const displayName = profile?.name || userEmail?.split('@')[0] || 'Пользователь'
-  const firstName = profile?.name?.split(' ')[0] ?? userEmail?.split('@')[0] ?? 'друг'
+  const displayName = profile?.name || userEmail?.split('@')[0] || 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ'
+  const firstName = profile?.name?.split(' ')[0] ?? userEmail?.split('@')[0] ?? 'РґСЂСѓРі'
   const streak = calcStreak(checkins)
   const todayStr = new Date().toLocaleDateString('ru-RU')
   const todayCheckin = checkins.find(
@@ -583,7 +583,7 @@ export default function CabinetClient() {
               className="flex items-center gap-1.5 text-sm text-slate-600 font-medium hover:text-slate-800 transition px-2 py-1.5 rounded-lg hover:bg-slate-50"
             >
               <span className="hidden sm:inline">{displayName}</span>
-              <span className="sm:hidden text-slate-400 text-xs">Меню</span>
+              <span className="sm:hidden text-slate-400 text-xs">РњРµРЅСЋ</span>
               <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
@@ -596,14 +596,14 @@ export default function CabinetClient() {
                     onClick={() => { setShowUserMenu(false); handleGoHome() }}
                     className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
                   >
-                    На главную
+                    РќР° РіР»Р°РІРЅСѓСЋ
                   </button>
                   <div className="my-1 border-t border-slate-50" />
                   <button
                     onClick={() => { setShowUserMenu(false); handleSignOut() }}
                     className="w-full text-left px-4 py-2.5 text-xs text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition"
                   >
-                    Выйти из аккаунта
+                    Р’С‹Р№С‚Рё РёР· Р°РєРєР°СѓРЅС‚Р°
                   </button>
                 </div>
               </>
@@ -612,7 +612,7 @@ export default function CabinetClient() {
         </div>
       </header>
 
-      {/* Tab bar — desktop only */}
+      {/* Tab bar вЂ” desktop only */}
       <div className="hidden md:block bg-white shrink-0 z-30" style={{ borderBottom: '1px solid #ede9e4' }}>
         <div className="max-w-2xl mx-auto px-4">
           <div className="flex overflow-x-auto no-scrollbar">
@@ -634,39 +634,39 @@ export default function CabinetClient() {
       <div className={`flex-1 overflow-x-hidden ${tab === 'ai' ? 'overflow-hidden flex flex-col min-h-0' : 'overflow-y-auto'}`}>
         <div className={`max-w-2xl w-full mx-auto px-4 ${tab === 'ai' ? 'flex flex-col flex-1 min-h-0' : 'py-6 pb-24 md:pb-6'}`}>
 
-        {/* -- СЕГОДНЯ -- */}
+        {/* в”Ђв”Ђ РЎР•Р“РћР”РќРЇ в”Ђв”Ђ */}
         {tab === 'today' && (
           <div className="flex flex-col gap-4">
 
-            {/* 1. Приветствие */}
+            {/* 1. РџСЂРёРІРµС‚СЃС‚РІРёРµ */}
             <div>
-              <h1 className="text-xl font-bold text-slate-900">Привет, {firstName}!</h1>
+              <h1 className="text-xl font-bold text-slate-900">РџСЂРёРІРµС‚, {firstName}!</h1>
               <p className="text-slate-400 text-sm mt-0.5">
                 {new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
               </p>
-              <p className="text-slate-500 text-sm mt-2">Рады видеть тебя. Как ты сегодня?</p>
+              <p className="text-slate-500 text-sm mt-2">Р Р°РґС‹ РІРёРґРµС‚СЊ С‚РµР±СЏ. РљР°Рє С‚С‹ СЃРµРіРѕРґРЅСЏ?</p>
             </div>
 
-            {/* 2. Стрик */}
+            {/* 2. РЎС‚СЂРёРє */}
             {streak > 0 && (
               <div
                 className="rounded-2xl px-4 py-3 flex items-center gap-3"
                 style={{ background: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '1px solid #fde68a' }}
               >
-                <span className="text-2xl">??</span>
+                <span className="text-2xl">рџ”Ґ</span>
                 <div>
                   <p className="text-sm font-bold" style={{ color: '#92400e' }}>
-                    {streak} {streak === 1 ? 'день' : streak < 5 ? 'дня' : 'дней'} подряд
+                    {streak} {streak === 1 ? 'РґРµРЅСЊ' : streak < 5 ? 'РґРЅСЏ' : 'РґРЅРµР№'} РїРѕРґСЂСЏРґ
                   </p>
-                  <p className="text-xs mt-0.5" style={{ color: '#b45309' }}>Продолжай — это работает</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#b45309' }}>РџСЂРѕРґРѕР»Р¶Р°Р№ вЂ” СЌС‚Рѕ СЂР°Р±РѕС‚Р°РµС‚</p>
                 </div>
               </div>
             )}
 
-            {/* 3. Полоска недели */}
+            {/* 3. РџРѕР»РѕСЃРєР° РЅРµРґРµР»Рё */}
             <WeekStrip checkins={checkins} />
 
-            {/* 4. Блок чек-ина */}
+            {/* 4. Р‘Р»РѕРє С‡РµРє-РёРЅР° */}
             {todayCheckin ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-5">
                 <div className="flex items-center gap-2.5 mb-3">
@@ -675,11 +675,11 @@ export default function CabinetClient() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <p className="text-sm font-semibold text-slate-700">Чек-ин пройден сегодня</p>
+                  <p className="text-sm font-semibold text-slate-700">Р§РµРє-РёРЅ РїСЂРѕР№РґРµРЅ СЃРµРіРѕРґРЅСЏ</p>
                 </div>
                 <a href={`/cabinet?tab=dynamics`}
                   className="inline-flex text-blue-600 hover:text-blue-500 text-sm font-semibold transition">
-                  Посмотреть анализ >
+                  РџРѕСЃРјРѕС‚СЂРµС‚СЊ Р°РЅР°Р»РёР· в†’
                 </a>
               </div>
             ) : (
@@ -689,10 +689,10 @@ export default function CabinetClient() {
               >
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest mb-1.5" style={{ color: 'rgba(255,255,255,0.65)' }}>
-                    Ежедневный чек-ин
+                    Р•Р¶РµРґРЅРµРІРЅС‹Р№ С‡РµРє-РёРЅ
                   </p>
                   <h2 className="text-white font-bold text-lg leading-snug">
-                    Как ты себя чувствуешь сегодня?
+                    РљР°Рє С‚С‹ СЃРµР±СЏ С‡СѓРІСЃС‚РІСѓРµС€СЊ СЃРµРіРѕРґРЅСЏ?
                   </h2>
                 </div>
                 <a
@@ -700,7 +700,7 @@ export default function CabinetClient() {
                   className="self-start px-5 py-2.5 text-sm font-bold rounded-2xl transition"
                   style={{ background: '#ffffff', color: '#2563eb' }}
                 >
-                  Пройти чек-ин >
+                  РџСЂРѕР№С‚Рё С‡РµРє-РёРЅ в†’
                 </a>
               </div>
             )}
@@ -708,28 +708,28 @@ export default function CabinetClient() {
           </div>
         )}
 
-        {/* -- ЖУРНАЛ -- */}
+        {/* в”Ђв”Ђ Р–РЈР РќРђР› в”Ђв”Ђ */}
         {tab === 'journal' && (
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">Журнал</h2>
-                <p className="text-slate-400 text-sm mt-0.5">{entries.length} {entries.length === 1 ? 'запись' : entries.length < 5 ? 'записи' : 'записей'}</p>
+                <h2 className="text-xl font-bold text-slate-900">Р–СѓСЂРЅР°Р»</h2>
+                <p className="text-slate-400 text-sm mt-0.5">{entries.length} {entries.length === 1 ? 'Р·Р°РїРёСЃСЊ' : entries.length < 5 ? 'Р·Р°РїРёСЃРё' : 'Р·Р°РїРёСЃРµР№'}</p>
               </div>
               <button onClick={() => setShowNewEntry(true)}
                 className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-2xl transition shadow-sm">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
-                Новая запись
+                РќРѕРІР°СЏ Р·Р°РїРёСЃСЊ
               </button>
             </div>
 
             {entries.length === 0 ? (
               <div className="text-center py-16">
-                <p className="text-4xl mb-3">??</p>
-                <p className="font-semibold text-slate-700 mb-1">Записей пока нет</p>
-                <p className="text-slate-400 text-sm">Фиксируй мысли и настроение каждый день</p>
+                <p className="text-4xl mb-3">рџ““</p>
+                <p className="font-semibold text-slate-700 mb-1">Р—Р°РїРёСЃРµР№ РїРѕРєР° РЅРµС‚</p>
+                <p className="text-slate-400 text-sm">Р¤РёРєСЃРёСЂСѓР№ РјС‹СЃР»Рё Рё РЅР°СЃС‚СЂРѕРµРЅРёРµ РєР°Р¶РґС‹Р№ РґРµРЅСЊ</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
@@ -741,10 +741,10 @@ export default function CabinetClient() {
                         <div className="flex items-center gap-2">
                           {e.mood && <span className="text-lg">{e.mood}</span>}
                           <p className="text-xs text-slate-400">
-                            {d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })} · {d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                            {d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })} В· {d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
-                        {e.voice_input && <span className="text-xs text-blue-400 font-medium">?? Голос</span>}
+                        {e.voice_input && <span className="text-xs text-blue-400 font-medium">рџЋ™ Р“РѕР»РѕСЃ</span>}
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">{e.content}</p>
                     </div>
@@ -755,18 +755,18 @@ export default function CabinetClient() {
           </div>
         )}
 
-        {/* -- ДИНАМИКА -- */}
+        {/* в”Ђв”Ђ Р”РРќРђРњРРљРђ в”Ђв”Ђ */}
         {tab === 'dynamics' && (
           <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-bold text-slate-900">Динамика</h2>
+            <h2 className="text-xl font-bold text-slate-900">Р”РёРЅР°РјРёРєР°</h2>
             {checkins.length < 2 ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center">
-                <p className="text-slate-400 text-sm">Нужно минимум 2 чек-ина для графика</p>
-                <a href="/checkin" className="mt-3 inline-flex text-blue-600 text-sm font-semibold hover:text-blue-500">Пройти чек-ин ></a>
+                <p className="text-slate-400 text-sm">РќСѓР¶РЅРѕ РјРёРЅРёРјСѓРј 2 С‡РµРє-РёРЅР° РґР»СЏ РіСЂР°С„РёРєР°</p>
+                <a href="/checkin" className="mt-3 inline-flex text-blue-600 text-sm font-semibold hover:text-blue-500">РџСЂРѕР№С‚Рё С‡РµРє-РёРЅ в†’</a>
               </div>
             ) : (
               <div className="bg-white border border-slate-100 rounded-2xl p-5 min-w-0 overflow-hidden">
-                <p className="text-sm font-semibold text-slate-700 mb-4">Самочувствие (30 дней)</p>
+                <p className="text-sm font-semibold text-slate-700 mb-4">РЎР°РјРѕС‡СѓРІСЃС‚РІРёРµ (30 РґРЅРµР№)</p>
                 <ResponsiveContainer width="100%" height={200}>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -782,45 +782,45 @@ export default function CabinetClient() {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
                 <p className="text-2xl font-bold text-slate-800">{checkins.length}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Чек-инов всего</p>
+                <p className="text-xs text-slate-400 mt-0.5">Р§РµРє-РёРЅРѕРІ РІСЃРµРіРѕ</p>
               </div>
               <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-                <p className="text-2xl font-bold text-slate-800">?? {streak}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Дней подряд</p>
+                <p className="text-2xl font-bold text-slate-800">рџ”Ґ {streak}</p>
+                <p className="text-xs text-slate-400 mt-0.5">Р”РЅРµР№ РїРѕРґСЂСЏРґ</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* -- МОЙ AI -- */}
+        {/* в”Ђв”Ђ РњРћР™ AI в”Ђв”Ђ */}
         {tab === 'ai' && (
           <PersonalAI userName={firstName} />
         )}
 
-        {/* -- КАЛЕНДАРЬ -- */}
+        {/* в”Ђв”Ђ РљРђР›Р•РќР”РђР Р¬ в”Ђв”Ђ */}
         {tab === 'calendar' && <CalendarTab />}
 
-        {/* -- PDF -- */}
+        {/* в”Ђв”Ђ PDF в”Ђв”Ђ */}
         {tab === 'pdf' && (
           <div className="flex flex-col gap-5">
             <div>
-              <h2 className="text-xl font-bold text-slate-900">PDF для специалиста</h2>
-              <p className="text-slate-400 text-sm mt-0.5">Клинический документ подготовки к сессии</p>
+              <h2 className="text-xl font-bold text-slate-900">PDF РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°</h2>
+              <p className="text-slate-400 text-sm mt-0.5">РљР»РёРЅРёС‡РµСЃРєРёР№ РґРѕРєСѓРјРµРЅС‚ РїРѕРґРіРѕС‚РѕРІРєРё Рє СЃРµСЃСЃРёРё</p>
             </div>
 
             <div className="bg-white border border-slate-100 rounded-2xl p-6 flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3 text-sm text-slate-600">
                   <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">01</span>
-                  Последний чек-ин — самочувствие, эмоции, стрессоры
+                  РџРѕСЃР»РµРґРЅРёР№ С‡РµРє-РёРЅ вЂ” СЃР°РјРѕС‡СѓРІСЃС‚РІРёРµ, СЌРјРѕС†РёРё, СЃС‚СЂРµСЃСЃРѕСЂС‹
                 </div>
                 <div className="flex items-center gap-3 text-sm text-slate-600">
                   <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">02</span>
-                  Резюме состояния — AI-синтез без цитирования источников
+                  Р РµР·СЋРјРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ вЂ” AI-СЃРёРЅС‚РµР· Р±РµР· С†РёС‚РёСЂРѕРІР°РЅРёСЏ РёСЃС‚РѕС‡РЅРёРєРѕРІ
                 </div>
                 <div className="flex items-center gap-3 text-sm text-slate-600">
                   <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">03</span>
-                  Темы для обсуждения — конкретные, из вашего контекста
+                  РўРµРјС‹ РґР»СЏ РѕР±СЃСѓР¶РґРµРЅРёСЏ вЂ” РєРѕРЅРєСЂРµС‚РЅС‹Рµ, РёР· РІР°С€РµРіРѕ РєРѕРЅС‚РµРєСЃС‚Р°
                 </div>
               </div>
 
@@ -841,21 +841,21 @@ export default function CabinetClient() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Подготавливаем документ…
+                    РџРѕРґРіРѕС‚Р°РІР»РёРІР°РµРј РґРѕРєСѓРјРµРЅС‚вЂ¦
                   </>
                 ) : (
                   <>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                     </svg>
-                    Создать PDF
+                    РЎРѕР·РґР°С‚СЊ PDF
                   </>
                 )}
               </button>
             </div>
 
             <p className="text-slate-400 text-xs text-center px-4">
-              Специалист видит психологический портрет — не переписку. Источники не раскрываются.
+              РЎРїРµС†РёР°Р»РёСЃС‚ РІРёРґРёС‚ РїСЃРёС…РѕР»РѕРіРёС‡РµСЃРєРёР№ РїРѕСЂС‚СЂРµС‚ вЂ” РЅРµ РїРµСЂРµРїРёСЃРєСѓ. РСЃС‚РѕС‡РЅРёРєРё РЅРµ СЂР°СЃРєСЂС‹РІР°СЋС‚СЃСЏ.
             </p>
           </div>
         )}
@@ -874,27 +874,27 @@ export default function CabinetClient() {
         className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-2 pb-safe"
         style={{ background: '#ffffff', borderTop: '1px solid #ede9e4', paddingTop: 8, paddingBottom: 16 }}
       >
-        {/* Сегодня */}
+        {/* РЎРµРіРѕРґРЅСЏ */}
         <button onClick={() => setTab('today')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconHome active={tab === 'today'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#2563eb' : '#9ca3af' }}>Сегодня</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#2563eb' : '#9ca3af' }}>РЎРµРіРѕРґРЅСЏ</span>
         </button>
-        {/* Журнал */}
+        {/* Р–СѓСЂРЅР°Р» */}
         <button onClick={() => setTab('journal')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconJournal active={tab === 'journal'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#2563eb' : '#9ca3af' }}>Журнал</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#2563eb' : '#9ca3af' }}>Р–СѓСЂРЅР°Р»</span>
         </button>
-        {/* Динамика */}
+        {/* Р”РёРЅР°РјРёРєР° */}
         <button onClick={() => setTab('dynamics')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconChart active={tab === 'dynamics'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#2563eb' : '#9ca3af' }}>Динамика</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#2563eb' : '#9ca3af' }}>Р”РёРЅР°РјРёРєР°</span>
         </button>
         {/* AI */}
         <button onClick={() => setTab('ai')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconAI active={tab === 'ai'} />
           <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#2563eb' : '#9ca3af' }}>AI</span>
         </button>
-        {/* Ещё */}
+        {/* Р•С‰С‘ */}
         <div className="relative">
           <button
             onClick={() => setShowMoreMenu(!showMoreMenu)}
@@ -905,7 +905,7 @@ export default function CabinetClient() {
               className="text-[10px] font-semibold"
               style={{ color: tab === 'pdf' || tab === 'calendar' ? '#2563eb' : '#9ca3af' }}
             >
-              Ещё
+              Р•С‰С‘
             </span>
           </button>
           {showMoreMenu && (
@@ -936,7 +936,7 @@ export default function CabinetClient() {
                     <rect x="3" y="4" width="18" height="18" rx="2"/>
                     <path d="M16 2v4M8 2v4M3 10h18"/>
                   </svg>
-                  Календарь
+                  РљР°Р»РµРЅРґР°СЂСЊ
                 </button>
               </div>
             </>

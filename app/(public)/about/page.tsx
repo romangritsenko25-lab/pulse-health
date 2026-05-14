@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
+п»їimport type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'О нас — Metanoia AI',
-  description: 'Философия, команда и контакты Metanoia AI',
+  title: 'Рћ РЅР°СЃ вЂ” Metanoia AI',
+  description: 'Р¤РёР»РѕСЃРѕС„РёСЏ, РєРѕРјР°РЅРґР° Рё РєРѕРЅС‚Р°РєС‚С‹ Metanoia AI',
 }
 
 export default function AboutPage() {
@@ -11,33 +11,33 @@ export default function AboutPage() {
       {/* Philosophy */}
       <section className="py-20 px-4">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Философия</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-12">О Metanoia AI</h1>
+          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Р¤РёР»РѕСЃРѕС„РёСЏ</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-12">Рћ Metanoia AI</h1>
           <div className="flex flex-col gap-10 text-slate-600 leading-relaxed">
             <div>
-              <h2 className="text-lg font-semibold text-slate-800 mb-3">Почему мы создали Metanoia AI</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-3">РџРѕС‡РµРјСѓ РјС‹ СЃРѕР·РґР°Р»Рё Metanoia AI</h2>
               <p>
-                Большинство людей, которые впервые идут к психологу, сталкиваются с одной и той же проблемой: сложно
-                объяснить что именно происходит. Первые две-три сессии часто уходят на сбор истории, а не на настоящую
-                работу. Мы создали инструмент, который помогает структурировать состояние до встречи — чтобы разговор
-                начинался в глубине, а не с нуля.
+                Р‘РѕР»СЊС€РёРЅСЃС‚РІРѕ Р»СЋРґРµР№, РєРѕС‚РѕСЂС‹Рµ РІРїРµСЂРІС‹Рµ РёРґСѓС‚ Рє РїСЃРёС…РѕР»РѕРіСѓ, СЃС‚Р°Р»РєРёРІР°СЋС‚СЃСЏ СЃ РѕРґРЅРѕР№ Рё С‚РѕР№ Р¶Рµ РїСЂРѕР±Р»РµРјРѕР№: СЃР»РѕР¶РЅРѕ
+                РѕР±СЉСЏСЃРЅРёС‚СЊ С‡С‚Рѕ РёРјРµРЅРЅРѕ РїСЂРѕРёСЃС…РѕРґРёС‚. РџРµСЂРІС‹Рµ РґРІРµ-С‚СЂРё СЃРµСЃСЃРёРё С‡Р°СЃС‚Рѕ СѓС…РѕРґСЏС‚ РЅР° СЃР±РѕСЂ РёСЃС‚РѕСЂРёРё, Р° РЅРµ РЅР° РЅР°СЃС‚РѕСЏС‰СѓСЋ
+                СЂР°Р±РѕС‚Сѓ. РњС‹ СЃРѕР·РґР°Р»Рё РёРЅСЃС‚СЂСѓРјРµРЅС‚, РєРѕС‚РѕСЂС‹Р№ РїРѕРјРѕРіР°РµС‚ СЃС‚СЂСѓРєС‚СѓСЂРёСЂРѕРІР°С‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ РґРѕ РІСЃС‚СЂРµС‡Рё вЂ” С‡С‚РѕР±С‹ СЂР°Р·РіРѕРІРѕСЂ
+                РЅР°С‡РёРЅР°Р»СЃСЏ РІ РіР»СѓР±РёРЅРµ, Р° РЅРµ СЃ РЅСѓР»СЏ.
               </p>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-800 mb-3">Во что мы верим</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-3">Р’Рѕ С‡С‚Рѕ РјС‹ РІРµСЂРёРј</h2>
               <p>
-                Каждый человек — эксперт своей жизни. AI не ставит диагнозы и не заменяет специалиста. Он помогает тебе
-                лучше понять себя и сформулировать то, что раньше оставалось невысказанным. Инсайт, который возникает в
-                процессе — твой, а не алгоритма. Психолог нужен для глубокой работы, Metanoia — для того чтобы к ней
-                лучше подготовиться.
+                РљР°Р¶РґС‹Р№ С‡РµР»РѕРІРµРє вЂ” СЌРєСЃРїРµСЂС‚ СЃРІРѕРµР№ Р¶РёР·РЅРё. AI РЅРµ СЃС‚Р°РІРёС‚ РґРёР°РіРЅРѕР·С‹ Рё РЅРµ Р·Р°РјРµРЅСЏРµС‚ СЃРїРµС†РёР°Р»РёСЃС‚Р°. РћРЅ РїРѕРјРѕРіР°РµС‚ С‚РµР±Рµ
+                Р»СѓС‡С€Рµ РїРѕРЅСЏС‚СЊ СЃРµР±СЏ Рё СЃС„РѕСЂРјСѓР»РёСЂРѕРІР°С‚СЊ С‚Рѕ, С‡С‚Рѕ СЂР°РЅСЊС€Рµ РѕСЃС‚Р°РІР°Р»РѕСЃСЊ РЅРµРІС‹СЃРєР°Р·Р°РЅРЅС‹Рј. РРЅСЃР°Р№С‚, РєРѕС‚РѕСЂС‹Р№ РІРѕР·РЅРёРєР°РµС‚ РІ
+                РїСЂРѕС†РµСЃСЃРµ вЂ” С‚РІРѕР№, Р° РЅРµ Р°Р»РіРѕСЂРёС‚РјР°. РџСЃРёС…РѕР»РѕРі РЅСѓР¶РµРЅ РґР»СЏ РіР»СѓР±РѕРєРѕР№ СЂР°Р±РѕС‚С‹, Metanoia вЂ” РґР»СЏ С‚РѕРіРѕ С‡С‚РѕР±С‹ Рє РЅРµР№
+                Р»СѓС‡С€Рµ РїРѕРґРіРѕС‚РѕРІРёС‚СЊСЃСЏ.
               </p>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-800 mb-3">Наша миссия</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-3">РќР°С€Р° РјРёСЃСЃРёСЏ</h2>
               <p>
-                Снизить барьер к первой сессии. Многие откладывают поход к психологу потому что не знают с чего начать
-                разговор или боятся что «недостаточно серьёзная причина». Metanoia AI делает этот первый шаг менее
-                пугающим: ты приходишь уже с картой своего состояния, и работа может начаться сразу.
+                РЎРЅРёР·РёС‚СЊ Р±Р°СЂСЊРµСЂ Рє РїРµСЂРІРѕР№ СЃРµСЃСЃРёРё. РњРЅРѕРіРёРµ РѕС‚РєР»Р°РґС‹РІР°СЋС‚ РїРѕС…РѕРґ Рє РїСЃРёС…РѕР»РѕРіСѓ РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅРµ Р·РЅР°СЋС‚ СЃ С‡РµРіРѕ РЅР°С‡Р°С‚СЊ
+                СЂР°Р·РіРѕРІРѕСЂ РёР»Рё Р±РѕСЏС‚СЃСЏ С‡С‚Рѕ В«РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃРµСЂСЊС‘Р·РЅР°СЏ РїСЂРёС‡РёРЅР°В». Metanoia AI РґРµР»Р°РµС‚ СЌС‚РѕС‚ РїРµСЂРІС‹Р№ С€Р°Рі РјРµРЅРµРµ
+                РїСѓРіР°СЋС‰РёРј: С‚С‹ РїСЂРёС…РѕРґРёС€СЊ СѓР¶Рµ СЃ РєР°СЂС‚РѕР№ СЃРІРѕРµРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ, Рё СЂР°Р±РѕС‚Р° РјРѕР¶РµС‚ РЅР°С‡Р°С‚СЊСЃСЏ СЃСЂР°Р·Сѓ.
               </p>
             </div>
           </div>
@@ -47,19 +47,19 @@ export default function AboutPage() {
       {/* Team */}
       <section className="py-16 px-4 bg-slate-50">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Команда</p>
-          <h2 className="text-2xl font-bold text-slate-800 mb-8">Кто за этим стоит</h2>
+          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">РљРѕРјР°РЅРґР°</p>
+          <h2 className="text-2xl font-bold text-slate-800 mb-8">РљС‚Рѕ Р·Р° СЌС‚РёРј СЃС‚РѕРёС‚</h2>
           <div className="bg-white rounded-2xl border border-slate-100 p-6 flex gap-5 items-start">
             <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center shrink-0">
-              <span className="text-2xl font-bold text-blue-400">??</span>
+              <span className="text-2xl font-bold text-blue-400">рџ‘¤</span>
             </div>
             <div>
-              <p className="font-semibold text-slate-800">Основатель</p>
-              <p className="text-blue-600 text-sm mb-3">Продукт · Технологии</p>
+              <p className="font-semibold text-slate-800">РћСЃРЅРѕРІР°С‚РµР»СЊ</p>
+              <p className="text-blue-600 text-sm mb-3">РџСЂРѕРґСѓРєС‚ В· РўРµС…РЅРѕР»РѕРіРёРё</p>
               <p className="text-slate-500 text-sm leading-relaxed">
-                Строю Metanoia AI потому что сам прошёл через опыт поиска подходящего специалиста и понял: проблема не
-                в доступности психологов, а в том что первый шаг слишком сложен. Хочу сделать психологическую помощь
-                более доступной — начиная с этого первого шага.
+                РЎС‚СЂРѕСЋ Metanoia AI РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЃР°Рј РїСЂРѕС€С‘Р» С‡РµСЂРµР· РѕРїС‹С‚ РїРѕРёСЃРєР° РїРѕРґС…РѕРґСЏС‰РµРіРѕ СЃРїРµС†РёР°Р»РёСЃС‚Р° Рё РїРѕРЅСЏР»: РїСЂРѕР±Р»РµРјР° РЅРµ
+                РІ РґРѕСЃС‚СѓРїРЅРѕСЃС‚Рё РїСЃРёС…РѕР»РѕРіРѕРІ, Р° РІ С‚РѕРј С‡С‚Рѕ РїРµСЂРІС‹Р№ С€Р°Рі СЃР»РёС€РєРѕРј СЃР»РѕР¶РµРЅ. РҐРѕС‡Сѓ СЃРґРµР»Р°С‚СЊ РїСЃРёС…РѕР»РѕРіРёС‡РµСЃРєСѓСЋ РїРѕРјРѕС‰СЊ
+                Р±РѕР»РµРµ РґРѕСЃС‚СѓРїРЅРѕР№ вЂ” РЅР°С‡РёРЅР°СЏ СЃ СЌС‚РѕРіРѕ РїРµСЂРІРѕРіРѕ С€Р°РіР°.
               </p>
             </div>
           </div>
@@ -69,14 +69,14 @@ export default function AboutPage() {
       {/* Contacts */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Контакты</p>
-          <h2 className="text-2xl font-bold text-slate-800 mb-6">Связаться с нами</h2>
+          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">РљРѕРЅС‚Р°РєС‚С‹</p>
+          <h2 className="text-2xl font-bold text-slate-800 mb-6">РЎРІСЏР·Р°С‚СЊСЃСЏ СЃ РЅР°РјРё</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="mailto:istheproman2015@gmail.com"
               className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50 transition group"
             >
-              <span className="text-2xl">??</span>
+              <span className="text-2xl">вњ‰пёЏ</span>
               <div>
                 <p className="text-xs text-slate-400 mb-0.5">Email</p>
                 <p className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition">
@@ -90,7 +90,7 @@ export default function AboutPage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50 transition group"
             >
-              <span className="text-2xl">??</span>
+              <span className="text-2xl">вњ€пёЏ</span>
               <div>
                 <p className="text-xs text-slate-400 mb-0.5">Telegram</p>
                 <p className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition">
@@ -105,14 +105,14 @@ export default function AboutPage() {
       {/* Disclaimer */}
       <section className="py-10 px-4 bg-amber-50 border-t border-amber-100">
         <div className="max-w-2xl mx-auto flex gap-3">
-          <span className="text-xl mt-0.5 shrink-0">??</span>
+          <span className="text-xl mt-0.5 shrink-0">вљ пёЏ</span>
           <div>
-            <p className="font-semibold text-amber-800 text-sm mb-1">Важное уточнение</p>
+            <p className="font-semibold text-amber-800 text-sm mb-1">Р’Р°Р¶РЅРѕРµ СѓС‚РѕС‡РЅРµРЅРёРµ</p>
             <p className="text-amber-700 text-sm leading-relaxed">
-              Metanoia AI не является медицинским сервисом и не заменяет работу со специалистом. Приложение помогает
-              структурировать состояние и подготовиться к сессии, но не ставит диагнозы и не оказывает психологическую
-              помощь. Если вы находитесь в кризисной ситуации — обратитесь к специалисту или позвоните на горячую
-              линию психологической помощи.
+              Metanoia AI РЅРµ СЏРІР»СЏРµС‚СЃСЏ РјРµРґРёС†РёРЅСЃРєРёРј СЃРµСЂРІРёСЃРѕРј Рё РЅРµ Р·Р°РјРµРЅСЏРµС‚ СЂР°Р±РѕС‚Сѓ СЃРѕ СЃРїРµС†РёР°Р»РёСЃС‚РѕРј. РџСЂРёР»РѕР¶РµРЅРёРµ РїРѕРјРѕРіР°РµС‚
+              СЃС‚СЂСѓРєС‚СѓСЂРёСЂРѕРІР°С‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ Рё РїРѕРґРіРѕС‚РѕРІРёС‚СЊСЃСЏ Рє СЃРµСЃСЃРёРё, РЅРѕ РЅРµ СЃС‚Р°РІРёС‚ РґРёР°РіРЅРѕР·С‹ Рё РЅРµ РѕРєР°Р·С‹РІР°РµС‚ РїСЃРёС…РѕР»РѕРіРёС‡РµСЃРєСѓСЋ
+              РїРѕРјРѕС‰СЊ. Р•СЃР»Рё РІС‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ РєСЂРёР·РёСЃРЅРѕР№ СЃРёС‚СѓР°С†РёРё вЂ” РѕР±СЂР°С‚РёС‚РµСЃСЊ Рє СЃРїРµС†РёР°Р»РёСЃС‚Сѓ РёР»Рё РїРѕР·РІРѕРЅРёС‚Рµ РЅР° РіРѕСЂСЏС‡СѓСЋ
+              Р»РёРЅРёСЋ РїСЃРёС…РѕР»РѕРіРёС‡РµСЃРєРѕР№ РїРѕРјРѕС‰Рё.
             </p>
           </div>
         </div>

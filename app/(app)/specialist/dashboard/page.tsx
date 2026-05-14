@@ -1,4 +1,4 @@
-'use client'
+п»ї'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -147,7 +147,7 @@ export default function SpecialistDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
+        <p className="text-slate-400 text-sm animate-pulse">Р—Р°РіСЂСѓР·РєР°вЂ¦</p>
       </div>
     )
   }
@@ -167,10 +167,10 @@ export default function SpecialistDashboard() {
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
-            <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
+            <h1 className="text-2xl font-bold text-slate-800">Р”Р°С€Р±РѕСЂРґ СЃРїРµС†РёР°Р»РёСЃС‚Р°</h1>
             {specialist && (
               <p className="text-slate-500 text-sm mt-0.5">
-                {specialist.name} · {specialist.specialty}
+                {specialist.name} В· {specialist.specialty}
               </p>
             )}
           </div>
@@ -180,7 +180,7 @@ export default function SpecialistDashboard() {
             <button
               onClick={() => setShowMenu((v) => !v)}
               className="p-2 rounded-xl border border-slate-200 bg-white hover:border-blue-400 text-slate-500 hover:text-blue-600 transition"
-              aria-label="Меню"
+              aria-label="РњРµРЅСЋ"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -198,7 +198,7 @@ export default function SpecialistDashboard() {
                     <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    Мой дашборд
+                    РњРѕР№ РґР°С€Р±РѕСЂРґ
                   </button>
                   <button
                     onClick={() => { setShowMenu(false); router.push('/specialist/register') }}
@@ -207,7 +207,7 @@ export default function SpecialistDashboard() {
                     <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z" />
                     </svg>
-                    Редактировать профиль
+                    Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РїСЂРѕС„РёР»СЊ
                   </button>
                   <div className="my-1 border-t border-slate-50" />
                   <a
@@ -219,7 +219,7 @@ export default function SpecialistDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    Посмотреть лендинг
+                    РџРѕСЃРјРѕС‚СЂРµС‚СЊ Р»РµРЅРґРёРЅРі
                   </a>
                 </div>
               </>
@@ -237,7 +237,7 @@ export default function SpecialistDashboard() {
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
-            Клиенты
+            РљР»РёРµРЅС‚С‹
           </button>
           <button
             onClick={() => setActiveTab('earnings')}
@@ -247,7 +247,7 @@ export default function SpecialistDashboard() {
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
-            Доходы ??
+            Р”РѕС…РѕРґС‹ рџ’°
           </button>
         </div>
 
@@ -263,22 +263,22 @@ export default function SpecialistDashboard() {
             <div className="grid grid-cols-2 gap-3 mb-5">
               <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
                 <div className="text-2xl font-bold text-slate-800">{clients.length}</div>
-                <div className="text-xs text-slate-400 mt-0.5">Клиентов</div>
+                <div className="text-xs text-slate-400 mt-0.5">РљР»РёРµРЅС‚РѕРІ</div>
               </div>
               <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
                 <div className="text-2xl font-bold text-slate-800">{totalCheckins}</div>
-                <div className="text-xs text-slate-400 mt-0.5">Всего опросов</div>
+                <div className="text-xs text-slate-400 mt-0.5">Р’СЃРµРіРѕ РѕРїСЂРѕСЃРѕРІ</div>
               </div>
             </div>
 
             {/* Referral link */}
             <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5">
               <div className="flex items-center gap-2 mb-1">
-                <span>??</span>
-                <p className="font-semibold text-slate-800 text-sm">Реферальная ссылка</p>
+                <span>рџ”—</span>
+                <p className="font-semibold text-slate-800 text-sm">Р РµС„РµСЂР°Р»СЊРЅР°СЏ СЃСЃС‹Р»РєР°</p>
               </div>
               <p className="text-slate-400 text-xs mb-3">
-                Отправьте клиенту — он увидит ваш профиль и сразу подключится
+                РћС‚РїСЂР°РІСЊС‚Рµ РєР»РёРµРЅС‚Сѓ вЂ” РѕРЅ СѓРІРёРґРёС‚ РІР°С€ РїСЂРѕС„РёР»СЊ Рё СЃСЂР°Р·Сѓ РїРѕРґРєР»СЋС‡РёС‚СЃСЏ
               </p>
               <div className="flex gap-2">
                 <input
@@ -290,7 +290,7 @@ export default function SpecialistDashboard() {
                   onClick={copyLink}
                   className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
                 >
-                  {copied ? '? Скопировано' : 'Копировать'}
+                  {copied ? 'вњ“ РЎРєРѕРїРёСЂРѕРІР°РЅРѕ' : 'РљРѕРїРёСЂРѕРІР°С‚СЊ'}
                 </button>
               </div>
             </div>
@@ -298,14 +298,14 @@ export default function SpecialistDashboard() {
             {/* Colleague referral banner */}
             <div className="bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-100 rounded-2xl p-4 mb-5 flex items-center justify-between gap-4">
               <div>
-                <p className="font-semibold text-slate-800 text-sm">Пригласи коллегу — заработай 30% комиссии</p>
-                <p className="text-slate-500 text-xs mt-0.5">Реферальная программа для специалистов</p>
+                <p className="font-semibold text-slate-800 text-sm">РџСЂРёРіР»Р°СЃРё РєРѕР»Р»РµРіСѓ вЂ” Р·Р°СЂР°Р±РѕС‚Р°Р№ 30% РєРѕРјРёСЃСЃРёРё</p>
+                <p className="text-slate-500 text-xs mt-0.5">Р РµС„РµСЂР°Р»СЊРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚РѕРІ</p>
               </div>
               <button
                 onClick={() => setShowColleagueModal(true)}
                 className="shrink-0 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition"
               >
-                Узнать подробнее
+                РЈР·РЅР°С‚СЊ РїРѕРґСЂРѕР±РЅРµРµ
               </button>
             </div>
 
@@ -314,7 +314,7 @@ export default function SpecialistDashboard() {
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
                 <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 flex flex-col gap-4">
                   <div className="flex items-start justify-between">
-                    <h2 className="font-bold text-slate-800 text-lg">Реферальная программа</h2>
+                    <h2 className="font-bold text-slate-800 text-lg">Р РµС„РµСЂР°Р»СЊРЅР°СЏ РїСЂРѕРіСЂР°РјРјР°</h2>
                     <button onClick={() => setShowColleagueModal(false)} className="p-1 text-slate-400 hover:text-slate-600 transition">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -323,33 +323,33 @@ export default function SpecialistDashboard() {
                   </div>
                   <div className="flex flex-col gap-3 text-sm text-slate-600">
                     <div className="flex items-start gap-3 bg-blue-50 rounded-xl p-3">
-                      <span className="text-xl">??</span>
+                      <span className="text-xl">рџ”—</span>
                       <div>
-                        <p className="font-semibold text-slate-800">Поделись личной ссылкой</p>
-                        <p className="text-xs text-slate-500 mt-0.5">Отправь коллеге ссылку на регистрацию специалиста</p>
+                        <p className="font-semibold text-slate-800">РџРѕРґРµР»РёСЃСЊ Р»РёС‡РЅРѕР№ СЃСЃС‹Р»РєРѕР№</p>
+                        <p className="text-xs text-slate-500 mt-0.5">РћС‚РїСЂР°РІСЊ РєРѕР»Р»РµРіРµ СЃСЃС‹Р»РєСѓ РЅР° СЂРµРіРёСЃС‚СЂР°С†РёСЋ СЃРїРµС†РёР°Р»РёСЃС‚Р°</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 bg-blue-50 rounded-xl p-3">
-                      <span className="text-xl">??</span>
+                      <span className="text-xl">рџ’°</span>
                       <div>
-                        <p className="font-semibold text-slate-800">Получай 30% комиссии</p>
-                        <p className="text-xs text-slate-500 mt-0.5">С каждой оплаченной подписки приглашённого коллеги — первые 12 месяцев</p>
+                        <p className="font-semibold text-slate-800">РџРѕР»СѓС‡Р°Р№ 30% РєРѕРјРёСЃСЃРёРё</p>
+                        <p className="text-xs text-slate-500 mt-0.5">РЎ РєР°Р¶РґРѕР№ РѕРїР»Р°С‡РµРЅРЅРѕР№ РїРѕРґРїРёСЃРєРё РїСЂРёРіР»Р°С€С‘РЅРЅРѕРіРѕ РєРѕР»Р»РµРіРё вЂ” РїРµСЂРІС‹Рµ 12 РјРµСЃСЏС†РµРІ</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 bg-amber-50 rounded-xl p-3">
-                      <span className="text-xl">??</span>
+                      <span className="text-xl">рџ’і</span>
                       <div>
-                        <p className="font-semibold text-slate-800">Вывод от $30</p>
-                        <p className="text-xs text-slate-500 mt-0.5">Или зачти в счёт своей подписки Pro</p>
+                        <p className="font-semibold text-slate-800">Р’С‹РІРѕРґ РѕС‚ $30</p>
+                        <p className="text-xs text-slate-500 mt-0.5">РР»Рё Р·Р°С‡С‚Рё РІ СЃС‡С‘С‚ СЃРІРѕРµР№ РїРѕРґРїРёСЃРєРё Pro</p>
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 text-center">Функция в разработке — напишем когда запустим</p>
+                  <p className="text-xs text-slate-400 text-center">Р¤СѓРЅРєС†РёСЏ РІ СЂР°Р·СЂР°Р±РѕС‚РєРµ вЂ” РЅР°РїРёС€РµРј РєРѕРіРґР° Р·Р°РїСѓСЃС‚РёРј</p>
                   <button
                     onClick={() => setShowColleagueModal(false)}
                     className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition"
                   >
-                    Понятно
+                    РџРѕРЅСЏС‚РЅРѕ
                   </button>
                 </div>
               </div>
@@ -358,21 +358,21 @@ export default function SpecialistDashboard() {
             {/* Client list */}
             {clients.length === 0 ? (
               <div className="bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
-                <p className="text-3xl mb-3">??</p>
-                <p className="font-semibold text-slate-700 mb-1">Пока нет клиентов</p>
+                <p className="text-3xl mb-3">рџ‘Ґ</p>
+                <p className="font-semibold text-slate-700 mb-1">РџРѕРєР° РЅРµС‚ РєР»РёРµРЅС‚РѕРІ</p>
                 <p className="text-slate-400 text-sm">
-                  Отправьте реферальную ссылку — клиенты появятся здесь автоматически
+                  РћС‚РїСЂР°РІСЊС‚Рµ СЂРµС„РµСЂР°Р»СЊРЅСѓСЋ СЃСЃС‹Р»РєСѓ вЂ” РєР»РёРµРЅС‚С‹ РїРѕСЏРІСЏС‚СЃСЏ Р·РґРµСЃСЊ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
                 </p>
               </div>
             ) : (
               <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
                 <div className="px-5 py-4 border-b border-slate-100">
-                  <h2 className="text-sm font-semibold text-slate-600">Клиенты</h2>
+                  <h2 className="text-sm font-semibold text-slate-600">РљР»РёРµРЅС‚С‹</h2>
                 </div>
 
                 <div className="divide-y divide-slate-50">
                   {clients.map((client) => {
-                    const displayName = client.name ?? client.email ?? 'Клиент'
+                    const displayName = client.name ?? client.email ?? 'РљР»РёРµРЅС‚'
                     const initials = displayName
                       .split(' ')
                       .map((w) => w[0])
@@ -401,10 +401,10 @@ export default function SpecialistDashboard() {
                           <p className="font-semibold text-slate-800 text-sm truncate">{displayName}</p>
                           <p className="text-slate-400 text-xs mt-0.5">
                             {client.checkinCount}{' '}
-                            {client.checkinCount === 1 ? 'опрос' : client.checkinCount < 5 ? 'опроса' : 'опросов'}
+                            {client.checkinCount === 1 ? 'РѕРїСЂРѕСЃ' : client.checkinCount < 5 ? 'РѕРїСЂРѕСЃР°' : 'РѕРїСЂРѕСЃРѕРІ'}
                             {client.lastCheckin && (
                               <>
-                                {' · '}
+                                {' В· '}
                                 {new Date(client.lastCheckin.created_at).toLocaleDateString('ru-RU', {
                                   day: 'numeric',
                                   month: 'short',
@@ -428,7 +428,7 @@ export default function SpecialistDashboard() {
                               <div className={`text-sm font-bold ${wellbeingColor}`}>
                                 {client.lastCheckin.wellbeing}/10
                               </div>
-                              <div className="text-xs text-slate-400">сейчас</div>
+                              <div className="text-xs text-slate-400">СЃРµР№С‡Р°СЃ</div>
                             </div>
                           )}
                       </div>

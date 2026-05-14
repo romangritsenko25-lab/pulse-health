@@ -1,4 +1,4 @@
-'use client'
+п»ї'use client'
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -30,7 +30,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
     if (mode === 'login') {
       const { error, data } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
-        setError('Неверный email или пароль')
+        setError('РќРµРІРµСЂРЅС‹Р№ email РёР»Рё РїР°СЂРѕР»СЊ')
       } else {
         const { data: profile } = await supabase
           .from('profiles').select('role').eq('id', data.user.id).maybeSingle()
@@ -46,13 +46,13 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       })
       if (error) {
         setError(error.message === 'User already registered'
-          ? 'Этот email уже зарегистрирован'
-          : 'Ошибка регистрации. Попробуй снова.')
+          ? 'Р­С‚РѕС‚ email СѓР¶Рµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ'
+          : 'РћС€РёР±РєР° СЂРµРіРёСЃС‚СЂР°С†РёРё. РџРѕРїСЂРѕР±СѓР№ СЃРЅРѕРІР°.')
       } else {
         setError('')
         setMode('login')
         setPassword('')
-        setError('Проверь почту — отправили письмо подтверждения')
+        setError('РџСЂРѕРІРµСЂСЊ РїРѕС‡С‚Сѓ вЂ” РѕС‚РїСЂР°РІРёР»Рё РїРёСЃСЊРјРѕ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ')
       }
     }
     setLoading(false)
@@ -81,10 +81,10 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
         {/* Title */}
         <div>
           <h2 className="text-xl font-bold text-slate-900">
-            {mode === 'login' ? 'Вход в Metanoia AI' : 'Создать аккаунт'}
+            {mode === 'login' ? 'Р’С…РѕРґ РІ Metanoia AI' : 'РЎРѕР·РґР°С‚СЊ Р°РєРєР°СѓРЅС‚'}
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            {mode === 'login' ? 'Войди чтобы продолжить' : 'Первые опросы бесплатно'}
+            {mode === 'login' ? 'Р’РѕР№РґРё С‡С‚РѕР±С‹ РїСЂРѕРґРѕР»Р¶РёС‚СЊ' : 'РџРµСЂРІС‹Рµ РѕРїСЂРѕСЃС‹ Р±РµСЃРїР»Р°С‚РЅРѕ'}
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 disabled:opacity-60 text-slate-700 font-semibold py-3 rounded-2xl border border-slate-200 shadow-sm transition text-sm"
         >
           {googleLoading ? (
-            <span className="animate-spin inline-block">?</span>
+            <span className="animate-spin inline-block">вЏі</span>
           ) : (
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -104,13 +104,13 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             </svg>
           )}
-          Войти через Google
+          Р’РѕР№С‚Рё С‡РµСЂРµР· Google
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-slate-200" />
-          <span className="text-slate-400 text-xs">или</span>
+          <span className="text-slate-400 text-xs">РёР»Рё</span>
           <div className="flex-1 h-px bg-slate-200" />
         </div>
 
@@ -119,7 +119,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           {mode === 'register' && (
             <input
               type="text"
-              placeholder="Имя"
+              placeholder="РРјСЏ"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -136,7 +136,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           />
           <input
             type="password"
-            placeholder="Пароль"
+            placeholder="РџР°СЂРѕР»СЊ"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -144,7 +144,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:border-blue-400 focus:outline-none text-sm placeholder:text-slate-400"
           />
           {error && (
-            <p className={`text-xs text-center ${error.includes('Проверь') ? 'text-blue-600' : 'text-red-500'}`}>
+            <p className={`text-xs text-center ${error.includes('РџСЂРѕРІРµСЂСЊ') ? 'text-blue-600' : 'text-red-500'}`}>
               {error}
             </p>
           )}
@@ -153,7 +153,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             disabled={loading}
             className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold rounded-2xl transition"
           >
-            {loading ? '…' : mode === 'login' ? 'Войти' : 'Создать аккаунт'}
+            {loading ? 'вЂ¦' : mode === 'login' ? 'Р’РѕР№С‚Рё' : 'РЎРѕР·РґР°С‚СЊ Р°РєРєР°СѓРЅС‚'}
           </button>
         </form>
 
@@ -162,7 +162,7 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
           className="text-slate-400 hover:text-blue-600 text-xs text-center transition"
         >
-          {mode === 'login' ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
+          {mode === 'login' ? 'РќРµС‚ Р°РєРєР°СѓРЅС‚Р°? Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊСЃСЏ' : 'РЈР¶Рµ РµСЃС‚СЊ Р°РєРєР°СѓРЅС‚? Р’РѕР№С‚Рё'}
         </button>
       </div>
     </div>
