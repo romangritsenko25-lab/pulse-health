@@ -59,8 +59,18 @@ function Chip({ label, selected, onClick }: { label: string; selected: boolean; 
 // ── Value card ─────────────────────────────────────────────────────────────
 function ValueCard({ icon, title, body }: { icon: string; title: string; body: string }) {
   return (
-    <div style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="border rounded-2xl p-5 flex flex-col gap-2">
-      <div style={{ background: '#eff6ff', borderRadius: '10px', padding: '8px', display: 'inline-flex', width: 'fit-content' }}>
+    <div style={{
+      background: 'white',
+      borderColor: '#e2e8f0',
+      boxShadow: '0 2px 12px rgba(37,99,235,0.06)',
+      borderTop: '3px solid transparent',
+      borderImage: 'linear-gradient(90deg, #2563eb, #06b6d4) 1',
+    }} className="border rounded-2xl p-5 flex flex-col gap-2">
+      <div style={{
+        background: 'linear-gradient(135deg, #eff6ff, #ecfeff)',
+        borderRadius: '10px', padding: '8px',
+        display: 'inline-flex', width: 'fit-content',
+      }}>
         <span className="text-2xl">{icon}</span>
       </div>
       <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">{title}</p>
@@ -166,19 +176,6 @@ export default function LoginPage() {
     <div className="min-h-screen">
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
-        @keyframes pulse-ring {
-          0%   { transform: translate(-50%, -50%) scale(0.95); opacity: 0.12; }
-          50%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.06; }
-          100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.12; }
-        }
-        .pr1 { animation: pulse-ring 6s  ease-in-out infinite; }
-        .pr2 { animation: pulse-ring 8s  ease-in-out infinite; }
-        .pr3 { animation: pulse-ring 10s ease-in-out infinite; }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        .circles-container { animation: fadeIn 1.5s ease-in-out; z-index: 0; }
         @keyframes fade-up {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -194,30 +191,34 @@ export default function LoginPage() {
       {/* ════════════════════════════════════════════════════════════ */}
 
       {/* ── Hero ───────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={{ background: '#faf9f7' }}>
-        {/* Concentric animated rings */}
-        <div className="circles-container absolute inset-0 pointer-events-none overflow-hidden" style={{ position: 'absolute' }}>
-          {[
-            { size: 300, cls: 'pr1' },
-            { size: 500, cls: 'pr2' },
-            { size: 700, cls: 'pr3' },
-          ].map(({ size, cls }) => (
-            <div
-              key={size}
-              className={cls}
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: size,
-                height: size,
-                borderRadius: '50%',
-                border: '1px solid #2563eb',
-                backgroundColor: 'transparent',
-              }}
-            />
-          ))}
+      <section className="relative overflow-hidden pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={{
+        background: `
+          radial-gradient(ellipse 70% 55% at 15% 50%, rgba(37,99,235,0.08) 0%, transparent 70%),
+          radial-gradient(ellipse 55% 45% at 85% 15%, rgba(6,182,212,0.07) 0%, transparent 60%),
+          radial-gradient(ellipse 40% 35% at 60% 85%, rgba(99,102,241,0.05) 0%, transparent 55%),
+          #faf9f7
+        `
+      }}>
+        {/* Decorative blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div style={{
+            position: 'absolute', top: '-80px', right: '-60px',
+            width: 320, height: 320, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(37,99,235,0.13) 0%, transparent 70%)',
+            filter: 'blur(40px)',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: '-60px', left: '-40px',
+            width: 280, height: 280, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(6,182,212,0.11) 0%, transparent 70%)',
+            filter: 'blur(35px)',
+          }} />
+          <div style={{
+            position: 'absolute', top: '30%', left: '65%',
+            width: 180, height: 180, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)',
+            filter: 'blur(30px)',
+          }} />
         </div>
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
@@ -231,7 +232,12 @@ export default function LoginPage() {
             />
           </div>
 
-          <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">
+          <h1 className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight" style={{
+            background: 'linear-gradient(135deg, #1e3a5f 30%, #2563eb 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>
             Что-то не так,<br />но сложно объяснить<br />даже себе?
           </h1>
 
@@ -268,8 +274,30 @@ export default function LoginPage() {
         </div>
       </section>
 
+      {/* ── Статистика ─────────────────────────────────────────────── */}
+      <section style={{ background: 'white', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
+        <div className="max-w-lg mx-auto px-4 py-8 grid grid-cols-3 gap-4 text-center">
+          {[
+            { num: '10', label: 'минут на опрос' },
+            { num: '4',  label: 'блока вопросов' },
+            { num: '3',  label: 'опроса бесплатно' },
+          ].map(({ num, label }) => (
+            <div key={label}>
+              <div style={{
+                fontSize: 36, fontWeight: 800, lineHeight: 1,
+                background: 'linear-gradient(135deg, #1d4ed8, #06b6d4)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>{num}</div>
+              <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ── Мини-опрос ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4" style={{ background: '#eff6ff' }}>
+      <section className="py-16 px-4" style={{ background: 'linear-gradient(160deg, #eff6ff 0%, #f0fdf4 50%, #ecfeff 100%)' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
@@ -426,7 +454,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── Teal CTA ───────────────────────────────────────────────── */}
-      <section style={{ background: '#2563eb' }} className="py-12 px-4 text-center">
+      <section style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 60%, #06b6d4 100%)' }} className="py-12 px-4 text-center">
         <div className="max-w-lg mx-auto flex flex-col items-center gap-5">
           <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
             Понимай себя между сессиями
