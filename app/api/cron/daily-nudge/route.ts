@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { anthropic } from '@/lib/anthropic'
 import { createClient } from '@/lib/supabase/server'
+import { sendTelegram } from '@/lib/telegram'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pulse-health-smoky.vercel.app'
@@ -90,6 +91,26 @@ export async function GET(req: Request) {
 
     sent++
   }
+
+  // Daily Telegram report
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const { count: newUsersToday } = await supabase
+    .from('profiles')
+    .select('*', { count: 'exact', head: true })
+    .gte('created_at', today.toISOString())
+  const { count: checkinsToday } = await supabase
+    .from('checkins')
+    .select('*', { count: 'exact', head: true })
+    .gte('created_at', today.toISOString())
+
+  await sendTelegram(
+    `📊 <b>Дневной отчёт Metanoia</b>\n` +
+    `👤 Всего юзеров: ${profiles.length}\n` +
+    `🆕 Новых сегодня: ${newUsersToday ?? 0}\n` +
+    `✅ Чекинов сегодня: ${checkinsToday ?? 0}\n` +
+    `📧 Писем отправлено: ${sent}`
+  )
 
   return NextResponse.json({ sent })
 }
