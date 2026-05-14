@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
-import { Logo } from '@/components/Logo'
 
 // ── Quiz data ──────────────────────────────────────────────────────────────
 const EMOTIONS = ['Тревожно', 'Подавленно', 'Раздражённо', 'Устало', 'Нормально', 'Хорошо']
@@ -176,6 +175,13 @@ export default function LoginPage() {
     <div className="min-h-screen">
       {/* ── CSS animations ─────────────────────────────────────────── */}
       <style>{`
+        @keyframes blob-pulse {
+          0%, 100% { transform: scale(1);   opacity: 1; }
+          50%       { transform: scale(1.15); opacity: 0.7; }
+        }
+        .blob-1 { animation: blob-pulse 7s ease-in-out infinite; }
+        .blob-2 { animation: blob-pulse 9s ease-in-out infinite 1.5s; }
+        .blob-3 { animation: blob-pulse 11s ease-in-out infinite 3s; }
         @keyframes fade-up {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -201,19 +207,19 @@ export default function LoginPage() {
       }}>
         {/* Decorative blobs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div style={{
+          <div className="blob-1" style={{
             position: 'absolute', top: '-80px', right: '-60px',
             width: 320, height: 320, borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(37,99,235,0.13) 0%, transparent 70%)',
             filter: 'blur(40px)',
           }} />
-          <div style={{
+          <div className="blob-2" style={{
             position: 'absolute', bottom: '-60px', left: '-40px',
             width: 280, height: 280, borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(6,182,212,0.11) 0%, transparent 70%)',
             filter: 'blur(35px)',
           }} />
-          <div style={{
+          <div className="blob-3" style={{
             position: 'absolute', top: '30%', left: '65%',
             width: 180, height: 180, borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)',
