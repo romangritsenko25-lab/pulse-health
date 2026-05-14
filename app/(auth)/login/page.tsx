@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import Image from 'next/image'
 import { Logo } from '@/components/Logo'
 
 // ── Quiz data ──────────────────────────────────────────────────────────────
@@ -221,7 +222,13 @@ export default function LoginPage() {
 
         <div className="relative z-10 max-w-lg mx-auto flex flex-col items-center gap-6">
           <div className="fade-up">
-            <Logo size="lg" showMark={false} />
+            <Image
+              src="/logo.jpg"
+              alt="Metanoia"
+              width={110}
+              height={110}
+              className="rounded-2xl shadow-md"
+            />
           </div>
 
           <h1 style={{ color: '#1e3a5f' }} className="fade-up-d1 text-3xl sm:text-4xl font-bold leading-tight">

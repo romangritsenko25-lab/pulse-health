@@ -61,7 +61,7 @@ export default function NavBar() {
           className="flex items-center gap-2 shrink-0"
           onClick={() => setOpen(false)}
         >
-          <Logo size="sm" />
+          <Logo size="sm" showMark={false} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-0.5">
