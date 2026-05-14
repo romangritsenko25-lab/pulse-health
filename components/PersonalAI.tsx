@@ -1,4 +1,4 @@
-'use client'
+п»ї'use client'
 
 import { useState, useEffect, useRef } from 'react'
 
@@ -11,7 +11,7 @@ interface Conversation {
 }
 
 function greeting(name: string): Msg {
-  return { role: 'assistant', content: `Привет, ${name}! Я прочитал твои последние записи. Как ты сейчас?` }
+  return { role: 'assistant', content: `РџСЂРёРІРµС‚, ${name}! РЇ РїСЂРѕС‡РёС‚Р°Р» С‚РІРѕРё РїРѕСЃР»РµРґРЅРёРµ Р·Р°РїРёСЃРё. РљР°Рє С‚С‹ СЃРµР№С‡Р°СЃ?` }
 }
 
 function fmtDate(iso: string) {
@@ -97,7 +97,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
 
     if (res.status === 429) {
       setLimitReached(true)
-      setMessages(prev => [...prev, { role: 'assistant', content: data.message ?? 'Лимит сообщений исчерпан на сегодня.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.message ?? 'Р›РёРјРёС‚ СЃРѕРѕР±С‰РµРЅРёР№ РёСЃС‡РµСЂРїР°РЅ РЅР° СЃРµРіРѕРґРЅСЏ.' }])
     } else if (data.text) {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -123,7 +123,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
         })
       }
     } else {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Произошла ошибка. Попробуй снова.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°. РџРѕРїСЂРѕР±СѓР№ СЃРЅРѕРІР°.' }])
     }
 
     setSending(false)
@@ -161,13 +161,13 @@ export default function PersonalAI({ userName }: { userName: string }) {
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/>
           </svg>
-          История
+          РСЃС‚РѕСЂРёСЏ
         </button>
 
         <div className="text-center flex-1">
-          <h2 className="text-base font-bold text-slate-900">Твой ассистент</h2>
+          <h2 className="text-base font-bold text-slate-900">РўРІРѕР№ Р°СЃСЃРёСЃС‚РµРЅС‚</h2>
           <div className={`text-xs font-medium mt-0.5 ${used >= limitState ? 'text-red-400' : 'text-slate-400'}`}>
-            {used} / {limitState} сегодня
+            {used} / {limitState} СЃРµРіРѕРґРЅСЏ
           </div>
         </div>
 
@@ -178,7 +178,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
           </svg>
-          Новый
+          РќРѕРІС‹Р№
         </button>
       </div>
 
@@ -186,7 +186,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
       {showHistory && (
         <div className="flex-1 overflow-y-auto">
           {conversations.length === 0 ? (
-            <div className="text-center text-slate-400 text-sm mt-8">Нет сохранённых чатов</div>
+            <div className="text-center text-slate-400 text-sm mt-8">РќРµС‚ СЃРѕС…СЂР°РЅС‘РЅРЅС‹С… С‡Р°С‚РѕРІ</div>
           ) : (
             <div className="flex flex-col gap-2">
               {conversations.map(c => (
@@ -240,13 +240,13 @@ export default function PersonalAI({ userName }: { userName: string }) {
                   {m.role === 'assistant' && m.pdf_topic && (
                     <div className="ml-9 mt-1">
                       {addedTopics.has(i) ? (
-                        <span className="text-xs text-blue-500 font-medium">? Добавлено</span>
+                        <span className="text-xs text-blue-500 font-medium">вњ“ Р”РѕР±Р°РІР»РµРЅРѕ</span>
                       ) : (
                         <button
                           onClick={() => addTopic(i, m.pdf_topic!)}
                           className="text-xs text-blue-600 border border-blue-200 rounded-lg px-2.5 py-1 hover:bg-blue-50 transition"
                         >
-                          + Добавить в темы для специалиста
+                          + Р”РѕР±Р°РІРёС‚СЊ РІ С‚РµРјС‹ РґР»СЏ СЃРїРµС†РёР°Р»РёСЃС‚Р°
                         </button>
                       )}
                     </div>
@@ -272,8 +272,8 @@ export default function PersonalAI({ userName }: { userName: string }) {
           {/* Input */}
           {limitReached ? (
             <div className="text-center py-4 text-sm text-slate-400">
-              Лимит исчерпан. Возвращайся завтра или{' '}
-              <a href="/upgrade" className="text-blue-600 font-semibold hover:text-blue-500">перейди на Pro</a>.
+              Р›РёРјРёС‚ РёСЃС‡РµСЂРїР°РЅ. Р’РѕР·РІСЂР°С‰Р°Р№СЃСЏ Р·Р°РІС‚СЂР° РёР»Рё{' '}
+              <a href="/upgrade" className="text-blue-600 font-semibold hover:text-blue-500">РїРµСЂРµР№РґРё РЅР° Pro</a>.
             </div>
           ) : (
             <div className="flex gap-2 items-end bg-slate-50 pt-2 pb-16 md:pb-2 shrink-0">
@@ -281,7 +281,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKey}
-                placeholder="Напиши что-нибудь…"
+                placeholder="РќР°РїРёС€Рё С‡С‚Рѕ-РЅРёР±СѓРґСЊвЂ¦"
                 rows={1}
                 className="flex-1 resize-none px-4 py-3 rounded-2xl border border-slate-200 focus:border-blue-400 focus:outline-none text-sm placeholder:text-slate-400 leading-relaxed"
                 style={{ maxHeight: 120, fontSize: 16 }}
