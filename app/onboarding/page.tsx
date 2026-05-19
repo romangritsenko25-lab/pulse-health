@@ -128,7 +128,6 @@ export default function OnboardingPage() {
           .ob-wrap { flex-direction: column !important; }
           .ob-half { padding: 2.5rem 2rem 2rem 2rem !important; min-height: 50dvh; justify-content: flex-end !important; }
           .ob-half-right { padding: 2rem 2rem 2.5rem 2rem !important; justify-content: flex-start !important; }
-          .ob-logo-wrap { top: 50% !important; }
           .ob-btn { max-width: 100% !important; }
         }
       `}</style>
@@ -138,57 +137,6 @@ export default function OnboardingPage() {
         style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'row', position: 'relative' }}
       >
 
-        {/* ── Логотип по центру раздела ── */}
-        <div
-          className="ob-logo-wrap"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '46%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 20,
-            animation: 'logo-soft-in 0.8s ease-out forwards',
-          }}
-        >
-          {/* Мягкое свечение — один раз при входе */}
-          <div style={{
-            position: 'absolute',
-            inset: -20,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(29,78,216,0.45), transparent 65%)',
-            animationName: 'glow-out',
-            animationDuration: '1.2s',
-            animationDelay: '0.55s',
-            animationTimingFunction: 'ease-out',
-            animationFillMode: 'both',
-            animationIterationCount: '1',
-          }} />
-          <div style={{
-            position: 'absolute',
-            inset: -20,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(6,182,212,0.4), transparent 65%)',
-            animationName: 'glow-out',
-            animationDuration: '1.2s',
-            animationDelay: '0.8s',
-            animationTimingFunction: 'ease-out',
-            animationFillMode: 'both',
-            animationIterationCount: '1',
-          }} />
-
-          {/* Иконка */}
-          <div style={{
-            background: 'white',
-            borderRadius: 22,
-            padding: 12,
-            boxShadow: '-10px 4px 28px rgba(29,78,216,0.45), 10px 4px 28px rgba(6,182,212,0.4)',
-            position: 'relative',
-            zIndex: 1,
-          }}>
-            <Image src="/Logo1.png" alt="Metanoia" width={64} height={64} className="rounded-xl object-contain" />
-          </div>
-        </div>
-
         {/* ── Левая половина — Пациент (navy) ── */}
         <div
           className="ob-half"
@@ -197,19 +145,6 @@ export default function OnboardingPage() {
             background: 'radial-gradient(ellipse 80% 70% at 75% 42%, #3b82f6 0%, #1d4ed8 55%, #1e3a8a 100%)',
           }}
         >
-          {/* Силуэт пациента — едва видимый фон */}
-          <div style={{
-            position: 'absolute',
-            right: '8%',
-            bottom: '5%',
-            width: '55%',
-            height: '75%',
-            background: 'url(/Logo1.png) no-repeat right bottom / contain',
-            opacity: 0.07,
-            zIndex: 0,
-            filter: 'brightness(10)',
-          }} />
-
           <div className="ob-content">
             <span className="ob-badge">Для себя</span>
             <h2 style={{ color: 'white', fontSize: 22, fontWeight: 800, margin: '0 0 12px', lineHeight: 1.25, letterSpacing: '-0.3px' }}>
@@ -223,7 +158,7 @@ export default function OnboardingPage() {
               onClick={e => { e.stopPropagation(); choose('user') }}
               disabled={!!loading}
             >
-              {loading === 'user' ? 'Загрузка…' : 'Начать →'}
+              {loading === 'user' ? 'Загрузка…' : 'Начать'}
             </button>
           </div>
         </div>
@@ -236,19 +171,6 @@ export default function OnboardingPage() {
             background: 'radial-gradient(ellipse 80% 70% at 25% 42%, #22d3ee 0%, #06b6d4 55%, #0e7490 100%)',
           }}
         >
-          {/* Силуэт доктора — едва видимый фон */}
-          <div style={{
-            position: 'absolute',
-            left: '8%',
-            bottom: '5%',
-            width: '55%',
-            height: '75%',
-            background: 'url(/Logo1.png) no-repeat left bottom / contain',
-            opacity: 0.07,
-            zIndex: 0,
-            filter: 'brightness(10)',
-          }} />
-
           <div className="ob-content" style={{ animationDelay: '0.8s' }}>
             <span className="ob-badge">Для специалистов</span>
             <h2 style={{ color: 'white', fontSize: 22, fontWeight: 800, margin: '0 0 12px', lineHeight: 1.25, letterSpacing: '-0.3px' }}>
