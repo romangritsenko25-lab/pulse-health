@@ -115,11 +115,11 @@ export default function SpecialistRegisterPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Gradient header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-900 px-4 py-10">
+      <div className="bg-gradient-to-r from-cyan-400 to-cyan-800 px-4 py-10">
         <div className="max-w-lg mx-auto text-white">
-          <p className="text-xs font-bold uppercase tracking-widest mb-1 text-blue-200">Metanoia AI</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-1 text-cyan-200">Metanoia AI</p>
           <h1 className="text-2xl font-bold">Портал специалиста</h1>
-          <p className="text-blue-100 text-sm mt-1 opacity-90">
+          <p className="text-cyan-100 text-sm mt-1 opacity-90">
             Зарегистрируйтесь чтобы получить реферальные ссылки для клиентов
           </p>
         </div>
@@ -139,7 +139,7 @@ export default function SpecialistRegisterPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Анна Иванова"
                 required
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300"
               />
             </div>
 
@@ -152,7 +152,7 @@ export default function SpecialistRegisterPage() {
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
                 required
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-300"
               >
                 <option value="">Выберите специальность</option>
                 {SPECIALTIES.map((s) => (
@@ -194,13 +194,13 @@ export default function SpecialistRegisterPage() {
 
               {photoSource === 'file' ? (
                 <div>
-                  <label className="flex flex-col items-center justify-center w-full h-28 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition">
+                  <label className="flex flex-col items-center justify-center w-full h-28 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-cyan-400 transition">
                     {uploading ? (
                       <span className="text-sm text-slate-400 animate-pulse">Загрузка…</span>
                     ) : photoUrl ? (
                       <div className="flex flex-col items-center gap-2">
-                        <img src={photoUrl} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-blue-200" />
-                        <span className="text-xs text-blue-600 font-medium">Фото загружено · нажмите чтобы заменить</span>
+                        <img src={photoUrl} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-cyan-200" />
+                        <span className="text-xs text-cyan-600 font-medium">Фото загружено · нажмите чтобы заменить</span>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-1 text-slate-400">
@@ -227,7 +227,7 @@ export default function SpecialistRegisterPage() {
                     value={photoUrl}
                     onChange={(e) => setPhotoUrl(e.target.value)}
                     placeholder="https://example.com/photo.jpg"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300"
                   />
                   <p className="text-slate-400 text-xs mt-1">Прямая ссылка на изображение</p>
                 </div>
@@ -244,28 +244,28 @@ export default function SpecialistRegisterPage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Расскажите о вашем подходе и специализации. Например: работаю с тревожными расстройствами и депрессией, использую КПТ и ACT..."
                 rows={4}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 resize-none"
               />
               <p className="text-slate-400 text-xs mt-1">Клиенты увидят это описание на вашей странице профиля</p>
             </div>
 
             {/* Preview */}
             {(name || specialty || photoUrl) && (
-              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center gap-4">
+              <div className="bg-cyan-50 border border-cyan-100 rounded-xl p-4 flex items-center gap-4">
                 {photoUrl ? (
                   <img
                     src={photoUrl}
                     alt=""
-                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-200"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-cyan-200"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-cyan-200 flex items-center justify-center text-cyan-700 font-bold text-lg shrink-0">
                     {name ? name[0].toUpperCase() : '?'}
                   </div>
                 )}
                 <div>
                   <p className="font-semibold text-slate-800 text-sm">{name || 'Имя специалиста'}</p>
-                  <p className="text-blue-600 text-xs">{specialty || 'Специальность'}</p>
+                  <p className="text-cyan-600 text-xs">{specialty || 'Специальность'}</p>
                   {bio && <p className="text-slate-500 text-xs mt-1 line-clamp-2">{bio}</p>}
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function SpecialistRegisterPage() {
           <button
             type="submit"
             disabled={loading || !name.trim() || !specialty || uploading}
-            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold py-3.5 rounded-2xl transition text-sm"
+            className="w-full bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white font-semibold py-3.5 rounded-2xl transition text-sm"
           >
             {loading ? 'Сохранение…' : 'Создать профиль специалиста'}
           </button>

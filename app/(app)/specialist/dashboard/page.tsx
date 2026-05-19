@@ -146,7 +146,7 @@ export default function SpecialistDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-slate-50 flex items-center justify-center">
         <p className="text-slate-400 text-sm animate-pulse">Загрузка…</p>
       </div>
     )
@@ -159,7 +159,7 @@ export default function SpecialistDashboard() {
   const totalCheckins = clients.reduce((a, c) => a + c.checkinCount, 0)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-[100dvh] bg-slate-50">
       <ReferralBanner specialistId={specialistId} referralCode={specialist?.referral_code ?? ''} />
       <div className="max-w-2xl mx-auto px-4 py-8">
 
@@ -280,7 +280,7 @@ export default function SpecialistDashboard() {
               <p className="text-slate-400 text-xs mb-3">
                 Отправьте клиенту — он увидит ваш профиль и сразу подключится
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   readOnly
                   value={referralUrl}
@@ -288,7 +288,7 @@ export default function SpecialistDashboard() {
                 />
                 <button
                   onClick={copyLink}
-                  className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+                  className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition w-full sm:w-auto sm:shrink-0"
                 >
                   {copied ? '✓ Скопировано' : 'Копировать'}
                 </button>
@@ -296,14 +296,14 @@ export default function SpecialistDashboard() {
             </div>
 
             {/* Colleague referral banner */}
-            <div className="bg-gradient-to-r from-cyan-50 to-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-5 flex items-center justify-between gap-4">
+            <div className="bg-gradient-to-r from-cyan-50 to-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <p className="font-semibold text-slate-800 text-sm">Пригласи коллегу — заработай 30% комиссии</p>
                 <p className="text-slate-500 text-xs mt-0.5">Реферальная программа для специалистов</p>
               </div>
               <button
                 onClick={() => setShowColleagueModal(true)}
-                className="shrink-0 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-xl transition"
+                className="w-full sm:w-auto sm:shrink-0 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-xl transition"
               >
                 Узнать подробнее
               </button>
@@ -312,7 +312,7 @@ export default function SpecialistDashboard() {
             {/* Colleague modal */}
             {showColleagueModal && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-                <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 flex flex-col gap-4">
+                <div className="bg-white rounded-2xl shadow-xl max-w-md w-full px-4 py-5 sm:p-6 flex flex-col gap-4">
                   <div className="flex items-start justify-between">
                     <h2 className="font-bold text-slate-800 text-lg">Реферальная программа</h2>
                     <button onClick={() => setShowColleagueModal(false)} className="p-1 text-slate-400 hover:text-slate-600 transition">
