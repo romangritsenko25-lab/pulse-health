@@ -426,39 +426,34 @@ export default function LoginPage() {
       </section>
 
       {/* ── Материалы ──────────────────────────────────────────────── */}
-      <section className="py-16 px-4" style={{ background: '#faf9f7' }}>
+      <section className="py-12 px-4" style={{ background: '#faf9f7' }}>
         <div className="max-w-lg mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-1">Материалы</p>
-              <h2 style={{ color: '#1e3a5f' }} className="text-xl font-bold">Книги и видео для самопознания</h2>
+              <h2 style={{ color: '#1e3a5f' }} className="text-xl font-bold">Библиотека для подготовки к сессии</h2>
             </div>
             <a href="/materials" style={{ color: '#2563eb' }} className="text-sm font-semibold hover:opacity-70 transition shrink-0">
               Смотреть все →
             </a>
           </div>
-          <div className="flex flex-col gap-3 mb-6">
+          <div className="grid grid-cols-3 gap-3">
             {[
-              { title: 'Тело помнит всё', author: 'Бессел ван дер Колк', emoji: '📖' },
-              { title: 'Когнитивная терапия депрессии', author: 'Аарон Бек', emoji: '📗' },
-              { title: 'Токсичный позитив', author: 'Уитни Гудман', emoji: '📘' },
+              { title: 'Тело помнит всё', hook: 'Травма и тело', cover: 'https://cdn.litres.ru/pub/c/cover_415/51388931.webp' },
+              { title: 'Токсичный позитив', hook: 'Честность к себе', cover: 'https://cdn.litres.ru/pub/c/cover_415/69036151.webp' },
+              { title: 'Эмоциональный интеллект', hook: 'Понять эмоции', cover: 'https://cdn.litres.ru/pub/c/cover_415/5024477.webp' },
             ].map((b) => (
-              <div key={b.title} style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="flex items-center gap-3 border rounded-2xl p-4">
-                <span className="text-2xl">{b.emoji}</span>
-                <div>
-                  <p style={{ color: '#1e3a5f' }} className="font-semibold text-sm">{b.title}</p>
-                  <p style={{ color: '#94a3b8' }} className="text-xs">{b.author}</p>
+              <a key={b.title} href="/materials" className="flex flex-col gap-2 group">
+                <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-md group-hover:shadow-lg transition-shadow">
+                  <img src={b.cover} alt={b.title} className="w-full h-full object-cover" />
                 </div>
-              </div>
+                <div>
+                  <p style={{ color: '#1e3a5f' }} className="font-semibold text-xs leading-snug line-clamp-2">{b.title}</p>
+                  <p style={{ color: '#94a3b8' }} className="text-[10px] mt-0.5">{b.hook}</p>
+                </div>
+              </a>
             ))}
           </div>
-          <a
-            href="/materials"
-            style={{ borderColor: '#e2e8f0', color: '#64748b' }}
-            className="flex items-center justify-center w-full py-3 bg-white border hover:border-[#2563eb] hover:text-[#2563eb] text-sm font-semibold rounded-2xl transition"
-          >
-            Смотреть все материалы
-          </a>
         </div>
       </section>
 

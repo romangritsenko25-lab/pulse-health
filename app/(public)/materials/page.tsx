@@ -207,10 +207,10 @@ export default function MaterialsPage() {
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Материалы</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-            Библиотека знаний
+            Подготовительная библиотека
           </h1>
           <p className="text-slate-500 text-base max-w-xl mx-auto">
-            Книги, видео и статьи, которые помогут лучше понять себя и подготовиться к работе со специалистом.
+            Книги и статьи которые помогут лучше понять себя перед приёмом у специалиста.
           </p>
         </div>
       </section>
