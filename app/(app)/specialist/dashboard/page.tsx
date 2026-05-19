@@ -38,7 +38,7 @@ function Sparkline({ scores }: { scores: number[] }) {
       <polyline
         points={points}
         fill="none"
-        stroke="#6366f1"
+        stroke="#06b6d4"
         strokeWidth="1.5"
         strokeLinejoin="round"
         strokeLinecap="round"
@@ -166,7 +166,7 @@ export default function SpecialistDashboard() {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
+            <p className="text-xs font-bold text-cyan-600 uppercase tracking-widest mb-0.5">Metanoia AI</p>
             <h1 className="text-2xl font-bold text-slate-800">Дашборд специалиста</h1>
             {specialist && (
               <p className="text-slate-500 text-sm mt-0.5">
@@ -179,7 +179,7 @@ export default function SpecialistDashboard() {
           <div className="relative shrink-0 ml-3">
             <button
               onClick={() => setShowMenu((v) => !v)}
-              className="p-2 rounded-xl border border-slate-200 bg-white hover:border-blue-400 text-slate-500 hover:text-blue-600 transition"
+              className="p-2 rounded-xl border border-slate-200 bg-white hover:border-cyan-400 text-slate-500 hover:text-cyan-600 transition"
               aria-label="Меню"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -288,7 +288,7 @@ export default function SpecialistDashboard() {
                 />
                 <button
                   onClick={copyLink}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
+                  className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition shrink-0"
                 >
                   {copied ? '✓ Скопировано' : 'Копировать'}
                 </button>
@@ -296,14 +296,14 @@ export default function SpecialistDashboard() {
             </div>
 
             {/* Colleague referral banner */}
-            <div className="bg-gradient-to-r from-blue-50 to-blue-50 border border-blue-100 rounded-2xl p-4 mb-5 flex items-center justify-between gap-4">
+            <div className="bg-gradient-to-r from-cyan-50 to-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-5 flex items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-slate-800 text-sm">Пригласи коллегу — заработай 30% комиссии</p>
                 <p className="text-slate-500 text-xs mt-0.5">Реферальная программа для специалистов</p>
               </div>
               <button
                 onClick={() => setShowColleagueModal(true)}
-                className="shrink-0 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition"
+                className="shrink-0 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-xl transition"
               >
                 Узнать подробнее
               </button>
@@ -322,14 +322,14 @@ export default function SpecialistDashboard() {
                     </button>
                   </div>
                   <div className="flex flex-col gap-3 text-sm text-slate-600">
-                    <div className="flex items-start gap-3 bg-blue-50 rounded-xl p-3">
+                    <div className="flex items-start gap-3 bg-cyan-50 rounded-xl p-3">
                       <span className="text-xl">🔗</span>
                       <div>
                         <p className="font-semibold text-slate-800">Поделись личной ссылкой</p>
                         <p className="text-xs text-slate-500 mt-0.5">Отправь коллеге ссылку на регистрацию специалиста</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 bg-blue-50 rounded-xl p-3">
+                    <div className="flex items-start gap-3 bg-cyan-50 rounded-xl p-3">
                       <span className="text-xl">💰</span>
                       <div>
                         <p className="font-semibold text-slate-800">Получай 30% комиссии</p>
@@ -347,7 +347,7 @@ export default function SpecialistDashboard() {
                   <p className="text-xs text-slate-400 text-center">Функция в разработке — напишем когда запустим</p>
                   <button
                     onClick={() => setShowColleagueModal(false)}
-                    className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition"
+                    className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold rounded-xl transition"
                   >
                     Понятно
                   </button>
@@ -383,7 +383,7 @@ export default function SpecialistDashboard() {
                     const wellbeingColor =
                       client.lastCheckin?.wellbeing !== null && client.lastCheckin?.wellbeing !== undefined
                         ? client.lastCheckin.wellbeing >= 7
-                          ? 'text-blue-500'
+                          ? 'text-cyan-500'
                           : client.lastCheckin.wellbeing >= 4
                           ? 'text-amber-500'
                           : 'text-red-400'
@@ -392,7 +392,7 @@ export default function SpecialistDashboard() {
                     return (
                       <div key={client.client_id} className="px-5 py-4 flex items-center gap-4">
                         {/* Avatar */}
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold text-sm shrink-0">
                           {initials}
                         </div>
 

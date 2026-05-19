@@ -35,7 +35,7 @@ export default function ReferralBanner({ specialistId, referralCode }: Props) {
   }
 
   return (
-    <div className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-900 p-6 mb-6 text-white">
+    <div className="rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-800 p-6 mb-6 text-white">
       <p className="text-lg font-semibold mb-1">
         Приглашайте пользователей и зарабатывайте 💰
       </p>
