@@ -196,7 +196,7 @@ export default function MaterialsPage() {
 
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: 'books', label: 'Книги', count: BOOKS.length },
-    { id: 'videos', label: 'Видео и подкасты', count: dbVideos.length },
+    { id: 'videos', label: 'Видео', count: dbVideos.length },
     { id: 'articles', label: 'Статьи', count: dbArticles.length || ARTICLES.length },
   ]
 
@@ -218,12 +218,12 @@ export default function MaterialsPage() {
       {/* Tabs */}
       <div className="sticky top-14 z-40 bg-white border-b border-slate-100">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="flex gap-0">
+          <div className="flex gap-0 overflow-x-auto scrollbar-none">
             {tabs.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`flex items-center gap-1.5 px-4 py-4 text-sm font-medium border-b-2 transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${
                   tab === t.id
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-slate-500 hover:text-slate-800'

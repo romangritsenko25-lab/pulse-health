@@ -252,7 +252,7 @@ export default function JournalPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-[100dvh]">
       <div className="max-w-xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

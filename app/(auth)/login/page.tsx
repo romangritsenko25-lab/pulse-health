@@ -216,7 +216,7 @@ export default function LoginPage() {
       {/* ════════════════════════════════════════════════════════════ */}
 
       {/* ── Hero ───────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-10 pb-24 px-4 text-center min-h-[92vh] flex flex-col items-center justify-center" style={{
+      <section className="relative overflow-hidden px-4 text-center min-h-[50vh] flex flex-col items-center pt-10 pb-16" style={{
         background: `
           radial-gradient(ellipse 70% 55% at 15% 50%, rgba(37,99,235,0.08) 0%, transparent 70%),
           radial-gradient(ellipse 55% 45% at 85% 15%, rgba(6,182,212,0.07) 0%, transparent 60%),

@@ -100,7 +100,7 @@ export default function UpgradePage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#faf9f7' }}>
+    <div className="min-h-[100dvh]" style={{ background: '#faf9f7' }}>
       {/* Paddle.js */}
       {PADDLE_VENDOR_ID && (
         <script

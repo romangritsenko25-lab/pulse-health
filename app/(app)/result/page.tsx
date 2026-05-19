@@ -149,7 +149,7 @@ function Section({ badge, title, children }: {
 // ── Crisis screen ──────────────────────────────────────────────────────────
 function CrisisView({ onBack }: { onBack: () => void }) {
   return (
-    <div className="min-h-screen bg-white flex flex-col max-w-lg mx-auto px-4 py-10">
+    <div className="min-h-[100dvh] bg-white flex flex-col max-w-lg mx-auto px-4 py-10">
       <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
         <h2 className="text-xl font-bold text-red-700 mb-3">Ты не один(а)</h2>
         <p className="text-slate-700 text-sm leading-relaxed mb-5">
@@ -412,7 +412,7 @@ function ResultContent() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#faf9f7' }}>
+      <div className="min-h-[100dvh] flex items-center justify-center" style={{ background: '#faf9f7' }}>
         <p className="animate-pulse text-sm" style={{ color: '#9ca3af' }}>Загрузка…</p>
       </div>
     )
@@ -425,7 +425,7 @@ function ResultContent() {
   })
 
   return (
-    <div className="min-h-screen" style={{ background: '#faf9f7' }}>
+    <div className="min-h-[100dvh]" style={{ background: '#faf9f7' }}>
       <div className="max-w-lg mx-auto px-4 py-8 flex flex-col gap-4">
 
         {/* Header */}
@@ -546,7 +546,7 @@ function ResultContent() {
 export default function ResultPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-slate-50 flex items-center justify-center">
         <p className="text-slate-400 animate-pulse text-sm">Загрузка…</p>
       </div>
     }>

@@ -259,13 +259,13 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
     <div className="flex flex-col gap-6">
       <section>
         <h3 className="font-semibold text-slate-800 mb-3">Какие эмоции присутствовали сегодня?</h3>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {EMOTIONS_LIST.map((e) => {
             const selected = form.emotions.includes(e.label)
             return (
               <button
                 key={e.label} type="button" onClick={() => toggleEmotion(e.label)}
-                className="flex flex-col items-center gap-2 p-3 rounded-2xl border transition text-xs font-semibold"
+                className="flex flex-col items-center gap-1 p-2 rounded-xl border transition text-[10px] font-semibold leading-tight"
                 style={{
                   borderColor: selected ? '#2563eb' : '#ede9e4',
                   background: selected ? '#eff6ff' : '#ffffff',
@@ -273,7 +273,7 @@ function Block2Emotions({ form, set, onCrisis }: Block2Props) {
                   boxShadow: selected ? '0 0 0 3px #dbeafe' : 'none',
                 }}
               >
-                <img src={e.src} alt="" width={36} height={36} style={{ display: 'block' }} />
+                <img src={e.src} alt="" width={28} height={28} style={{ display: 'block' }} />
                 {e.label}
               </button>
             )
@@ -407,7 +407,7 @@ function Block4Narrative({ form, set }: { form: DeepFormData; set: <K extends ke
 // ── Crisis screen ──────────────────────────────────────────────────────────
 function CrisisScreen({ onBack }: { onBack: () => void }) {
   return (
-    <div className="min-h-screen bg-white flex flex-col max-w-lg mx-auto px-4 py-8">
+    <div className="min-h-[100dvh] bg-white flex flex-col max-w-lg mx-auto px-4 py-8">
       <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
         <h2 className="text-xl font-bold text-red-700 mb-3">Вы не одни</h2>
         <p className="text-slate-700 text-sm leading-relaxed mb-4">
@@ -579,10 +579,10 @@ export default function CheckinPage() {
   const progress = (block / TOTAL_BLOCKS) * 100
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#faf9f7' }}>
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: '#faf9f7' }}>
       {/* Top bar */}
-      <div className="px-4 pt-5 pb-3 max-w-lg mx-auto w-full sticky top-0 z-10" style={{ background: '#faf9f7' }}>
-        <div className="flex items-center justify-between mb-3">
+      <div className="px-4 pt-3 pb-2 max-w-lg mx-auto w-full sticky top-0 z-10" style={{ background: '#faf9f7' }}>
+        <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium" style={{ color: '#9ca3af' }}>Блок {block} из {TOTAL_BLOCKS}</span>
           <div className="flex items-center gap-3">
             <button onClick={() => router.push('/')} className="text-sm transition" style={{ color: '#9ca3af' }}>← Главная</button>
@@ -590,7 +590,7 @@ export default function CheckinPage() {
           </div>
         </div>
         {/* Progress bar */}
-        <div className="h-1 rounded-full overflow-hidden mb-3" style={{ background: '#ede9e4' }}>
+        <div className="h-1 rounded-full overflow-hidden mb-2" style={{ background: '#ede9e4' }}>
           <div
             className="h-full rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%`, background: '#2563eb' }}
@@ -624,7 +624,7 @@ export default function CheckinPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-4 py-6">
+      <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-4 py-4">
         <div
           className={`transition-all duration-200 ease-out ${
             visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
