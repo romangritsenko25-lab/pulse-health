@@ -8,6 +8,14 @@ import Image from 'next/image'
 const EMOTIONS = ['Тревожно', 'Подавленно', 'Раздражённо', 'Устало', 'Нормально', 'Хорошо']
 const DURATIONS = ['Сегодня', 'Несколько дней', 'Больше недели', 'Давно']
 const SUPPORTS = ['Да', 'Не всегда', 'Нет']
+const EMOTION_COLORS: Record<string, string> = {
+  'Тревожно':    '#fef3c7',
+  'Подавленно':  '#ede9fe',
+  'Раздражённо': '#fee2e2',
+  'Устало':      '#f1f5f9',
+  'Нормально':   '#f0fdf4',
+  'Хорошо':      '#ecfeff',
+}
 
 function getInsight(emotion: string, duration: string, support: string): string {
   const negative = ['Тревожно', 'Подавленно', 'Раздражённо'].includes(emotion)
@@ -40,14 +48,22 @@ function getInsight(emotion: string, duration: string, support: string): string 
 }
 
 // ── Chip ───────────────────────────────────────────────────────────────────
-function Chip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+function Chip({ label, selected, onClick, bgColor }: { label: string; selected: boolean; onClick: () => void; bgColor?: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      style={selected ? { background: '#2563eb', borderColor: '#2563eb', color: 'white' } : {}}
+      style={selected
+        ? { background: '#2563eb', borderColor: '#2563eb', color: 'white' }
+        : bgColor
+          ? { background: bgColor, borderColor: 'transparent' }
+          : {}}
       className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-        selected ? '' : 'bg-white border-slate-200 text-slate-700 hover:border-[#2563eb] hover:text-[#2563eb]'
+        selected
+          ? ''
+          : bgColor
+            ? 'text-slate-700 hover:border-[#2563eb] hover:text-[#2563eb]'
+            : 'bg-white border-slate-200 text-slate-700 hover:border-[#2563eb] hover:text-[#2563eb]'
       }`}
     >
       {label}
@@ -274,7 +290,11 @@ export default function LoginPage() {
             )}
           </div>
 
-          <p style={{ color: '#94a3b8' }} className="fade-up-d3 text-xs">Без кредитной карты · Бесплатно навсегда для первых опросов</p>
+          <div className="fade-up-d3 flex flex-wrap justify-center gap-x-5 gap-y-1.5">
+            {['✓ 10 минут', '✓ 4 блока вопросов', '✓ 3 опроса бесплатно'].map((t) => (
+              <span key={t} style={{ color: '#64748b' }} className="text-xs">{t}</span>
+            ))}
+          </div>
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-300">
@@ -283,51 +303,58 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── Статистика ─────────────────────────────────────────────── */}
-      <section style={{ background: 'white', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
-        <div className="max-w-lg mx-auto px-4 py-8 grid grid-cols-3 gap-4 text-center">
-          {[
-            { num: '10', label: 'минут на опрос' },
-            { num: '4',  label: 'блока вопросов' },
-            { num: '3',  label: 'опроса бесплатно' },
-          ].map(({ num, label }) => (
-            <div key={label}>
-              <div style={{
-                fontSize: 36, fontWeight: 800, lineHeight: 1,
-                background: 'linear-gradient(135deg, #1d4ed8, #06b6d4)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>{num}</div>
-              <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ── Мини-опрос ─────────────────────────────────────────────── */}
-      <section className="py-16 px-4" style={{ background: 'linear-gradient(160deg, #eff6ff 0%, #f0fdf4 50%, #ecfeff 100%)' }}>
+      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
         <div className="max-w-lg mx-auto">
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Мини-опрос</p>
             <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Как ты себя чувствуешь прямо сейчас?</h2>
           </div>
 
-          <div className="flex flex-col gap-8">
-            <div style={{ background: '#f8fafc', borderColor: '#e2e8f0' }} className="border rounded-2xl p-6">
-              <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold mb-4">Выбери одно из состояний</p>
+          {/* Прогресс-индикатор */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {[emotion, duration, support].map((val, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${val ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
+                  {val ? '✓' : i + 1}
+                </div>
+                {i < 2 && <div className={`h-px w-8 transition-all duration-300 ${val ? 'bg-blue-300' : 'bg-slate-200'}`} />}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {/* Карточка 1 — Эмоция (всегда активна) */}
+            <div
+              className="border-2 rounded-2xl p-6 transition-all duration-300"
+              style={emotion
+                ? { background: '#f0fdf4', borderColor: '#86efac' }
+                : { background: 'white', borderColor: '#2563eb', boxShadow: '0 4px 20px rgba(37,99,235,0.1)' }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold">Выбери одно из состояний</p>
+                {emotion && <span style={{ color: '#16a34a' }} className="text-xs font-medium">✓ {emotion}</span>}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {EMOTIONS.map((e) => (
-                  <Chip key={e} label={e} selected={emotion === e} onClick={() => setEmotion(e)} />
+                  <Chip key={e} label={e} selected={emotion === e} onClick={() => setEmotion(e)} bgColor={EMOTION_COLORS[e]} />
                 ))}
               </div>
             </div>
 
+            {/* Карточка 2 — Длительность */}
             <div
-              style={{ background: '#f8fafc', borderColor: '#e2e8f0', opacity: emotion ? 1 : 0.35, pointerEvents: emotion ? 'auto' : 'none' }}
-              className="border rounded-2xl p-6 transition-all duration-300"
+              className={`border-2 rounded-2xl p-6 transition-all duration-300 ${!emotion ? 'pointer-events-none' : ''}`}
+              style={duration
+                ? { background: '#f0fdf4', borderColor: '#86efac' }
+                : emotion
+                  ? { background: 'white', borderColor: '#2563eb', boxShadow: '0 4px 20px rgba(37,99,235,0.1)' }
+                  : { background: '#f8fafc', borderColor: '#e2e8f0', opacity: 0.5 }}
             >
-              <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold mb-4">Как давно это состояние?</p>
+              <div className="flex items-center justify-between mb-4">
+                <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold">Как давно это состояние?</p>
+                {duration && <span style={{ color: '#16a34a' }} className="text-xs font-medium">✓ {duration}</span>}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {DURATIONS.map((d) => (
                   <Chip key={d} label={d} selected={duration === d} onClick={() => setDuration(d)} />
@@ -335,11 +362,19 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Карточка 3 — Поддержка */}
             <div
-              style={{ background: '#f8fafc', borderColor: '#e2e8f0', opacity: duration ? 1 : 0.35, pointerEvents: duration ? 'auto' : 'none' }}
-              className="border rounded-2xl p-6 transition-all duration-300"
+              className={`border-2 rounded-2xl p-6 transition-all duration-300 ${!duration ? 'pointer-events-none' : ''}`}
+              style={support
+                ? { background: '#f0fdf4', borderColor: '#86efac' }
+                : duration
+                  ? { background: 'white', borderColor: '#2563eb', boxShadow: '0 4px 20px rgba(37,99,235,0.1)' }
+                  : { background: '#f8fafc', borderColor: '#e2e8f0', opacity: 0.5 }}
             >
-              <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold mb-4">Есть ли рядом кто-то с кем можно поговорить?</p>
+              <div className="flex items-center justify-between mb-4">
+                <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold">Есть ли рядом кто-то с кем можно поговорить?</p>
+                {support && <span style={{ color: '#16a34a' }} className="text-xs font-medium">✓ {support}</span>}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {SUPPORTS.map((s) => (
                   <Chip key={s} label={s} selected={support === s} onClick={() => setSupport(s)} />
@@ -374,29 +409,51 @@ export default function LoginPage() {
         </div>
       </section>
 
-      {/* ── Карточки ценности ──────────────────────────────────────── */}
+      {/* ── Как это работает ───────────────────────────────────────── */}
       <section className="py-16 px-4" style={{ background: '#faf9f7' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
             <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Что ты получишь</p>
-            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Не просто опрос</h2>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Как это работает</h2>
           </div>
-          <div className="flex flex-col gap-4">
-            <ValueCard
-              icon="🔍"
-              title="Глубокий AI-опрос"
-              body="4 блока вопросов о теле, эмоциях, контексте и свободный рассказ. AI находит связи которые сложно увидеть самому."
-            />
-            <ValueCard
-              icon="📋"
-              title="PDF для специалиста"
-              body="Структурированный документ с анализом и темами для обсуждения. Принеси на первую сессию — сэкономит 30–40 минут."
-            />
-            <ValueCard
-              icon="🔒"
-              title="Только твои данные"
-              body="Всё зашифровано. Никакой рекламы, никакой передачи данным третьим лицам — никогда."
-            />
+          <div className="flex flex-col">
+            {[
+              { num: '1', title: 'Отвечаешь на вопросы', tag: '4 блока · 10 минут', body: 'Тело, эмоции, контекст и свободный рассказ. Вопросы помогают назвать то, что сложно выразить самому' },
+              { num: '2', title: 'AI анализирует', tag: 'Стиль психолога-консультанта', body: 'Находит паттерны и связи между физическим и эмоциональным состоянием. Без осуждения — с пониманием' },
+              { num: '3', title: 'Получаешь результат', tag: 'PDF + темы для специалиста', body: 'Приходишь на сессию подготовленным. Специалист сразу переходит к работе — экономия 30–40 минут' },
+            ].map((step, i, arr) => (
+              <div key={step.num} className="flex gap-4">
+                <div className="flex flex-col items-center flex-shrink-0">
+                  <div
+                    className="w-9 h-9 rounded-full text-white flex items-center justify-center font-bold text-sm shadow-md"
+                    style={{ background: 'linear-gradient(135deg, #2563eb, #0ea5e9)' }}
+                  >
+                    {step.num}
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div
+                      className="w-px flex-1 mt-2"
+                      style={{ background: 'linear-gradient(to bottom, #bfdbfe, transparent)', minHeight: '28px' }}
+                    />
+                  )}
+                </div>
+                <div className={i < arr.length - 1 ? 'pb-7' : ''}>
+                  <p style={{ color: '#1e3a5f' }} className="font-bold text-base mb-1">{step.title}</p>
+                  <span className="inline-block text-[11px] font-semibold text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-2.5 py-0.5 mb-2">
+                    {step.tag}
+                  </span>
+                  <p style={{ color: '#64748b' }} className="text-sm leading-relaxed">{step.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div
+            className="mt-6 rounded-2xl px-5 py-3.5 text-center border border-blue-100"
+            style={{ background: 'linear-gradient(135deg, #eff6ff, #ecfeff)' }}
+          >
+            <p className="text-sm font-semibold" style={{ color: '#1d4ed8' }}>
+              10 минут → анализ в стиле психолога + PDF для специалиста
+            </p>
           </div>
         </div>
       </section>
