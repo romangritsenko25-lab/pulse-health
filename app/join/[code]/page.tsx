@@ -23,12 +23,16 @@ export default function JoinPage() {
   const [pageLoading, setPageLoading] = useState(true)
   const [authLoading, setAuthLoading] = useState(false)
   const [notFound, setNotFound] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [alreadyLinked, setAlreadyLinked] = useState(false)
+  const [connecting, setConnecting] = useState(false)
+  const [connected, setConnected] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
 
     async function init() {
-      // Fetch specialist by referral code (public read)
       const { data: spec, error } = await supabase
         .from('specialists')
         .select('id, name, specialty, photo_url, city')
@@ -41,7 +45,6 @@ export default function JoinPage() {
         return
       }
 
-      // Load review stats
       const { data: reviews } = await supabase
         .from('specialist_reviews')
         .select('rating')
@@ -55,18 +58,33 @@ export default function JoinPage() {
       setSpecialist({ ...spec, avg_rating: avgRating, review_count: reviewCount })
       setPageLoading(false)
 
-      // If user already logged in — link immediately and go to checkin
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        await supabase
+        setIsLoggedIn(true)
+        setUserId(user.id)
+        const { data: link } = await supabase
           .from('specialist_clients')
-          .upsert({ specialist_id: spec.id, client_id: user.id })
-        router.push('/checkin')
+          .select('client_id')
+          .eq('specialist_id', spec.id)
+          .eq('client_id', user.id)
+          .maybeSingle()
+        if (link) setAlreadyLinked(true)
       }
     }
 
     init()
-  }, [code, router])
+  }, [code])
+
+  async function handleConnect() {
+    if (!specialist || !userId) return
+    setConnecting(true)
+    const supabase = createClient()
+    await supabase
+      .from('specialist_clients')
+      .upsert({ specialist_id: specialist.id, client_id: userId })
+    setConnected(true)
+    setTimeout(() => router.push('/checkin'), 1500)
+  }
 
   async function handleGoogleLogin() {
     setAuthLoading(true)
@@ -105,12 +123,46 @@ export default function JoinPage() {
     )
   }
 
+  // Already connected screen
+  if (alreadyLinked) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-10">
+        <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-8">Metanoia AI</p>
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-100 p-8 max-w-sm w-full text-center">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
+            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-bold text-slate-800 mb-2">
+            Вы уже подключены
+          </h1>
+          <p className="text-slate-500 text-sm mb-6">
+            <span className="font-semibold text-slate-700">{specialist?.name}</span> уже является вашим специалистом на Metanoia AI
+          </p>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => router.push('/checkin')}
+              className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-2xl transition text-sm"
+            >
+              Пройти чек-ин →
+            </button>
+            <button
+              onClick={() => router.push('/cabinet')}
+              className="w-full py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium rounded-2xl transition text-sm"
+            >
+              В кабинет
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-10">
-      {/* Branding */}
       <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-8">Metanoia AI</p>
 
-      {/* Specialist card */}
       <div className="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-100 p-8 max-w-sm w-full mb-6">
         {/* Avatar + name */}
         <div className="flex flex-col items-center text-center gap-4 mb-6">
@@ -132,7 +184,7 @@ export default function JoinPage() {
               <p className="text-slate-400 text-xs mt-0.5">📍 {specialist.city}</p>
             )}
             {specialist?.avg_rating && specialist.review_count > 0 && (
-              <div className="flex items-center gap-1 mt-1">
+              <div className="flex items-center justify-center gap-1 mt-1">
                 <span className="text-amber-400 text-xs">{'★'.repeat(Math.round(specialist.avg_rating))}{'☆'.repeat(5 - Math.round(specialist.avg_rating))}</span>
                 <span className="text-xs text-slate-500">{specialist.avg_rating} · {specialist.review_count} {specialist.review_count === 1 ? 'отзыв' : specialist.review_count < 5 ? 'отзыва' : 'отзывов'}</span>
               </div>
@@ -162,24 +214,48 @@ export default function JoinPage() {
           ))}
         </ul>
 
-        {/* Google login */}
-        <button
-          onClick={handleGoogleLogin}
-          disabled={authLoading}
-          className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 disabled:opacity-60 text-slate-700 font-semibold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition text-sm"
-        >
-          {authLoading ? (
-            <span className="animate-spin inline-block">⏳</span>
-          ) : (
-            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+        {/* Action button */}
+        {connected ? (
+          <div className="w-full flex items-center justify-center gap-2 py-3.5 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-semibold">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-          )}
-          {authLoading ? 'Перенаправление…' : 'Войти через Google'}
-        </button>
+            Подключено! Переходим…
+          </div>
+        ) : isLoggedIn ? (
+          <button
+            onClick={handleConnect}
+            disabled={connecting}
+            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-semibold py-3.5 rounded-2xl transition text-sm"
+          >
+            {connecting ? (
+              <span className="animate-spin inline-block">⏳</span>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            )}
+            {connecting ? 'Подключение…' : `Подключиться к ${specialist?.name}`}
+          </button>
+        ) : (
+          <button
+            onClick={handleGoogleLogin}
+            disabled={authLoading}
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 disabled:opacity-60 text-slate-700 font-semibold py-3.5 rounded-2xl border border-slate-200 shadow-sm transition text-sm"
+          >
+            {authLoading ? (
+              <span className="animate-spin inline-block">⏳</span>
+            ) : (
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
+            )}
+            {authLoading ? 'Перенаправление…' : 'Войти через Google'}
+          </button>
+        )}
       </div>
 
       <p className="text-slate-300 text-xs text-center">
