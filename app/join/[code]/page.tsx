@@ -9,6 +9,9 @@ interface SpecialistData {
   name: string
   specialty: string
   photo_url: string | null
+  avg_rating: number | null
+  review_count: number
+  city: string | null
 }
 
 export default function JoinPage() {
@@ -28,7 +31,7 @@ export default function JoinPage() {
       // Fetch specialist by referral code (public read)
       const { data: spec, error } = await supabase
         .from('specialists')
-        .select('id, name, specialty, photo_url')
+        .select('id, name, specialty, photo_url, city')
         .eq('referral_code', code)
         .single()
 
@@ -38,7 +41,18 @@ export default function JoinPage() {
         return
       }
 
-      setSpecialist(spec)
+      // Load review stats
+      const { data: reviews } = await supabase
+        .from('specialist_reviews')
+        .select('rating')
+        .eq('specialist_id', spec.id)
+
+      const reviewCount = reviews?.length ?? 0
+      const avgRating = reviewCount > 0
+        ? parseFloat((reviews!.reduce((a, r) => a + r.rating, 0) / reviewCount).toFixed(1))
+        : null
+
+      setSpecialist({ ...spec, avg_rating: avgRating, review_count: reviewCount })
       setPageLoading(false)
 
       // If user already logged in — link immediately and go to checkin
@@ -114,6 +128,15 @@ export default function JoinPage() {
           <div>
             <p className="text-lg font-bold text-slate-800">{specialist?.name}</p>
             <p className="text-blue-600 text-sm font-medium">{specialist?.specialty}</p>
+            {specialist?.city && (
+              <p className="text-slate-400 text-xs mt-0.5">📍 {specialist.city}</p>
+            )}
+            {specialist?.avg_rating && specialist.review_count > 0 && (
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-amber-400 text-xs">{'★'.repeat(Math.round(specialist.avg_rating))}{'☆'.repeat(5 - Math.round(specialist.avg_rating))}</span>
+                <span className="text-xs text-slate-500">{specialist.avg_rating} · {specialist.review_count} {specialist.review_count === 1 ? 'отзыв' : specialist.review_count < 5 ? 'отзыва' : 'отзывов'}</span>
+              </div>
+            )}
           </div>
         </div>
 

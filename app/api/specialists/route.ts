@@ -121,13 +121,16 @@ const DEMO_SPECIALISTS = [
 ]
 
 export async function GET() {
-  const [{ data: specialists }, { data: clientLinks }] = await Promise.all([
+  const [{ data: specialists }, { data: clientLinks }, { data: reviews }] = await Promise.all([
     adminSupabase
       .from('specialists')
-      .select('id, name, specialty, photo_url, bio, referral_code'),
+      .select('id, name, specialty, photo_url, bio, referral_code, city'),
     adminSupabase
       .from('specialist_clients')
       .select('specialist_id'),
+    adminSupabase
+      .from('specialist_reviews')
+      .select('specialist_id, rating'),
   ])
 
   const countMap = new Map<string, number>()
@@ -135,13 +138,31 @@ export async function GET() {
     countMap.set(link.specialist_id, (countMap.get(link.specialist_id) ?? 0) + 1)
   }
 
-  const realSpecialists = (specialists ?? []).map((s) => ({
+  const ratingMap = new Map<string, { sum: number; count: number }>()
+  for (const r of reviews ?? []) {
+    const cur = ratingMap.get(r.specialist_id) ?? { sum: 0, count: 0 }
+    ratingMap.set(r.specialist_id, { sum: cur.sum + r.rating, count: cur.count + 1 })
+  }
+
+  const realSpecialists = (specialists ?? []).map((s) => {
+    const rt = ratingMap.get(s.id)
+    return {
+      ...s,
+      client_count: countMap.get(s.id) ?? 0,
+      avg_rating: rt ? parseFloat((rt.sum / rt.count).toFixed(1)) : null,
+      review_count: rt?.count ?? 0,
+      is_demo: false,
+    }
+  })
+
+  const demoWithRating = DEMO_SPECIALISTS.map((s) => ({
     ...s,
-    client_count: countMap.get(s.id) ?? 0,
-    is_demo: false,
+    avg_rating: null as number | null,
+    review_count: 0,
+    city: null as string | null,
   }))
 
-  const result = [...realSpecialists, ...DEMO_SPECIALISTS]
+  const result = [...realSpecialists, ...demoWithRating]
     .sort((a, b) => b.client_count - a.client_count)
 
   return NextResponse.json(result)

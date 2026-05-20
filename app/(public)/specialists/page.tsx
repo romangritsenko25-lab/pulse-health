@@ -10,6 +10,9 @@ interface SpecialistData {
   bio: string | null
   referral_code: string
   client_count: number
+  avg_rating: number | null
+  review_count: number
+  city: string | null
   is_demo?: boolean
 }
 
@@ -71,6 +74,17 @@ function RankProgress({ n }: { n: number }) {
   )
 }
 
+function StarRating({ rating, count }: { rating: number | null; count: number }) {
+  if (!rating || count === 0) return null
+  const full = Math.round(rating)
+  return (
+    <div className="flex items-center gap-1">
+      <span className="text-amber-400 text-xs">{'★'.repeat(full)}{'☆'.repeat(5 - full)}</span>
+      <span className="text-xs text-slate-500">{rating.toFixed(1)} · {count} {count === 1 ? 'отзыв' : count < 5 ? 'отзыва' : 'отзывов'}</span>
+    </div>
+  )
+}
+
 function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) {
   return (
     <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-blue-200 hover:shadow-sm transition">
@@ -86,7 +100,15 @@ function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) 
             )}
           </div>
           <p className="text-blue-600 text-xs font-medium mt-0.5">{sp.specialty}</p>
-          <div className="mt-1.5"><RankBadge n={sp.client_count} /></div>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <RankBadge n={sp.client_count} />
+            {sp.city && (
+              <span className="text-xs text-slate-400">📍 {sp.city}</span>
+            )}
+          </div>
+          <div className="mt-1">
+            <StarRating rating={sp.avg_rating} count={sp.review_count} />
+          </div>
         </div>
       </div>
       {sp.bio && <p className="text-slate-500 text-sm leading-relaxed line-clamp-3">{sp.bio}</p>}
@@ -144,6 +166,8 @@ export default function SpecialistsPage() {
   const [specialists, setSpecialists] = useState<SpecialistData[]>([])
   const [loading, setLoading] = useState(true)
   const [specialty, setSpecialty] = useState('all')
+  const [city, setCity] = useState('all')
+  const [sortBy, setSortBy] = useState<'clients' | 'rating'>('clients')
 
   useEffect(() => {
     fetch('/api/specialists')
@@ -153,11 +177,20 @@ export default function SpecialistsPage() {
   }, [])
 
   const specialties = useMemo(() => [...new Set(specialists.map((s) => s.specialty))].sort(), [specialists])
-
-  const filtered = useMemo(
-    () => specialty === 'all' ? specialists : specialists.filter((s) => s.specialty === specialty),
-    [specialists, specialty]
+  const cities = useMemo(
+    () => [...new Set(specialists.map((s) => s.city).filter(Boolean) as string[])].sort(),
+    [specialists]
   )
+
+  const filtered = useMemo(() => {
+    let list = specialists
+    if (specialty !== 'all') list = list.filter((s) => s.specialty === specialty)
+    if (city !== 'all') list = list.filter((s) => s.city === city)
+    if (sortBy === 'rating') {
+      list = [...list].sort((a, b) => (b.avg_rating ?? 0) - (a.avg_rating ?? 0))
+    }
+    return list
+  }, [specialists, specialty, city, sortBy])
 
   const top5 = specialists.slice(0, 5)
   const top5Ids = new Set(top5.map((s) => s.id))
@@ -222,23 +255,45 @@ export default function SpecialistsPage() {
       {/* Catalog */}
       <section className="py-12 px-4">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <h2 className="text-xl font-bold text-slate-800">
-              Все специалисты
-              {!loading && specialists.length > 0 && (
-                <span className="ml-2 text-sm font-normal text-slate-400">{specialists.length}</span>
+          <div className="flex flex-col gap-4 mb-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-800">
+                Все специалисты
+                {!loading && specialists.length > 0 && (
+                  <span className="ml-2 text-sm font-normal text-slate-400">{filtered.length}</span>
+                )}
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {specialties.length > 0 && (
+                <select
+                  value={specialty}
+                  onChange={(e) => setSpecialty(e.target.value)}
+                  className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-blue-400"
+                >
+                  <option value="all">Все специальности</option>
+                  {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
               )}
-            </h2>
-            {specialties.length > 0 && (
+              {cities.length > 0 && (
+                <select
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-blue-400"
+                >
+                  <option value="all">Все города</option>
+                  {cities.map((c) => <option key={c} value={c}>📍 {c}</option>)}
+                </select>
+              )}
               <select
-                value={specialty}
-                onChange={(e) => setSpecialty(e.target.value)}
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'clients' | 'rating')}
                 className="text-sm border border-slate-200 rounded-xl px-3 py-2 text-slate-700 bg-white focus:outline-none focus:border-blue-400"
               >
-                <option value="all">Все специальности</option>
-                {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
+                <option value="clients">По клиентам</option>
+                <option value="rating">По рейтингу</option>
               </select>
-            )}
+            </div>
           </div>
 
           {loading ? (

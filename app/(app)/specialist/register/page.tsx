@@ -20,6 +20,7 @@ export default function SpecialistRegisterPage() {
   const router = useRouter()
   const [name, setName] = useState('')
   const [specialty, setSpecialty] = useState('')
+  const [city, setCity] = useState('')
   const [photoUrl, setPhotoUrl] = useState('')
   const [bio, setBio] = useState('')
   const [photoSource, setPhotoSource] = useState<'file' | 'url'>('file')
@@ -38,13 +39,14 @@ export default function SpecialistRegisterPage() {
 
       const { data: existing } = await supabase
         .from('specialists')
-        .select('name, specialty, photo_url, bio')
+        .select('name, specialty, photo_url, bio, city')
         .eq('id', data.user.id)
         .single()
 
       if (existing) {
         setName(existing.name)
         setSpecialty(existing.specialty)
+        setCity(existing.city ?? '')
         setPhotoUrl(existing.photo_url ?? '')
         setBio(existing.bio ?? '')
         if (existing.photo_url) setPhotoSource('url')
@@ -90,6 +92,7 @@ export default function SpecialistRegisterPage() {
         body: JSON.stringify({
           name: name.trim(),
           specialty,
+          city: city.trim() || null,
           photo_url: photoUrl.trim() || null,
           bio: bio.trim() || null,
         }),
@@ -159,6 +162,20 @@ export default function SpecialistRegisterPage() {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+            </div>
+
+            {/* City */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                Город <span className="font-normal text-slate-400">(необязательно)</span>
+              </label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Алматы"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+              />
             </div>
 
             {/* Photo */}

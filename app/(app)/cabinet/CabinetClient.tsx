@@ -490,6 +490,16 @@ export default function CabinetClient() {
   const [pdfLoading, setPdfLoading] = useState(false)
   const [pdfError, setPdfError] = useState<string | null>(null)
 
+  // Review banner state
+  const [reviewBanner, setReviewBanner] = useState<{
+    specialistId: string
+    specialistName: string
+  } | null>(null)
+  const [reviewRating, setReviewRating] = useState(0)
+  const [reviewText, setReviewText] = useState('')
+  const [reviewSubmitting, setReviewSubmitting] = useState(false)
+  const [reviewDismissed, setReviewDismissed] = useState(false)
+
   useEffect(() => {
     async function load() {
       const supabase = createClient()
@@ -497,16 +507,41 @@ export default function CabinetClient() {
       if (!user) { router.replace('/login'); return }
       setUserEmail(user.email ?? null)
 
-      const [{ data: prof }, { data: chk }, { data: ent }] = await Promise.all([
+      const sevenDaysAgo = new Date(Date.now() - 7 * 86_400_000).toISOString()
+
+      const [{ data: prof }, { data: chk }, { data: ent }, { data: links }] = await Promise.all([
         supabase.from('profiles').select('name, email').eq('id', user.id).single(),
         supabase.from('checkins').select('id, wellbeing, mood, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(30),
         supabase.from('journal_entries').select('id, content, mood, voice_input, created_at').order('created_at', { ascending: false }).limit(50),
+        supabase.from('specialist_clients')
+          .select('specialist_id, connected_at, specialists(id, name)')
+          .eq('client_id', user.id)
+          .lt('connected_at', sevenDaysAgo)
+          .limit(1),
       ])
 
       setProfile(prof)
       setCheckins(chk ?? [])
       setEntries(ent ?? [])
       setLoading(false)
+
+      // Check if review banner should show
+      if (links && links.length > 0) {
+        const link = links[0]
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const spec = link.specialists as any
+        if (spec?.id && spec?.name) {
+          const { data: existing } = await supabase
+            .from('specialist_reviews')
+            .select('id')
+            .eq('specialist_id', spec.id)
+            .eq('user_id', user.id)
+            .maybeSingle()
+          if (!existing) {
+            setReviewBanner({ specialistId: spec.id, specialistName: spec.name })
+          }
+        }
+      }
     }
     load()
   }, [router])
@@ -540,6 +575,25 @@ export default function CabinetClient() {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')
+  }
+
+  async function submitReview() {
+    if (!reviewBanner || reviewRating === 0) return
+    setReviewSubmitting(true)
+    try {
+      await fetch('/api/specialist/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          specialist_id: reviewBanner.specialistId,
+          rating: reviewRating,
+          text: reviewText.trim() || null,
+        }),
+      })
+    } finally {
+      setReviewSubmitting(false)
+      setReviewBanner(null)
+    }
   }
 
   if (loading) {
@@ -676,6 +730,62 @@ export default function CabinetClient() {
 
             {/* 3. Полоска недели */}
             <WeekStrip checkins={checkins} />
+
+            {/* Review banner */}
+            {reviewBanner && !reviewDismissed && (
+              <div className="bg-white border border-amber-200 rounded-2xl p-5 flex flex-col gap-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">Оцените вашего специалиста</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{reviewBanner.specialistName}</p>
+                  </div>
+                  <button
+                    onClick={() => setReviewDismissed(true)}
+                    className="text-slate-300 hover:text-slate-500 p-1"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewRating(star)}
+                      className="text-2xl transition-transform hover:scale-110"
+                    >
+                      <span className={star <= reviewRating ? 'text-amber-400' : 'text-slate-200'}>★</span>
+                    </button>
+                  ))}
+                </div>
+                {reviewRating > 0 && (
+                  <textarea
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    placeholder="Написать отзыв (необязательно)"
+                    rows={2}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-400 resize-none"
+                  />
+                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setReviewDismissed(true)}
+                    className="flex-1 py-2 rounded-xl border border-slate-200 text-slate-500 text-sm font-medium hover:bg-slate-50"
+                  >
+                    Пропустить
+                  </button>
+                  <button
+                    onClick={submitReview}
+                    disabled={reviewRating === 0 || reviewSubmitting}
+                    className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold"
+                  >
+                    {reviewSubmitting ? 'Отправка…' : 'Отправить'}
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* 4. Блок чек-ина */}
             {todayCheckin ? (
