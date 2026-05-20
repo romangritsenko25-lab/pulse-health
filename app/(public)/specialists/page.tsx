@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 interface SpecialistData {
   id: string
@@ -85,9 +86,12 @@ function StarRating({ rating, count }: { rating: number | null; count: number })
   )
 }
 
-function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) {
+function SpecialistCard({ sp, isTop, onClick }: { sp: SpecialistData; isTop?: boolean; onClick: () => void }) {
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-blue-200 hover:shadow-sm transition">
+    <div
+      className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col gap-4 hover:border-blue-200 hover:shadow-sm transition cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex items-start gap-4">
         <Avatar name={sp.name} photoUrl={sp.photo_url} />
         <div className="flex-1 min-w-0">
@@ -117,10 +121,194 @@ function SpecialistCard({ sp, isTop }: { sp: SpecialistData; isTop?: boolean }) 
         <span className="text-xs text-slate-400">{pluralClients(sp.client_count)}</span>
         <a
           href={sp.is_demo ? '/login' : `/join/${sp.referral_code}`}
+          onClick={(e) => e.stopPropagation()}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition"
         >
           Записаться
         </a>
+      </div>
+    </div>
+  )
+}
+
+interface ReviewRow {
+  id: string
+  rating: number
+  text: string | null
+  created_at: string
+}
+
+function SpecialistModal({ sp, onClose }: { sp: SpecialistData | null; onClose: () => void }) {
+  const [reviews, setReviews] = useState<ReviewRow[]>([])
+  const [reviewsLoading, setReviewsLoading] = useState(false)
+
+  useEffect(() => {
+    if (!sp || sp.is_demo) { setReviews([]); return }
+    setReviewsLoading(true)
+    const supabase = createClient()
+    supabase
+      .from('specialist_reviews')
+      .select('id, rating, text, created_at')
+      .eq('specialist_id', sp.id)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        setReviews(data ?? [])
+        setReviewsLoading(false)
+      })
+  }, [sp?.id])
+
+  useEffect(() => {
+    if (!sp) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [sp, onClose])
+
+  if (!sp) return null
+
+  const rank = getRank(sp.client_count)
+  const joinHref = sp.is_demo ? '/login' : `/join/${sp.referral_code}`
+
+  function StarsFull({ n }: { n: number }) {
+    return (
+      <span>
+        {[1,2,3,4,5].map((i) => (
+          <span key={i} className={i <= n ? 'text-amber-400' : 'text-slate-200'}>★</span>
+        ))}
+      </span>
+    )
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
+      style={{ background: 'rgba(0,0,0,0.5)' }}
+      onClick={onClose}
+    >
+      <div
+        className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[92dvh] sm:max-h-[85vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Handle */}
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-10 h-1 rounded-full bg-slate-200" />
+        </div>
+
+        {/* Header */}
+        <div className="px-6 pt-4 pb-4 border-b border-slate-100">
+          <div className="flex items-start gap-4">
+            {/* Avatar */}
+            {sp.photo_url ? (
+              <img src={sp.photo_url} alt={sp.name} className="w-20 h-20 rounded-2xl object-cover shrink-0" />
+            ) : (
+              <div className="w-20 h-20 rounded-2xl bg-blue-100 flex items-center justify-center shrink-0">
+                <span className="text-blue-600 font-bold text-2xl">
+                  {sp.name.split(' ').slice(0, 2).map((w) => w[0]).join('')}
+                </span>
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-slate-900 text-base leading-snug">{sp.name}</p>
+              <p className="text-blue-600 text-sm font-medium mt-0.5">{sp.specialty}</p>
+              {sp.city && <p className="text-slate-400 text-xs mt-1">📍 {sp.city}</p>}
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${rank.bg} ${rank.text} ${rank.border}`}>
+                  {rank.icon} {rank.label}
+                </span>
+                {sp.avg_rating && sp.review_count > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span className="text-amber-400 text-xs">{'★'.repeat(Math.round(sp.avg_rating))}{'☆'.repeat(5 - Math.round(sp.avg_rating))}</span>
+                    <span className="text-xs text-slate-500">{sp.avg_rating.toFixed(1)} · {sp.review_count} {sp.review_count === 1 ? 'отзыв' : sp.review_count < 5 ? 'отзыва' : 'отзывов'}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 text-slate-400 shrink-0 mt-0.5"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-6">
+          {/* Bio */}
+          {sp.bio && (
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">О специалисте</p>
+              <p className="text-slate-600 text-sm leading-relaxed">{sp.bio}</p>
+            </div>
+          )}
+
+          {/* Stats row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-50 rounded-2xl p-3 text-center">
+              <p className="text-xl font-bold text-slate-800">{sp.client_count}</p>
+              <p className="text-xs text-slate-400 mt-0.5">клиентов</p>
+            </div>
+            <div className="bg-slate-50 rounded-2xl p-3 text-center">
+              <p className="text-xl font-bold text-slate-800">{sp.avg_rating ? sp.avg_rating.toFixed(1) : '—'}</p>
+              <p className="text-xs text-slate-400 mt-0.5">рейтинг</p>
+            </div>
+          </div>
+
+          {/* Reviews */}
+          {!sp.is_demo && (
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
+                Отзывы {sp.review_count > 0 ? `· ${sp.review_count}` : ''}
+              </p>
+              {reviewsLoading ? (
+                <div className="flex flex-col gap-3">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="bg-slate-50 rounded-2xl p-4 animate-pulse flex flex-col gap-2">
+                      <div className="h-3 bg-slate-200 rounded w-24" />
+                      <div className="h-3 bg-slate-200 rounded w-full" />
+                      <div className="h-3 bg-slate-200 rounded w-3/4" />
+                    </div>
+                  ))}
+                </div>
+              ) : reviews.length === 0 ? (
+                <div className="bg-slate-50 rounded-2xl p-6 text-center">
+                  <p className="text-slate-400 text-sm">Отзывов пока нет</p>
+                  <p className="text-slate-300 text-xs mt-1">Будьте первым, кто оценит специалиста</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {reviews.map((r) => (
+                    <div key={r.id} className="bg-slate-50 rounded-2xl p-4 flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <StarsFull n={r.rating} />
+                        <span className="text-xs text-slate-400">
+                          {new Date(r.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </span>
+                      </div>
+                      {r.text && <p className="text-slate-600 text-sm leading-relaxed">{r.text}</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-slate-100">
+          <a
+            href={joinHref}
+            className="flex items-center justify-center w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition text-sm"
+          >
+            Записаться к специалисту →
+          </a>
+        </div>
       </div>
     </div>
   )
@@ -168,6 +356,7 @@ export default function SpecialistsPage() {
   const [specialty, setSpecialty] = useState('all')
   const [city, setCity] = useState('all')
   const [sortBy, setSortBy] = useState<'clients' | 'rating'>('clients')
+  const [selected, setSelected] = useState<SpecialistData | null>(null)
 
   useEffect(() => {
     fetch('/api/specialists')
@@ -197,6 +386,7 @@ export default function SpecialistsPage() {
 
   return (
     <div className="bg-white min-h-screen">
+      <SpecialistModal sp={selected} onClose={() => setSelected(null)} />
 
       {/* Hero */}
       <section className="py-14 px-4 bg-gradient-to-b from-blue-50 to-white">
@@ -318,7 +508,7 @@ export default function SpecialistsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map((sp) => (
-                <SpecialistCard key={sp.id} sp={sp} isTop={top5Ids.has(sp.id)} />
+                <SpecialistCard key={sp.id} sp={sp} isTop={top5Ids.has(sp.id)} onClick={() => setSelected(sp)} />
               ))}
             </div>
           )}
