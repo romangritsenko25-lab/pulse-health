@@ -6,6 +6,23 @@ import { createClient } from '@/lib/supabase/client'
 import EarningsTab from '@/components/specialist/EarningsTab'
 import ReferralBanner from '@/components/specialist/ReferralBanner'
 
+interface SummaryResult {
+  trend: string
+  avg_wellbeing: number
+  avg_anxiety: number
+  dominant_emotions: string[]
+  top_themes: string[]
+  risk_flags: string[]
+  summary: string
+}
+
+interface SummaryState {
+  open: boolean
+  loading: boolean
+  data: SummaryResult | null
+  empty: boolean
+}
+
 interface Client {
   client_id: string
   name: string | null
@@ -57,6 +74,54 @@ export default function SpecialistDashboard() {
   const [showColleagueModal, setShowColleagueModal] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [activeTab, setActiveTab] = useState<'clients' | 'earnings'>('clients')
+  const [summaries, setSummaries] = useState<Map<string, SummaryState>>(new Map())
+
+  async function loadSummary(clientId: string) {
+    const current = summaries.get(clientId)
+    // Toggle off if already open
+    if (current?.open) {
+      setSummaries(prev => {
+        const next = new Map(prev)
+        next.set(clientId, { ...current, open: false })
+        return next
+      })
+      return
+    }
+    // If data already loaded, just re-open
+    if (current?.data || current?.empty) {
+      setSummaries(prev => {
+        const next = new Map(prev)
+        next.set(clientId, { ...current!, open: true })
+        return next
+      })
+      return
+    }
+    // Start loading
+    setSummaries(prev => {
+      const next = new Map(prev)
+      next.set(clientId, { open: true, loading: true, data: null, empty: false })
+      return next
+    })
+    try {
+      const res = await fetch(`/api/specialist/client-summary?client_id=${clientId}`)
+      const json = await res.json()
+      setSummaries(prev => {
+        const next = new Map(prev)
+        if (json.empty) {
+          next.set(clientId, { open: true, loading: false, data: null, empty: true })
+        } else {
+          next.set(clientId, { open: true, loading: false, data: json as SummaryResult, empty: false })
+        }
+        return next
+      })
+    } catch {
+      setSummaries(prev => {
+        const next = new Map(prev)
+        next.set(clientId, { open: true, loading: false, data: null, empty: true })
+        return next
+      })
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -389,48 +454,152 @@ export default function SpecialistDashboard() {
                           : 'text-red-400'
                         : 'text-slate-400'
 
+                    const summary = summaries.get(client.client_id)
+                    const trendIcon = summary?.data?.trend === 'улучшение' ? '↗' : summary?.data?.trend === 'ухудшение' ? '↘' : '→'
+                    const trendColor = summary?.data?.trend === 'улучшение' ? '#06b6d4' : summary?.data?.trend === 'ухудшение' ? '#f87171' : '#94a3b8'
+
                     return (
-                      <div key={client.client_id} className="px-5 py-4 flex items-center gap-4">
-                        {/* Avatar */}
-                        <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold text-sm shrink-0">
-                          {initials}
-                        </div>
-
-                        {/* Info */}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-slate-800 text-sm truncate">{displayName}</p>
-                          <p className="text-slate-400 text-xs mt-0.5">
-                            {client.checkinCount}{' '}
-                            {client.checkinCount === 1 ? 'опрос' : client.checkinCount < 5 ? 'опроса' : 'опросов'}
-                            {client.lastCheckin && (
-                              <>
-                                {' · '}
-                                {new Date(client.lastCheckin.created_at).toLocaleDateString('ru-RU', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                })}
-                              </>
-                            )}
-                          </p>
-                        </div>
-
-                        {/* Sparkline */}
-                        {client.recentScores.length >= 2 && (
-                          <div className="shrink-0">
-                            <Sparkline scores={client.recentScores} />
+                      <div key={client.client_id}>
+                        {/* Client row */}
+                        <div className="px-5 py-4 flex items-center gap-4">
+                          {/* Avatar */}
+                          <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold text-sm shrink-0">
+                            {initials}
                           </div>
-                        )}
 
-                        {/* Last score */}
-                        {client.lastCheckin?.wellbeing !== null &&
-                          client.lastCheckin?.wellbeing !== undefined && (
-                            <div className="text-center shrink-0">
-                              <div className={`text-sm font-bold ${wellbeingColor}`}>
-                                {client.lastCheckin.wellbeing}/10
-                              </div>
-                              <div className="text-xs text-slate-400">сейчас</div>
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-slate-800 text-sm truncate">{displayName}</p>
+                            <p className="text-slate-400 text-xs mt-0.5">
+                              {client.checkinCount}{' '}
+                              {client.checkinCount === 1 ? 'опрос' : client.checkinCount < 5 ? 'опроса' : 'опросов'}
+                              {client.lastCheckin && (
+                                <>
+                                  {' · '}
+                                  {new Date(client.lastCheckin.created_at).toLocaleDateString('ru-RU', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                  })}
+                                </>
+                              )}
+                            </p>
+                          </div>
+
+                          {/* Sparkline */}
+                          {client.recentScores.length >= 2 && (
+                            <div className="shrink-0 hidden sm:block">
+                              <Sparkline scores={client.recentScores} />
                             </div>
                           )}
+
+                          {/* Last score */}
+                          {client.lastCheckin?.wellbeing !== null &&
+                            client.lastCheckin?.wellbeing !== undefined && (
+                              <div className="text-center shrink-0">
+                                <div className={`text-sm font-bold ${wellbeingColor}`}>
+                                  {client.lastCheckin.wellbeing}/10
+                                </div>
+                                <div className="text-xs text-slate-400">сейчас</div>
+                              </div>
+                            )}
+
+                          {/* Summary button */}
+                          <button
+                            onClick={() => loadSummary(client.client_id)}
+                            className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-xl border transition"
+                            style={{
+                              borderColor: summary?.open ? '#06b6d4' : '#a5f3fc',
+                              color: summary?.open ? '#0e7490' : '#06b6d4',
+                              background: summary?.open ? '#ecfeff' : '#f0fdfe',
+                            }}
+                          >
+                            {summary?.loading ? '…' : summary?.open ? 'Скрыть' : 'Сводка'}
+                          </button>
+                        </div>
+
+                        {/* Summary panel */}
+                        {summary?.open && (
+                          <div className="mx-4 mb-4 rounded-2xl border-l-4 border-cyan-400 bg-slate-50 overflow-hidden" style={{ borderTop: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
+                            {summary.loading && (
+                              <div className="px-5 py-6 text-center">
+                                <p className="text-sm text-slate-400 animate-pulse">Анализирую данные клиента…</p>
+                              </div>
+                            )}
+
+                            {summary.empty && !summary.loading && (
+                              <div className="px-5 py-6 text-center">
+                                <p className="text-sm text-slate-500">Недостаточно данных за 7 дней</p>
+                                <p className="text-xs text-slate-400 mt-1">Клиенту нужно заполнить хотя бы один чекин или запись в журнале</p>
+                              </div>
+                            )}
+
+                            {summary.data && !summary.loading && (
+                              <div className="px-5 py-4 flex flex-col gap-3">
+                                {/* Header */}
+                                <div className="flex items-center justify-between">
+                                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Сводка за 7 дней</p>
+                                  {summary.data.risk_flags.length > 0 && (
+                                    <span className="text-xs font-bold text-red-500 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
+                                      ⚠ Риск
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Stats row */}
+                                <div className="flex gap-4">
+                                  <div className="flex items-center gap-1.5">
+                                    <span style={{ color: trendColor, fontSize: 16, fontWeight: 700 }}>{trendIcon}</span>
+                                    <span className="text-xs text-slate-600 font-medium">{summary.data.trend}</span>
+                                  </div>
+                                  <div className="text-xs text-slate-600">
+                                    Самочувствие: <span className="font-bold text-cyan-600">{summary.data.avg_wellbeing}/10</span>
+                                  </div>
+                                  <div className="text-xs text-slate-600">
+                                    Тревога: <span className="font-bold" style={{ color: summary.data.avg_anxiety >= 7 ? '#f87171' : '#94a3b8' }}>{summary.data.avg_anxiety}/10</span>
+                                  </div>
+                                </div>
+
+                                {/* Emotions */}
+                                {summary.data.dominant_emotions.length > 0 && (
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {summary.data.dominant_emotions.map((e) => (
+                                      <span key={e} className="text-xs px-2.5 py-1 bg-white border border-slate-200 rounded-full text-slate-600 font-medium">{e}</span>
+                                    ))}
+                                  </div>
+                                )}
+
+                                {/* Risk flags */}
+                                {summary.data.risk_flags.length > 0 && (
+                                  <div className="bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                                    {summary.data.risk_flags.map((f) => (
+                                      <p key={f} className="text-xs text-red-600 font-medium">⚠ {f}</p>
+                                    ))}
+                                  </div>
+                                )}
+
+                                {/* Themes */}
+                                {summary.data.top_themes.length > 0 && (
+                                  <div>
+                                    <p className="text-xs font-semibold text-slate-500 mb-1.5">Темы для сессии:</p>
+                                    <ol className="flex flex-col gap-1">
+                                      {summary.data.top_themes.map((t, i) => (
+                                        <li key={i} className="text-xs text-slate-700 flex gap-2">
+                                          <span className="text-cyan-500 font-bold shrink-0">{i + 1}.</span>
+                                          {t}
+                                        </li>
+                                      ))}
+                                    </ol>
+                                  </div>
+                                )}
+
+                                {/* Summary text */}
+                                <div className="bg-white border border-slate-100 rounded-xl px-3 py-2.5">
+                                  <p className="text-xs text-slate-600 leading-relaxed italic">&ldquo;{summary.data.summary}&rdquo;</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )
                   })}
