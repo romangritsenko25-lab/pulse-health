@@ -420,46 +420,50 @@ type TabId = typeof TABS[number]['id']
 
 // ── Bottom nav SVG icons ────────────────────────────────────────────────────
 function IconHome({ active }: { active: boolean }) {
-  const c = active ? '#2563eb' : '#9ca3af'
+  const c = active ? '#007AFF' : '#8E8E93'
+  const w = active ? 2.1 : 1.75
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
       <path d="M9 21V12h6v9"/>
     </svg>
   )
 }
 function IconJournal({ active }: { active: boolean }) {
-  const c = active ? '#2563eb' : '#9ca3af'
+  const c = active ? '#007AFF' : '#8E8E93'
+  const w = active ? 2.1 : 1.75
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="2" width="14" height="20" rx="2"/>
       <path d="M8 7h6M8 11h6M8 15h4"/>
-      <path d="M17 2v20" strokeWidth="1.25" strokeOpacity="0.4"/>
+      <path d="M17 2v20" strokeWidth={active ? 1.5 : 1.25} strokeOpacity="0.4"/>
     </svg>
   )
 }
 function IconChart({ active }: { active: boolean }) {
-  const c = active ? '#2563eb' : '#9ca3af'
+  const c = active ? '#007AFF' : '#8E8E93'
+  const w = active ? 2.1 : 1.75
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 17l4.5-5 4 3.5 5-7 4 4"/>
-      <path d="M3 21h18" strokeWidth="1.5"/>
+      <path d="M3 21h18" strokeWidth={active ? 1.8 : 1.5}/>
     </svg>
   )
 }
 function IconAI({ active }: { active: boolean }) {
-  const c = active ? '#2563eb' : '#9ca3af'
+  const c = active ? '#007AFF' : '#8E8E93'
+  const w = active ? 2.1 : 1.75
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 3C7.03 3 3 6.58 3 11c0 2.05.85 3.9 2.24 5.28L4 21l4.72-1.24A9.3 9.3 0 0012 20c4.97 0 9-3.58 9-8s-4.03-8-9-8z"/>
       <path d="M9 11h.01M12 11h.01M15 11h.01" strokeWidth="2.5" strokeLinecap="round"/>
     </svg>
   )
 }
 function IconMore({ active }: { active: boolean }) {
-  const c = active ? '#2563eb' : '#9ca3af'
+  const c = active ? '#007AFF' : '#8E8E93'
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.75" strokeLinecap="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeLinecap="round">
       <circle cx="5" cy="12" r="1.5" fill={c} stroke="none"/>
       <circle cx="12" cy="12" r="1.5" fill={c} stroke="none"/>
       <circle cx="19" cy="12" r="1.5" fill={c} stroke="none"/>
@@ -872,27 +876,34 @@ export default function CabinetClient() {
       {/* Mobile bottom nav */}
       <nav
         className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-2 pb-safe"
-        style={{ background: '#ffffff', borderTop: '1px solid #ede9e4', paddingTop: 8, paddingBottom: 16 }}
+        style={{
+          background: 'rgba(255, 255, 255, 0.82)',
+          backdropFilter: 'saturate(180%) blur(20px)',
+          WebkitBackdropFilter: 'saturate(180%) blur(20px)',
+          borderTop: '0.5px solid rgba(0, 0, 0, 0.12)',
+          paddingTop: 8,
+          paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
+        }}
       >
         {/* Сегодня */}
         <button onClick={() => setTab('today')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconHome active={tab === 'today'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#2563eb' : '#9ca3af' }}>Сегодня</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#007AFF' : '#8E8E93' }}>Сегодня</span>
         </button>
         {/* Журнал */}
         <button onClick={() => setTab('journal')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconJournal active={tab === 'journal'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#2563eb' : '#9ca3af' }}>Журнал</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#007AFF' : '#8E8E93' }}>Журнал</span>
         </button>
         {/* Динамика */}
         <button onClick={() => setTab('dynamics')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconChart active={tab === 'dynamics'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#2563eb' : '#9ca3af' }}>Динамика</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#007AFF' : '#8E8E93' }}>Динамика</span>
         </button>
         {/* AI */}
         <button onClick={() => setTab('ai')} className="flex flex-col items-center gap-1 px-3 py-1">
           <IconAI active={tab === 'ai'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#2563eb' : '#9ca3af' }}>AI</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#007AFF' : '#8E8E93' }}>AI</span>
         </button>
         {/* Ещё */}
         <div className="relative">
@@ -903,7 +914,7 @@ export default function CabinetClient() {
             <IconMore active={tab === 'pdf' || tab === 'calendar'} />
             <span
               className="text-[10px] font-semibold"
-              style={{ color: tab === 'pdf' || tab === 'calendar' ? '#2563eb' : '#9ca3af' }}
+              style={{ color: tab === 'pdf' || tab === 'calendar' ? '#007AFF' : '#8E8E93' }}
             >
               Ещё
             </span>
@@ -913,12 +924,17 @@ export default function CabinetClient() {
               <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
               <div
                 className="absolute bottom-full right-0 mb-2 rounded-2xl shadow-lg overflow-hidden z-50 min-w-[140px]"
-                style={{ background: '#ffffff', border: '1px solid #ede9e4' }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.94)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '0.5px solid rgba(0, 0, 0, 0.1)',
+                }}
               >
                 <button
                   onClick={() => { setTab('pdf'); setShowMoreMenu(false) }}
                   className="w-full text-left px-4 py-3 text-sm font-medium flex items-center gap-2.5"
-                  style={{ color: tab === 'pdf' ? '#2563eb' : '#1a2535', background: tab === 'pdf' ? '#eff6ff' : 'transparent' }}
+                  style={{ color: tab === 'pdf' ? '#007AFF' : '#1a2535', background: tab === 'pdf' ? '#e8f2ff' : 'transparent' }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/>
@@ -930,7 +946,7 @@ export default function CabinetClient() {
                 <button
                   onClick={() => { setTab('calendar'); setShowMoreMenu(false) }}
                   className="w-full text-left px-4 py-3 text-sm font-medium flex items-center gap-2.5"
-                  style={{ color: tab === 'calendar' ? '#2563eb' : '#1a2535', background: tab === 'calendar' ? '#eff6ff' : 'transparent' }}
+                  style={{ color: tab === 'calendar' ? '#007AFF' : '#1a2535', background: tab === 'calendar' ? '#e8f2ff' : 'transparent' }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2"/>
