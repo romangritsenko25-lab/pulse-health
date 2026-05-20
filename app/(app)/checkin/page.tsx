@@ -496,6 +496,7 @@ export default function CheckinPage() {
     await new Promise((r) => setTimeout(r, 180))
     setBlock(next)
     setVisible(true)
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
 
   function canGoNext(): boolean {

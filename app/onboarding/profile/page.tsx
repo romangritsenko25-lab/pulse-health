@@ -158,9 +158,11 @@ export default function OnboardingProfilePage() {
         .op-input:focus { border-color: white; }
         .op-input option { color: #1a2535; background: white; }
         input[type="date"].op-input::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.7); }
+        .op-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 420px) { .op-two-col { grid-template-columns: 1fr; } }
       `}</style>
 
-      <div style={{ minHeight: '100dvh', background: BG, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}>
+      <div style={{ minHeight: '100dvh', background: BG, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', overflowX: 'hidden' }}>
 
         {/* Logo */}
         <div style={{ marginBottom: 24, opacity: 0.9 }}>
@@ -274,8 +276,8 @@ export default function OnboardingProfilePage() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ flex: 1 }}>
+              <div className="op-two-col">
+                <div>
                   <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, fontWeight: 600, marginBottom: 8 }}>Семейное положение</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {RELATIONSHIP_OPTIONS.map(o => (
@@ -287,7 +289,7 @@ export default function OnboardingProfilePage() {
                     ))}
                   </div>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div>
                   <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, fontWeight: 600, marginBottom: 8 }}>Сфера</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {OCCUPATION_OPTIONS.map(o => (
