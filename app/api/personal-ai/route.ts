@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     // Load user context in parallel
     const [{ data: profile }, checkins, journal, memory] = await Promise.all([
-      supabase.from('profiles').select('name').eq('id', userId).single(),
+      supabase.from('profiles').select('name, last_name, gender, birth_date, address_style, main_request, occupation, has_psychologist, relationship_status, has_children').eq('id', userId).single(),
       supabase.from('checkins')
         .select('created_at, wellbeing, mood, context, free_text, deep_data')
         .eq('user_id', userId)
@@ -108,6 +108,30 @@ export async function POST(req: NextRequest) {
     ])
 
     const name = profile?.name ?? 'пользователь'
+    const addressStyle = (profile as { address_style?: string } | null)?.address_style ?? 'ты'
+
+    // Build profile context
+    const profileLines: string[] = []
+    const fullName = [profile?.name, (profile as { last_name?: string } | null)?.last_name].filter(Boolean).join(' ')
+    if (fullName) profileLines.push(`Имя: ${fullName}`)
+    const gender = (profile as { gender?: string } | null)?.gender
+    if (gender === 'male') profileLines.push('Пол: мужчина')
+    else if (gender === 'female') profileLines.push('Пол: женщина')
+    const birthDate = (profile as { birth_date?: string } | null)?.birth_date
+    if (birthDate) {
+      const age = Math.floor((Date.now() - new Date(birthDate).getTime()) / 31_557_600_000)
+      profileLines.push(`Возраст: ${age} лет`)
+    }
+    const mainRequest = (profile as { main_request?: string[] } | null)?.main_request
+    if (mainRequest?.length) profileLines.push(`Основной запрос: ${mainRequest.join(', ')}`)
+    const occupation = (profile as { occupation?: string } | null)?.occupation
+    if (occupation) profileLines.push(`Сфера: ${occupation}`)
+    const hasPsychologist = (profile as { has_psychologist?: string } | null)?.has_psychologist
+    if (hasPsychologist) profileLines.push(`Психолог: ${hasPsychologist}`)
+    const relStatus = (profile as { relationship_status?: string } | null)?.relationship_status
+    if (relStatus) profileLines.push(`Семейное положение: ${relStatus}`)
+    const hasChildren = (profile as { has_children?: boolean } | null)?.has_children
+    if (hasChildren !== null && hasChildren !== undefined) profileLines.push(`Дети: ${hasChildren ? 'есть' : 'нет'}`)
 
     // Score = relevance + recency bonus (fresh memories matter more)
     const now = Date.now()
@@ -148,7 +172,8 @@ ACT (терапия принятия и ответственности):
 - Усиливай внутреннюю мотивацию
 
 ПОРТРЕТ ПОЛЬЗОВАТЕЛЯ:
-Имя: ${name}
+${profileLines.join('\n') || `Имя: ${name}`}
+Обращение: на ${addressStyle}
 
 Долгосрочная память о пользователе:
 ${topMemory.map((m: { category: string; content: string }) => `[${m.category}] ${m.content}`).join('\n') || 'Пока пусто — это первый диалог'}

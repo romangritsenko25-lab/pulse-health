@@ -595,6 +595,15 @@ export default function CabinetClient() {
                 <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
                 <div className="absolute right-0 top-full mt-1 bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[180px] z-50">
                   <button
+                    onClick={() => { setShowUserMenu(false); router.push('/cabinet/profile') }}
+                    className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition flex items-center gap-2"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                    Личные данные
+                  </button>
+                  <button
                     onClick={() => { setShowUserMenu(false); handleGoHome() }}
                     className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
                   >
@@ -968,6 +977,17 @@ export default function CabinetClient() {
                   border: '0.5px solid rgba(0, 0, 0, 0.1)',
                 }}
               >
+                <button
+                  onClick={() => { setShowMoreMenu(false); router.push('/cabinet/profile') }}
+                  className="w-full text-left px-4 py-3 text-sm font-medium flex items-center gap-2.5"
+                  style={{ color: '#1a2535', background: 'transparent' }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                  </svg>
+                  Личные данные
+                </button>
+                <div style={{ height: 1, background: '#ede9e4' }} />
                 <button
                   onClick={() => { setTab('pdf'); setShowMoreMenu(false) }}
                   className="w-full text-left px-4 py-3 text-sm font-medium flex items-center gap-2.5"

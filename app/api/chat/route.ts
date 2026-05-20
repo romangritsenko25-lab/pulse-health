@@ -20,7 +20,7 @@ interface ChatRequest {
   }
 }
 
-function buildSystemPrompt(analysis: ChatRequest['analysis']): string {
+function buildSystemPrompt(analysis: ChatRequest['analysis'], profileCtx?: string): string {
   const sections: string[] = []
   if (analysis.reflection) sections.push(`ОТРАЖЕНИЕ: ${analysis.reflection}`)
   if (analysis.patterns) sections.push(`ПАТТЕРНЫ: ${analysis.patterns}`)
@@ -33,7 +33,7 @@ function buildSystemPrompt(analysis: ChatRequest['analysis']): string {
   return `КРИТИЧЕСКИ ВАЖНО: Отвечай ТОЛЬКО на русском языке. Никаких иероглифов, никакого английского, никакого смешения языков. Только русский.
 
 Ты опытный психолог-консультант. Ты только что провёл анализ состояния пользователя.
-
+${profileCtx ? `\n${profileCtx}` : ''}
 ${sections.length ? sections.join('\n\n') : '(анализ не передан)'}
 
 Отвечай: только на русском языке, тепло и принимающе, коротко (2-4 предложения), без диагнозов. Опирайся на анализ выше.`
@@ -64,6 +64,22 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Load profile for personalized response
+  let profileCtx = ''
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name, last_name, gender, address_style')
+      .eq('id', user.id)
+      .single()
+    if (profile) {
+      const fullName = [profile.name, profile.last_name].filter(Boolean).join(' ')
+      const genderStr = profile.gender === 'male' ? 'мужчина' : profile.gender === 'female' ? 'женщина' : ''
+      const parts = [fullName && `Имя: ${fullName}`, genderStr && `Пол: ${genderStr}`].filter(Boolean)
+      if (parts.length) profileCtx = `ПОЛЬЗОВАТЕЛЬ: ${parts.join(', ')}. Обращение: на ${profile.address_style ?? 'ты'}.`
+    }
+  }
+
   try {
     const userMsgCount = messages.filter(m => m.role === 'user').length
 
@@ -71,7 +87,7 @@ export async function POST(req: NextRequest) {
       anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 500,
-        system: buildSystemPrompt(analysis),
+        system: buildSystemPrompt(analysis, profileCtx),
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
       }),
     ])

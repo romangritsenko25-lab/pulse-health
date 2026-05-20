@@ -81,6 +81,28 @@ const SYSTEM_PROMPT = `
   "support": "..."
 }`
 
+function getAge(birthDate: string | null): string {
+  if (!birthDate) return ''
+  const years = Math.floor((Date.now() - new Date(birthDate).getTime()) / 31_557_600_000)
+  return `${years} лет`
+}
+
+function genderRu(gender: string | null): string {
+  if (gender === 'male') return 'мужчина'
+  if (gender === 'female') return 'женщина'
+  return ''
+}
+
+interface UserProfile {
+  name: string | null
+  last_name: string | null
+  gender: string | null
+  birth_date: string | null
+  address_style: string | null
+  main_request: string[] | null
+  occupation: string | null
+}
+
 interface DeepFormData {
   wellbeing: number
   wellbeingReason: string
@@ -146,6 +168,29 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id: checkinId, crisis: true })
   }
 
+  // Load user profile for personalization
+  let profileContext = ''
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name, last_name, gender, birth_date, address_style, main_request, occupation')
+      .eq('id', user.id)
+      .single() as { data: UserProfile | null }
+
+    if (profile) {
+      const parts: string[] = []
+      const fullName = [profile.name, profile.last_name].filter(Boolean).join(' ')
+      if (fullName) parts.push(`Имя: ${fullName}`)
+      if (profile.gender) parts.push(genderRu(profile.gender))
+      if (profile.birth_date) parts.push(getAge(profile.birth_date))
+      if (profile.main_request?.length) parts.push(`Основной запрос: ${profile.main_request.join(', ')}`)
+      if (profile.occupation) parts.push(`Сфера: ${profile.occupation}`)
+
+      const addressStyle = profile.address_style ?? 'ты'
+      profileContext = `\nПОЛЬЗОВАТЕЛЬ: ${parts.join(', ')}.\nОбращение к пользователю: на ${addressStyle}.\n`
+    }
+  }
+
   let analysis: AnalysisResult = {
     reflection: '',
     patterns: '',
@@ -161,7 +206,7 @@ export async function POST(req: NextRequest) {
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 800,
-      system: SYSTEM_PROMPT,
+      system: profileContext + SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     })
 

@@ -29,7 +29,7 @@ export default function OnboardingPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.replace('/login'); return }
     await supabase.from('profiles').update({ role }).eq('id', user.id)
-    router.replace(role === 'specialist' ? '/specialist/dashboard' : '/cabinet')
+    router.replace(role === 'specialist' ? '/specialist/dashboard' : '/onboarding/profile')
   }
 
   if (checking) {
