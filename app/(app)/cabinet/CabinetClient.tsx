@@ -420,7 +420,7 @@ type TabId = typeof TABS[number]['id']
 
 // ── Bottom nav SVG icons ────────────────────────────────────────────────────
 function IconHome({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#1C1C1E'
+  const c = active ? '#007AFF' : '#6C6C70'
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" fill={c}/>
@@ -429,7 +429,7 @@ function IconHome({ active }: { active: boolean }) {
   )
 }
 function IconJournal({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#1C1C1E'
+  const c = active ? '#007AFF' : '#6C6C70'
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <rect x="4" y="2" width="14" height="20" rx="2" fill={c}/>
@@ -438,7 +438,7 @@ function IconJournal({ active }: { active: boolean }) {
   )
 }
 function IconChart({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#1C1C1E'
+  const c = active ? '#007AFF' : '#6C6C70'
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 17l4.5-5 4 3.5 5-7 4 4V21H3V17z" fill={c} fillOpacity="0.2"/>
@@ -448,7 +448,7 @@ function IconChart({ active }: { active: boolean }) {
   )
 }
 function IconAI({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#1C1C1E'
+  const c = active ? '#007AFF' : '#6C6C70'
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M12 3C7.03 3 3 6.58 3 11c0 2.05.85 3.9 2.24 5.28L4 21l4.72-1.24A9.3 9.3 0 0012 20c4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill={c}/>
@@ -459,7 +459,7 @@ function IconAI({ active }: { active: boolean }) {
   )
 }
 function IconMore({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#1C1C1E'
+  const c = active ? '#007AFF' : '#6C6C70'
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="5" cy="12" r="1.5" fill={c}/>
@@ -900,7 +900,7 @@ export default function CabinetClient() {
           }}
         >
           <IconHome active={tab === 'today'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#007AFF' : '#1C1C1E' }}>Сегодня</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#007AFF' : '#6C6C70' }}>Сегодня</span>
         </button>
         {/* Журнал */}
         <button
@@ -912,7 +912,7 @@ export default function CabinetClient() {
           }}
         >
           <IconJournal active={tab === 'journal'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#007AFF' : '#1C1C1E' }}>Журнал</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#007AFF' : '#6C6C70' }}>Журнал</span>
         </button>
         {/* Динамика */}
         <button
@@ -924,7 +924,7 @@ export default function CabinetClient() {
           }}
         >
           <IconChart active={tab === 'dynamics'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#007AFF' : '#1C1C1E' }}>Динамика</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#007AFF' : '#6C6C70' }}>Динамика</span>
         </button>
         {/* AI */}
         <button
@@ -936,7 +936,7 @@ export default function CabinetClient() {
           }}
         >
           <IconAI active={tab === 'ai'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#007AFF' : '#1C1C1E' }}>AI</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#007AFF' : '#6C6C70' }}>AI</span>
         </button>
         {/* Ещё */}
         <div className="relative">
@@ -951,7 +951,7 @@ export default function CabinetClient() {
             <IconMore active={tab === 'pdf' || tab === 'calendar'} />
             <span
               className="text-[10px] font-semibold"
-              style={{ color: tab === 'pdf' || tab === 'calendar' ? '#007AFF' : '#1C1C1E' }}
+              style={{ color: tab === 'pdf' || tab === 'calendar' ? '#007AFF' : '#6C6C70' }}
             >
               Ещё
             </span>
