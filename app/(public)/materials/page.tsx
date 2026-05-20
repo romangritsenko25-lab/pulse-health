@@ -5,22 +5,22 @@ import { createClient } from '@/lib/supabase/client'
 
 const ARTICLE_IMAGES: Record<string, string> = {
   'kak-podgotovitsya-k-psihologu':
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1666362755385-1856fca1a330?w=600&h=300&fit=crop&q=80',
   '7-priznakov-chto-pora-k-psihologu':
-    'https://images.unsplash.com/photo-1474540412665-1cdae210ae6b?w=600&h=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1710322144652-bcea73280334?w=600&h=300&fit=crop&q=80',
   'chto-takoe-aleksitimiya':
-    'https://images.unsplash.com/photo-1557682250-f2e3ae0c2e4e?w=600&h=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1768036479363-0810baba6613?w=600&h=300&fit=crop&q=80',
   'kpt-prostymi-slovami':
-    'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1764990189201-8025ff64d981?w=600&h=300&fit=crop&q=80',
   'trevoga-ili-stress':
-    'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&h=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1727773458292-9da4284a4d3e?w=600&h=300&fit=crop&q=80',
   'pochemu-lyudi-otkladyvayut-psiholog':
-    'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&h=300&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1777877714035-57392b1c99c4?w=600&h=300&fit=crop&q=80',
 }
 const ARTICLE_IMAGES_FALLBACK = [
-  'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&h=300&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=300&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=300&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1633876841461-772d2b0b0e39?w=600&h=300&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1727773458292-9da4284a4d3e?w=600&h=300&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1764990189201-8025ff64d981?w=600&h=300&fit=crop&q=80',
 ]
 
 const BOOKS = [
