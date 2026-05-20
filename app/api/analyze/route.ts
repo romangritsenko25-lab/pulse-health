@@ -175,16 +175,97 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Update DB with structured insight
+  // Update DB with structured insight + extract memory in parallel
   if (user && checkin_id) {
-    const { error: updateErr } = await supabase
-      .from('checkins')
-      .update({ ai_insight: JSON.stringify(analysis) })
-      .eq('id', checkin_id)
-      .eq('user_id', user.id)
+    const [{ error: updateErr }] = await Promise.all([
+      supabase
+        .from('checkins')
+        .update({ ai_insight: JSON.stringify(analysis) })
+        .eq('id', checkin_id)
+        .eq('user_id', user.id),
+      saveCheckinMemory(supabase, user.id, form, analysis),
+    ])
 
     if (updateErr) console.error('Insight update error:', updateErr)
   }
 
   return NextResponse.json({ id: checkinId, ...analysis, form })
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function saveCheckinMemory(supabase: any, userId: string, form: DeepFormData, analysis: AnalysisResult) {
+  const candidates: { category: string; content: string; relevance: number }[] = []
+
+  // High anxiety → triggers
+  if (form.anxietyLevel >= 7 && form.anxietyAbout) {
+    candidates.push({
+      category: 'triggers',
+      content: `Сильная тревога (${form.anxietyLevel}/10): ${form.anxietyAbout}`,
+      relevance: Math.min(10, form.anxietyLevel),
+    })
+  }
+
+  // Stressors → triggers
+  if (form.stressFactors.length > 0) {
+    candidates.push({
+      category: 'triggers',
+      content: `Стрессоры: ${form.stressFactors.join(', ')}`,
+      relevance: 6,
+    })
+  }
+
+  // Low wellbeing + reason → patterns
+  if (form.wellbeing <= 4 && form.wellbeingReason) {
+    candidates.push({
+      category: 'patterns',
+      content: `Низкое самочувствие (${form.wellbeing}/10): ${form.wellbeingReason}`,
+      relevance: 7,
+    })
+  }
+
+  // Dominant emotions → patterns
+  if (form.emotions.length > 0) {
+    candidates.push({
+      category: 'patterns',
+      content: `Отмечает эмоции: ${form.emotions.slice(0, 4).join(', ')}`,
+      relevance: 5,
+    })
+  }
+
+  // Top specialist topic → goals
+  if (analysis.forSpecialist.length > 0) {
+    candidates.push({
+      category: 'goals',
+      content: `Тема для работы: ${analysis.forSpecialist[0]}`,
+      relevance: 7,
+    })
+  }
+
+  for (const mem of candidates) {
+    try {
+      const { data: existing } = await supabase
+        .from('user_memory')
+        .select('id, relevance')
+        .eq('user_id', userId)
+        .eq('category', mem.category)
+        .ilike('content', `%${mem.content.slice(0, 40)}%`)
+        .maybeSingle()
+
+      if (existing) {
+        await supabase
+          .from('user_memory')
+          .update({
+            relevance: Math.min(10, existing.relevance + 1),
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', existing.id)
+      } else {
+        await supabase
+          .from('user_memory')
+          .insert({ user_id: userId, ...mem })
+      }
+    } catch (e) {
+      console.error('Memory save error:', e)
+    }
+  }
 }

@@ -101,13 +101,24 @@ export async function POST(req: NextRequest) {
         .order('created_at', { ascending: false })
         .limit(20),
       supabase.from('user_memory')
-        .select('category, content, relevance')
+        .select('category, content, relevance, updated_at')
         .eq('user_id', userId)
         .order('relevance', { ascending: false })
-        .limit(15),
+        .limit(30),
     ])
 
     const name = profile?.name ?? 'пользователь'
+
+    // Score = relevance + recency bonus (fresh memories matter more)
+    const now = Date.now()
+    const topMemory = (memory.data ?? [])
+      .map((m: { category: string; content: string; relevance: number; updated_at: string }) => {
+        const daysSince = (now - new Date(m.updated_at).getTime()) / 86_400_000
+        const bonus = daysSince < 7 ? 2 : daysSince < 30 ? 1 : 0
+        return { ...m, score: m.relevance + bonus }
+      })
+      .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
+      .slice(0, 20)
 
     const SYSTEM_PROMPT = `
 Ты персональный AI-ассистент Metanoia AI.
@@ -139,8 +150,8 @@ ACT (терапия принятия и ответственности):
 ПОРТРЕТ ПОЛЬЗОВАТЕЛЯ:
 Имя: ${name}
 
-Долгосрочная память:
-${memory.data?.map((m: { category: string; content: string }) => `[${m.category}] ${m.content}`).join('\n') || 'Пока пусто — это первый диалог'}
+Долгосрочная память о пользователе:
+${topMemory.map((m: { category: string; content: string }) => `[${m.category}] ${m.content}`).join('\n') || 'Пока пусто — это первый диалог'}
 
 Последние 14 дней (чек-ины):
 ${checkins.data?.map((c: { created_at: string; wellbeing: number | null; mood: string | null }) =>
@@ -281,32 +292,40 @@ async function updateUserMemory(
     .join('\n')
 
   const memoryPrompt = `
-Проанализируй этот диалог и извлеки факты о пользователе.
+Проанализируй диалог и извлеки конкретные факты о пользователе.
+Сохраняй ТОЛЬКО личные факты — не общие фразы.
 
-Диалог: ${conversationText}
+Диалог:
+${conversationText}
 
-Верни JSON:
+Категории:
+- triggers: конкретные ситуации/темы вызывающие тревогу или сильную реакцию
+- patterns: повторяющееся поведение, мысли или эмоции
+- goals: что человек хочет изменить или достичь
+- progress: улучшения и позитивные изменения которые он замечает
+- relationships: важные люди и динамика отношений с ними
+- events: значимые события повлиявшие на состояние
+- resources: что помогает справляться (хобби, люди, практики)
+- fears: конкретные страхи или опасения
+
+Правила:
+- relevance 1-10: сохраняй только >= 5
+- content: конкретная фраза, не абстракция ("конфликт с матерью из-за денег", не "проблемы в семье")
+- максимум 3 memories за один диалог
+- если диалог светский или тестовый — memories: []
+
+pdf_worthy = true ТОЛЬКО если:
+- конкретный страх, боль или травма которую назвал человек
+- важное событие повлиявшее на состояние
+- паттерн который человек сам осознал вслух
+- вопрос который хочет задать специалисту
+
+Верни только JSON:
 {
-  "memories": [
-    {"category": "triggers", "content": "...", "relevance": 8}
-  ],
+  "memories": [{"category": "triggers", "content": "...", "relevance": 8}],
   "pdf_worthy": false,
   "pdf_topic": null
 }
-
-pdf_worthy = true ТОЛЬКО если:
-- конкретный страх, боль или травма
-- важное событие повлиявшее на состояние
-- паттерн который человек сам осознал
-- вопрос который хочет задать специалисту
-
-pdf_worthy = false если:
-- светская беседа или тестирование AI
-- общие вопросы без личного контекста
-
-Категории memories: triggers, patterns, goals, progress, style, events
-relevance: 1-10
-Только JSON, без объяснений.
 `
 
   const memResponse = await anthropic.messages.create({
@@ -334,7 +353,7 @@ relevance: 1-10
         .select('id, relevance')
         .eq('user_id', userId)
         .eq('category', mem.category)
-        .ilike('content', `%${mem.content.slice(0, 30)}%`)
+        .ilike('content', `%${mem.content.slice(0, 50)}%`)
         .maybeSingle()
 
       if (existing) {
