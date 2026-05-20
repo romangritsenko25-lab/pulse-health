@@ -276,7 +276,7 @@ export default function PersonalAI({ userName }: { userName: string }) {
               <a href="/upgrade" className="text-blue-600 font-semibold hover:text-blue-500">перейди на Pro</a>.
             </div>
           ) : (
-            <div className="flex gap-2 items-end bg-slate-50 pt-2 pb-16 md:pb-2 shrink-0">
+            <div className="flex gap-2 items-end bg-slate-50 pt-2 pb-28 md:pb-2 shrink-0">
               <textarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
