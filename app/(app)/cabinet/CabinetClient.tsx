@@ -420,53 +420,51 @@ type TabId = typeof TABS[number]['id']
 
 // ── Bottom nav SVG icons ────────────────────────────────────────────────────
 function IconHome({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#8E8E93'
-  const w = active ? 2.1 : 1.75
+  const c = active ? '#007AFF' : '#1C1C1E'
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
-      <path d="M9 21V12h6v9"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" fill={c}/>
+      <path d="M9 21V12h6v9" stroke="white" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
 function IconJournal({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#8E8E93'
-  const w = active ? 2.1 : 1.75
+  const c = active ? '#007AFF' : '#1C1C1E'
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="2" width="14" height="20" rx="2"/>
-      <path d="M8 7h6M8 11h6M8 15h4"/>
-      <path d="M17 2v20" strokeWidth={active ? 1.5 : 1.25} strokeOpacity="0.4"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="2" width="14" height="20" rx="2" fill={c}/>
+      <path d="M8 7h6M8 11h6M8 15h4" stroke="white" strokeWidth={1.5} strokeLinecap="round"/>
     </svg>
   )
 }
 function IconChart({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#8E8E93'
-  const w = active ? 2.1 : 1.75
+  const c = active ? '#007AFF' : '#1C1C1E'
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 17l4.5-5 4 3.5 5-7 4 4"/>
-      <path d="M3 21h18" strokeWidth={active ? 1.8 : 1.5}/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 17l4.5-5 4 3.5 5-7 4 4V21H3V17z" fill={c} fillOpacity="0.2"/>
+      <path d="M3 17l4.5-5 4 3.5 5-7 4 4" stroke={c} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="3" y1="21" x2="21" y2="21" stroke={c} strokeWidth={1.5} strokeLinecap="round"/>
     </svg>
   )
 }
 function IconAI({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#8E8E93'
-  const w = active ? 2.1 : 1.75
+  const c = active ? '#007AFF' : '#1C1C1E'
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3C7.03 3 3 6.58 3 11c0 2.05.85 3.9 2.24 5.28L4 21l4.72-1.24A9.3 9.3 0 0012 20c4.97 0 9-3.58 9-8s-4.03-8-9-8z"/>
-      <path d="M9 11h.01M12 11h.01M15 11h.01" strokeWidth="2.5" strokeLinecap="round"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 3C7.03 3 3 6.58 3 11c0 2.05.85 3.9 2.24 5.28L4 21l4.72-1.24A9.3 9.3 0 0012 20c4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill={c}/>
+      <circle cx="9" cy="11" r="1.2" fill="white"/>
+      <circle cx="12" cy="11" r="1.2" fill="white"/>
+      <circle cx="15" cy="11" r="1.2" fill="white"/>
     </svg>
   )
 }
 function IconMore({ active }: { active: boolean }) {
-  const c = active ? '#007AFF' : '#8E8E93'
+  const c = active ? '#007AFF' : '#1C1C1E'
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeLinecap="round">
-      <circle cx="5" cy="12" r="1.5" fill={c} stroke="none"/>
-      <circle cx="12" cy="12" r="1.5" fill={c} stroke="none"/>
-      <circle cx="19" cy="12" r="1.5" fill={c} stroke="none"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="5" cy="12" r="1.5" fill={c}/>
+      <circle cx="12" cy="12" r="1.5" fill={c}/>
+      <circle cx="19" cy="12" r="1.5" fill={c}/>
     </svg>
   )
 }
@@ -636,7 +634,7 @@ export default function CabinetClient() {
 
       {/* Content */}
       <div className={`flex-1 overflow-x-hidden ${tab === 'ai' ? 'overflow-hidden flex flex-col min-h-0' : 'overflow-y-auto'}`}>
-        <div className={`max-w-2xl w-full mx-auto px-4 ${tab === 'ai' ? 'flex flex-col flex-1 min-h-0' : 'py-6 pb-24 md:pb-6'}`}>
+        <div className={`max-w-2xl w-full mx-auto px-4 ${tab === 'ai' ? 'flex flex-col flex-1 min-h-0' : 'py-6 pb-32 md:pb-6'}`}>
 
         {/* ── СЕГОДНЯ ── */}
         {tab === 'today' && (
@@ -875,46 +873,85 @@ export default function CabinetClient() {
 
       {/* Mobile bottom nav */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-2 pb-safe"
+        className="md:hidden fixed z-50 flex justify-around items-center"
         style={{
+          bottom: 16,
+          left: 16,
+          right: 16,
           background: 'rgba(255, 255, 255, 0.82)',
           backdropFilter: 'saturate(180%) blur(20px)',
           WebkitBackdropFilter: 'saturate(180%) blur(20px)',
-          borderTop: '0.5px solid rgba(0, 0, 0, 0.12)',
+          border: '0.5px solid rgba(0, 0, 0, 0.1)',
+          borderRadius: 20,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
           paddingTop: 8,
-          paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
+          paddingBottom: 8,
+          paddingLeft: 8,
+          paddingRight: 8,
         }}
       >
         {/* Сегодня */}
-        <button onClick={() => setTab('today')} className="flex flex-col items-center gap-1 px-3 py-1">
+        <button
+          onClick={() => setTab('today')}
+          className="flex flex-col items-center gap-0.5 transition-all"
+          style={{
+            background: tab === 'today' ? 'rgba(116,116,128,0.12)' : 'transparent',
+            borderRadius: 14, padding: '6px 14px',
+          }}
+        >
           <IconHome active={tab === 'today'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#007AFF' : '#8E8E93' }}>Сегодня</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'today' ? '#007AFF' : '#1C1C1E' }}>Сегодня</span>
         </button>
         {/* Журнал */}
-        <button onClick={() => setTab('journal')} className="flex flex-col items-center gap-1 px-3 py-1">
+        <button
+          onClick={() => setTab('journal')}
+          className="flex flex-col items-center gap-0.5 transition-all"
+          style={{
+            background: tab === 'journal' ? 'rgba(116,116,128,0.12)' : 'transparent',
+            borderRadius: 14, padding: '6px 14px',
+          }}
+        >
           <IconJournal active={tab === 'journal'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#007AFF' : '#8E8E93' }}>Журнал</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'journal' ? '#007AFF' : '#1C1C1E' }}>Журнал</span>
         </button>
         {/* Динамика */}
-        <button onClick={() => setTab('dynamics')} className="flex flex-col items-center gap-1 px-3 py-1">
+        <button
+          onClick={() => setTab('dynamics')}
+          className="flex flex-col items-center gap-0.5 transition-all"
+          style={{
+            background: tab === 'dynamics' ? 'rgba(116,116,128,0.12)' : 'transparent',
+            borderRadius: 14, padding: '6px 14px',
+          }}
+        >
           <IconChart active={tab === 'dynamics'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#007AFF' : '#8E8E93' }}>Динамика</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'dynamics' ? '#007AFF' : '#1C1C1E' }}>Динамика</span>
         </button>
         {/* AI */}
-        <button onClick={() => setTab('ai')} className="flex flex-col items-center gap-1 px-3 py-1">
+        <button
+          onClick={() => setTab('ai')}
+          className="flex flex-col items-center gap-0.5 transition-all"
+          style={{
+            background: tab === 'ai' ? 'rgba(116,116,128,0.12)' : 'transparent',
+            borderRadius: 14, padding: '6px 14px',
+          }}
+        >
           <IconAI active={tab === 'ai'} />
-          <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#007AFF' : '#8E8E93' }}>AI</span>
+          <span className="text-[10px] font-semibold" style={{ color: tab === 'ai' ? '#007AFF' : '#1C1C1E' }}>AI</span>
         </button>
         {/* Ещё */}
         <div className="relative">
           <button
             onClick={() => setShowMoreMenu(!showMoreMenu)}
-            className="flex flex-col items-center gap-1 px-3 py-1"
+            className="flex flex-col items-center gap-0.5 transition-all"
+            style={{
+              background: tab === 'pdf' || tab === 'calendar' ? 'rgba(116,116,128,0.12)' : 'transparent',
+              borderRadius: 14, padding: '6px 14px',
+            }}
           >
             <IconMore active={tab === 'pdf' || tab === 'calendar'} />
             <span
               className="text-[10px] font-semibold"
-              style={{ color: tab === 'pdf' || tab === 'calendar' ? '#007AFF' : '#8E8E93' }}
+              style={{ color: tab === 'pdf' || tab === 'calendar' ? '#007AFF' : '#1C1C1E' }}
             >
               Ещё
             </span>
