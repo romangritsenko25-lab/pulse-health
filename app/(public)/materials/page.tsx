@@ -3,6 +3,26 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+const ARTICLE_IMAGES: Record<string, string> = {
+  'kak-podgotovitsya-k-psihologu':
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=300&fit=crop&q=80',
+  '7-priznakov-chto-pora-k-psihologu':
+    'https://images.unsplash.com/photo-1474540412665-1cdae210ae6b?w=600&h=300&fit=crop&q=80',
+  'chto-takoe-aleksitimiya':
+    'https://images.unsplash.com/photo-1557682250-f2e3ae0c2e4e?w=600&h=300&fit=crop&q=80',
+  'kpt-prostymi-slovami':
+    'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=300&fit=crop&q=80',
+  'trevoga-ili-stress':
+    'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&h=300&fit=crop&q=80',
+  'pochemu-lyudi-otkladyvayut-psiholog':
+    'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&h=300&fit=crop&q=80',
+}
+const ARTICLE_IMAGES_FALLBACK = [
+  'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&h=300&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=300&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=300&fit=crop&q=80',
+]
+
 const BOOKS = [
   {
     id: '1',
@@ -308,27 +328,17 @@ export default function MaterialsPage() {
 
           {/* ARTICLES */}
           {tab === 'articles' && (
-            <div className="flex flex-col gap-4 max-w-2xl">
-              {(dbArticles.length > 0 ? dbArticles : ARTICLES).map((article) => (
-                <div
-                  key={article.id}
-                  className="bg-white border border-slate-100 rounded-2xl p-5 hover:border-blue-200 hover:shadow-sm transition"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs bg-blue-50 text-blue-600 font-semibold px-2 py-0.5 rounded-full">
-                      {article.category}
-                    </span>
-                    <span className="text-slate-300 text-xs">
-                      {'reading_time' in article ? `${article.reading_time} мин` : (article as typeof ARTICLES[0]).readTime}
-                    </span>
-                  </div>
-                  <p className="font-semibold text-slate-800 text-sm mb-2 leading-snug">{article.title}</p>
-                  <p className="text-slate-400 text-sm leading-relaxed">{article.excerpt}</p>
+            <div className="flex flex-col gap-5 max-w-2xl">
+              {(dbArticles.length > 0 ? dbArticles : ARTICLES).map((article, idx) => {
+                const slug = 'slug' in article ? (article as Article).slug : ''
+                const imgUrl = ARTICLE_IMAGES[slug] ?? ARTICLE_IMAGES_FALLBACK[idx % ARTICLE_IMAGES_FALLBACK.length]
+                return (
                   <button
+                    key={article.id}
                     onClick={() => setSelectedArticle({
                       id: article.id,
                       title: article.title,
-                      slug: 'slug' in article ? (article as Article).slug : '',
+                      slug,
                       excerpt: article.excerpt ?? null,
                       content: 'content' in article ? (article as Article).content : null,
                       category: article.category,
@@ -336,75 +346,102 @@ export default function MaterialsPage() {
                         ? (article as Article).reading_time
                         : parseInt(String((article as typeof ARTICLES[0]).readTime)),
                     })}
-                    className="text-blue-600 text-xs font-semibold mt-3 hover:text-blue-500 transition"
+                    className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-md transition text-left w-full"
                   >
-                    Читать →
+                    {/* Image */}
+                    <div className="w-full h-48 overflow-hidden">
+                      <img
+                        src={imgUrl}
+                        alt={article.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    {/* Text */}
+                    <div className="p-5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs bg-blue-50 text-blue-600 font-semibold px-2 py-0.5 rounded-full">
+                          {article.category}
+                        </span>
+                        <span className="text-slate-300 text-xs">
+                          {'reading_time' in article ? `${article.reading_time} мин` : (article as typeof ARTICLES[0]).readTime}
+                        </span>
+                      </div>
+                      <p className="font-semibold text-slate-800 text-base mb-1.5 leading-snug">{article.title}</p>
+                      <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">{article.excerpt}</p>
+                      <span className="text-blue-600 text-xs font-semibold mt-3 inline-block">Читать →</span>
+                    </div>
                   </button>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
       </section>
 
-      {/* Article Modal */}
+      {/* Article Bottom Sheet */}
       {selectedArticle && (
-        <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedArticle(null)}
-        >
+        <>
+          {/* Backdrop */}
           <div
-            className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto"
+            className="fixed inset-0 bg-black/40 z-50"
+            onClick={() => setSelectedArticle(null)}
+          />
+          {/* Sheet */}
+          <div
+            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl max-h-[92vh] flex flex-col animate-slide-up"
             onClick={e => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex justify-between items-center rounded-t-2xl">
-              <span className="text-xs text-blue-600 font-medium uppercase tracking-wide">
-                {selectedArticle.reading_time} мин чтения
-              </span>
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1 shrink-0">
+              <div className="w-10 h-1 bg-slate-200 rounded-full" />
+            </div>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3 shrink-0">
+              <span className="text-sm text-slate-400">{selectedArticle.reading_time} мин чтения</span>
               <button
                 onClick={() => setSelectedArticle(null)}
-                className="text-slate-400 hover:text-slate-600 text-2xl leading-none w-8 h-8 flex items-center justify-center"
+                className="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition text-slate-500 text-lg leading-none"
               >×</button>
             </div>
 
-            <div className="p-6">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2 leading-tight">
+            {/* Scrollable content */}
+            <div className="overflow-y-auto flex-1 px-5 pb-12">
+              <h1 className="text-2xl font-bold text-slate-900 mb-2 leading-tight">
                 {selectedArticle.title}
-              </h2>
-
-              <p className="text-slate-500 mb-6 leading-relaxed">
+              </h1>
+              <p className="text-[15px] text-slate-500 mb-6 leading-relaxed">
                 {selectedArticle.excerpt}
               </p>
 
               {selectedArticle.content ? (
-                <div className="prose prose-slate max-w-none">
+                <div>
                   {selectedArticle.content.split('\n').map((line, i) => {
                     if (line.startsWith('## ')) {
                       return (
-                        <h3 key={i} className="text-lg font-bold text-slate-900 mt-6 mb-3">
+                        <h2 key={i} className="text-xl font-bold text-slate-900 mt-7 mb-3">
                           {line.replace('## ', '')}
-                        </h3>
+                        </h2>
                       )
                     }
                     if (line.startsWith('**') && line.endsWith('**')) {
                       return (
-                        <p key={i} className="font-semibold text-slate-800 mt-3 mb-1">
+                        <p key={i} className="font-semibold text-slate-800 mt-4 mb-1">
                           {line.replace(/\*\*/g, '')}
                         </p>
                       )
                     }
-                    if (line.trim() === '') {
-                      return <br key={i} />
-                    }
+                    if (line.trim() === '') return null
                     return (
-                      <p key={i} className="text-slate-600 leading-relaxed mb-2">
+                      <p key={i} className="text-[17px] text-slate-700 leading-relaxed mb-3">
                         {line.replace(/\*\*/g, '')}
                       </p>
                     )
                   })}
                 </div>
               ) : (
-                <p className="text-slate-600 leading-relaxed">{selectedArticle.excerpt}</p>
+                <p className="text-[17px] text-slate-700 leading-relaxed">{selectedArticle.excerpt}</p>
               )}
 
               <div className="mt-8 pt-6 border-t border-slate-100">
@@ -420,7 +457,7 @@ export default function MaterialsPage() {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Book Modal */}
