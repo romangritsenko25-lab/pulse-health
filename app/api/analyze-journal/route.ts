@@ -98,6 +98,31 @@ export async function POST(req: NextRequest) {
 
     await supabase.from('journal_analysis_logs').insert({ user_id: user.id })
 
+    // Save extracted themes to long-term memory
+    if (themes.length > 0) {
+      const topThemes = themes.slice(0, 3)
+      for (const theme of topThemes) {
+        const { data: existing } = await supabase
+          .from('user_memory')
+          .select('id, relevance')
+          .eq('user_id', user.id)
+          .eq('category', 'patterns')
+          .ilike('content', `%${theme.slice(0, 40)}%`)
+          .maybeSingle()
+
+        if (existing) {
+          await supabase
+            .from('user_memory')
+            .update({ relevance: Math.min(10, existing.relevance + 1), updated_at: new Date().toISOString() })
+            .eq('id', existing.id)
+        } else {
+          await supabase
+            .from('user_memory')
+            .insert({ user_id: user.id, category: 'patterns', content: `Тема из журнала: ${theme}`, relevance: 6 })
+        }
+      }
+    }
+
     return NextResponse.json({ summary: raw, themes })
   } catch (err) {
     console.error('analyze-journal error', err)
