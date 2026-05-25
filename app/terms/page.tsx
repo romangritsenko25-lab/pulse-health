@@ -1,8 +1,15 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+import NavBar from '@/components/NavBar'
+
+export const metadata: Metadata = {
+  title: 'Условия использования — Metanoia AI',
+}
 
 export default function TermsPage() {
   return (
     <div className="bg-white min-h-screen">
+      <NavBar />
       <div className="max-w-3xl mx-auto px-6 py-16 text-gray-800">
         <h1 className="text-3xl font-semibold mb-2">Условия использования</h1>
         <p className="text-gray-400 text-sm mb-10">Последнее обновление: 12 мая 2026</p>
@@ -25,10 +32,9 @@ export default function TermsPage() {
         </Section>
 
         <Section title="5. Подписка и оплата">
-          Платежи обрабатывает Paddle.com в качестве Merchant of Record. Действующие тарифы:<br /><br />
-          • Pro Monthly — $12 в месяц<br />
-          • Pro Annual — $79 в год<br />
-          • Specialist — $29 в месяц
+          Платежи обрабатываются через платёжного провайдера. Действующие тарифы:<br /><br />
+          • Pro — $9.99 в месяц<br />
+          • Specialist Pro — $19.99 в месяц
         </Section>
 
         <Section title="6. Бесплатный пробный период">

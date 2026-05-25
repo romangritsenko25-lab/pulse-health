@@ -227,10 +227,10 @@ export default function MaterialsPage() {
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">Материалы</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-            Подготовительная библиотека
+            Библиотека самопознания
           </h1>
           <p className="text-slate-500 text-base max-w-xl mx-auto">
-            Книги и статьи которые помогут лучше понять себя перед приёмом у специалиста.
+            Книги, видео и статьи — чтобы лучше понять себя.
           </p>
         </div>
       </section>
@@ -459,6 +459,21 @@ export default function MaterialsPage() {
           </div>
         </>
       )}
+
+      {/* CTA */}
+      <section className="py-14 px-4 text-center" style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 60%, #06b6d4 100%)' }}>
+        <div className="max-w-sm mx-auto">
+          <h2 className="text-2xl font-bold text-white mb-2">Готов сделать первый шаг?</h2>
+          <p className="text-white/80 text-sm mb-6">3 AI-анализа бесплатно — без карты.</p>
+          <a
+            href="/login"
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-white rounded-2xl font-semibold text-sm hover:opacity-90 transition shadow-md"
+            style={{ color: '#2563eb' }}
+          >
+            Попробовать бесплатно →
+          </a>
+        </div>
+      </section>
 
       {/* Book Modal */}
       {selected && (

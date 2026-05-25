@@ -2,7 +2,7 @@
 
 export const metadata: Metadata = {
   title: 'О нас — Metanoia AI',
-  description: 'Философия, команда и контакты Metanoia AI',
+  description: 'Metanoia AI помогает понять себя и подготовиться к работе со специалистом. Узнай о философии продукта и команде.',
 }
 
 export default function AboutPage() {
@@ -54,7 +54,7 @@ export default function AboutPage() {
               <span className="text-2xl font-bold text-blue-400">👤</span>
             </div>
             <div>
-              <p className="font-semibold text-slate-800">Основатель</p>
+              <p className="font-semibold text-slate-800">Роман · Основатель</p>
               <p className="text-blue-600 text-sm mb-3">Продукт · Технологии</p>
               <p className="text-slate-500 text-sm leading-relaxed">
                 Строю Metanoia AI потому что сам прошёл через опыт поиска подходящего специалиста и понял: проблема не
@@ -73,14 +73,14 @@ export default function AboutPage() {
           <h2 className="text-2xl font-bold text-slate-800 mb-6">Связаться с нами</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
-              href="mailto:istheproman2015@gmail.com"
+              href="mailto:support@metanoia.ai"
               className="flex items-center gap-3 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50 transition group"
             >
               <span className="text-2xl">✉️</span>
               <div>
                 <p className="text-xs text-slate-400 mb-0.5">Email</p>
                 <p className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition">
-                  istheproman2015@gmail.com
+                  support@metanoia.ai
                 </p>
               </div>
             </a>
@@ -99,6 +99,21 @@ export default function AboutPage() {
               </div>
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 px-4 bg-white text-center">
+        <div className="max-w-sm mx-auto">
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Попробуй бесплатно</h2>
+          <p className="text-slate-500 text-sm mb-6">3 AI-анализа без карты — начни прямо сейчас.</p>
+          <a
+            href="/login"
+            className="inline-flex items-center justify-center px-8 py-3.5 rounded-2xl text-white font-semibold text-sm transition shadow-md hover:opacity-90"
+            style={{ background: '#2563eb' }}
+          >
+            Начать бесплатно →
+          </a>
         </div>
       </section>
 

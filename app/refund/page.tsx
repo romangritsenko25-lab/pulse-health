@@ -1,14 +1,21 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+import NavBar from '@/components/NavBar'
+
+export const metadata: Metadata = {
+  title: 'Возврат средств — Metanoia AI',
+}
 
 export default function RefundPage() {
   return (
     <div className="bg-white min-h-screen">
+      <NavBar />
       <div className="max-w-3xl mx-auto px-6 py-16 text-gray-800">
         <h1 className="text-3xl font-semibold mb-2">Политика возврата средств</h1>
         <p className="text-gray-400 text-sm mb-10">Последнее обновление: 12 мая 2026</p>
 
         <Section title="1. Общее">
-          Мы хотим, чтобы вы были довольны сервисом. Все платежи обрабатываются через Paddle.com.
+          Мы хотим, чтобы вы были довольны сервисом. Все платежи обрабатываются через платёжного провайдера.
         </Section>
 
         <Section title="2. Бесплатный пробный период">
@@ -37,7 +44,7 @@ export default function RefundPage() {
         </Section>
 
         <Section title="8. Обработка платежей">
-          Все возвраты осуществляются через Paddle на исходный способ оплаты.
+          Все возвраты осуществляются через платёжного провайдера на исходный способ оплаты.
         </Section>
 
         <Section title="9. Контакт">

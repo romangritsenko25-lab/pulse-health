@@ -1,8 +1,15 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+import NavBar from '@/components/NavBar'
+
+export const metadata: Metadata = {
+  title: 'Конфиденциальность — Metanoia AI',
+}
 
 export default function PrivacyPage() {
   return (
     <div className="bg-white min-h-screen">
+      <NavBar />
       <div className="max-w-3xl mx-auto px-6 py-16 text-gray-800">
         <h1 className="text-3xl font-semibold mb-2">Политика конфиденциальности</h1>
         <p className="text-gray-400 text-sm mb-10">Последнее обновление: 12 мая 2026</p>
@@ -16,7 +23,7 @@ export default function PrivacyPage() {
           • Ответы на вопросы чек-инов<br />
           • Сообщения AI-чата<br />
           • Данные об использовании сервиса<br /><br />
-          Платёжные данные (данные карты) обрабатывает только Paddle — мы их не храним.
+          Платёжные данные (данные карты) обрабатывает платёжный провайдер — мы их не храним.
         </Section>
 
         <Section title="3. Как используем данные">
@@ -37,7 +44,7 @@ export default function PrivacyPage() {
 
         <Section title="6. Третьи стороны">
           Мы работаем со следующими провайдерами:<br />
-          • <strong>Paddle</strong> — обработка платежей<br />
+          • <strong>Платёжный провайдер</strong> — обработка платежей<br />
           • <strong>Anthropic</strong> — AI-генерация<br />
           • <strong>Supabase</strong> — база данных<br />
           • <strong>Vercel</strong> — хостинг
