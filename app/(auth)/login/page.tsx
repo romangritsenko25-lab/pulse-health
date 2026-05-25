@@ -131,6 +131,7 @@ export default function LoginPage() {
   const [insightVisible, setInsightVisible] = useState(false)
   const [subtitleIdx, setSubtitleIdx] = useState(0)
   const [subtitleVisible, setSubtitleVisible] = useState(true)
+  const [pricingTab, setPricingTab] = useState<'clients' | 'specialists'>('clients')
 
   const [authUser, setAuthUser] = useState<{ id: string; email?: string } | null>(null)
 
@@ -562,6 +563,129 @@ export default function LoginPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Тарифы ─────────────────────────────────────────────────── */}
+      <section className="py-16 px-4" style={{ background: '#ffffff' }}>
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-8">
+            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Тарифы</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Выбери свой план</h2>
+          </div>
+
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex bg-slate-100 rounded-2xl p-1">
+              {(['clients', 'specialists'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setPricingTab(tab)}
+                  className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${
+                    pricingTab === tab ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  {tab === 'clients' ? 'Клиентам' : 'Специалистам'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {pricingTab === 'clients' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="border border-slate-200 rounded-2xl p-6 bg-white flex flex-col">
+                <p style={{ color: '#64748b' }} className="text-xs font-bold uppercase tracking-widest mb-3">Бесплатно</p>
+                <div className="mb-5">
+                  <span style={{ color: '#1e3a5f' }} className="text-3xl font-bold">$0</span>
+                </div>
+                <ul className="flex flex-col gap-2.5 mb-6 flex-1">
+                  {[
+                    { label: '3 AI-анализа состояния', ok: true },
+                    { label: 'Мини-опрос', ok: true },
+                    { label: 'Ежедневный checkin', ok: false },
+                    { label: 'Ежедневный журнал', ok: false },
+                    { label: 'AI-ассистент', ok: false },
+                    { label: 'PDF для специалиста', ok: false },
+                  ].map((f) => (
+                    <li key={f.label} className="flex items-center gap-2">
+                      <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${f.ok ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-300'}`}>
+                        {f.ok ? '✓' : '×'}
+                      </span>
+                      <span style={{ color: f.ok ? '#1e3a5f' : '#cbd5e1' }} className="text-sm">{f.label}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="w-full py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
+                >
+                  Начать бесплатно
+                </button>
+              </div>
+
+              <div className="border-2 border-blue-600 rounded-2xl p-6 bg-white flex flex-col relative">
+                <div className="absolute top-4 right-4">
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-blue-600 text-white">Популярный</span>
+                </div>
+                <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-3">Pro</p>
+                <div className="mb-5">
+                  <span style={{ color: '#1e3a5f' }} className="text-3xl font-bold">$9.99</span>
+                  <span style={{ color: '#94a3b8' }} className="text-sm ml-1">/мес</span>
+                </div>
+                <ul className="flex flex-col gap-2.5 mb-6 flex-1">
+                  {[
+                    '3 AI-анализа состояния',
+                    'Ежедневный checkin (безлимит)',
+                    'Ежедневный журнал',
+                    'AI-ассистент между сессиями',
+                    'PDF-отчёт для специалиста',
+                  ].map((f) => (
+                    <li key={f} className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 bg-green-100 text-green-600">✓</span>
+                      <span style={{ color: '#1e3a5f' }} className="text-sm">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setShowModal(true)}
+                  style={{ background: '#2563eb' }}
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition shadow-sm"
+                >
+                  Попробовать Pro
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="max-w-xs mx-auto">
+              <div className="border-2 border-blue-600 rounded-2xl p-6 bg-white flex flex-col">
+                <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-3">Pro специалиста</p>
+                <div className="mb-5">
+                  <span style={{ color: '#1e3a5f' }} className="text-3xl font-bold">$19.99</span>
+                  <span style={{ color: '#94a3b8' }} className="text-sm ml-1">/мес</span>
+                </div>
+                <ul className="flex flex-col gap-2.5 mb-6">
+                  {[
+                    'Личный кабинет специалиста',
+                    'База клиентов с анализами',
+                    'Домашние задания для клиентов',
+                    'Просмотр AI-анализов клиентов',
+                    'Аналитика прогресса клиентов',
+                  ].map((f) => (
+                    <li key={f} className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 bg-green-100 text-green-600">✓</span>
+                      <span style={{ color: '#1e3a5f' }} className="text-sm">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setShowModal(true)}
+                  style={{ background: '#2563eb' }}
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition shadow-sm"
+                >
+                  Подключиться
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
