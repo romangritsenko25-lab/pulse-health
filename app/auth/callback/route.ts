@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       ?? data.user.email!.split('@')[0]
     const results = await Promise.allSettled([
       resend.emails.send({
-        from: 'Metanoia AI <noreply@metanoia.ai>',
+        from: 'Metanoia AI <hello@metanoia.ai>',
         to: data.user.email!,
         subject: `Добро пожаловать в Metanoia, ${name}!`,
         html: welcomeEmailHtml(name, data.user.id),

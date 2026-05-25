@@ -67,7 +67,7 @@ export async function GET(req: Request) {
     const isYesterday = Date.now() - lastCheckin.getTime() < 48 * 60 * 60 * 1000
 
     await resend.emails.send({
-      from: 'Metanoia AI <noreply@metanoia.ai>',
+      from: 'Metanoia AI <hello@metanoia.ai>',
       to: profile.email,
       subject: isYesterday ? nudge : `Как ты сегодня, ${name}?`,
       html: emailHtml({

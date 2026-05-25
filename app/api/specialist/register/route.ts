@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
   if (email) {
     const refUrl = `${SITE_URL}/ref/${referral_code}`
     resend.emails.send({
-      from: 'Metanoia AI <noreply@metanoia.ai>',
+      from: 'Metanoia AI <hello@metanoia.ai>',
       to: email,
       subject: 'Кабинет специалиста Metanoia готов',
       html: emailHtml({

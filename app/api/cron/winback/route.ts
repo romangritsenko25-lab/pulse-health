@@ -51,7 +51,7 @@ export async function GET(req: Request) {
     const total = count ?? 0
 
     await resend.emails.send({
-      from: 'Metanoia AI <noreply@metanoia.ai>',
+      from: 'Metanoia AI <hello@metanoia.ai>',
       to: profile.email,
       subject: `${name}, возвращайся когда будешь готов`,
       html: emailHtml({
