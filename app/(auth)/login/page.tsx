@@ -114,6 +114,14 @@ function PsychCard({ title, body, category, href }: { title: string; body: strin
   )
 }
 
+// ── Rotating hero subtitles ────────────────────────────────────────────────
+const SUBTITLES = [
+  'Не знаешь как объяснить что происходит? Пройди AI-опрос за 10 минут — получи анализ состояния и темы для разговора со специалистом.',
+  'Терапия — это 1 час в неделю. Metanoia AI работает с остальными 167 — ежедневный журнал, анализ паттернов и рост между сессиями.',
+  'Ещё не готов к психологу? Начни с AI-опроса — пойми что именно происходит, увидь паттерны и сделай первый шаг к себе.',
+  'Каждый день — AI-опрос, анализ паттернов и дневник. Не раз в неделю у психолога, а постоянная работа с собой.',
+]
+
 // ── Main page ──────────────────────────────────────────────────────────────
 export default function LoginPage() {
   const [showModal, setShowModal] = useState(false)
@@ -121,6 +129,8 @@ export default function LoginPage() {
   const [duration, setDuration] = useState<string | null>(null)
   const [support, setSupport] = useState<string | null>(null)
   const [insightVisible, setInsightVisible] = useState(false)
+  const [subtitleIdx, setSubtitleIdx] = useState(0)
+  const [subtitleVisible, setSubtitleVisible] = useState(true)
 
   const [authUser, setAuthUser] = useState<{ id: string; email?: string } | null>(null)
 
@@ -142,6 +152,17 @@ export default function LoginPage() {
       setInsightVisible(false)
     }
   }, [allAnswered])
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setSubtitleVisible(false)
+      setTimeout(() => {
+        setSubtitleIdx(i => (i + 1) % SUBTITLES.length)
+        setSubtitleVisible(true)
+      }, 500)
+    }, 4000)
+    return () => clearInterval(t)
+  }, [])
 
 
   return (
@@ -220,8 +241,17 @@ export default function LoginPage() {
             Что-то не так,<br />но сложно объяснить<br />даже себе?
           </h1>
 
-          <p style={{ color: '#64748b' }} className="fade-up-d2 text-base leading-relaxed max-w-sm">
-            Пройди глубокий AI-опрос и получи структурированный анализ своего состояния. Подготовься к встрече со специалистом за 10 минут.
+          <p
+            style={{
+              color: '#64748b',
+              opacity: subtitleVisible ? 1 : 0,
+              filter: subtitleVisible ? 'blur(0px)' : 'blur(6px)',
+              transition: 'opacity 0.5s ease, filter 0.5s ease',
+              minHeight: '4rem',
+            }}
+            className="fade-up-d2 text-base leading-relaxed max-w-sm"
+          >
+            {SUBTITLES[subtitleIdx]}
           </p>
 
           <div className="fade-up-d3 flex flex-col sm:flex-row gap-3 w-full max-w-xs">
@@ -245,7 +275,7 @@ export default function LoginPage() {
           </div>
 
           <div className="fade-up-d3 flex flex-wrap justify-center gap-x-5 gap-y-1.5">
-            {['✓ 10 минут', '✓ 4 блока вопросов', '✓ 3 опроса бесплатно'].map((t) => (
+            {['✓ 10 минут с AI', '✓ Бесплатно', '✓ Первый шаг к себе'].map((t) => (
               <span key={t} style={{ color: '#64748b' }} className="text-xs">{t}</span>
             ))}
           </div>
@@ -367,8 +397,7 @@ export default function LoginPage() {
       <section className="py-16 px-4" style={{ background: '#faf9f7' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Что ты получишь</p>
-            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Как это работает</h2>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Что ты получишь за 10 минут</h2>
           </div>
           <div className="flex flex-col">
             {[
@@ -416,8 +445,8 @@ export default function LoginPage() {
       <section className="py-16 px-4" style={{ background: '#ffffff' }}>
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-10">
-            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Почему это работает</p>
-            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Немного психологии</h2>
+            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Исследования</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Почему это работает</h2>
           </div>
           <div className="flex flex-col gap-4">
             <PsychCard
@@ -427,13 +456,13 @@ export default function LoginPage() {
               href="/materials"
             />
             <PsychCard
-              category="Практика"
+              category="Эффективность"
               title="Как подготовка меняет эффективность терапии"
               body="Первые 2–3 сессии часто уходят на сбор истории. Клиенты которые приходят с подготовленным резюме состояния начинают работу быстрее и получают больше от каждой встречи."
               href="/materials"
             />
             <PsychCard
-              category="Самопознание"
+              category="Нейронаука"
               title="Что такое алекситимия и почему это нормально"
               body="Неспособность распознать и описать свои эмоции — распространённая особенность. Структурированный опрос обходит этот барьер через конкретные вопросы о теле, контексте и поведении."
               href="/materials"
@@ -453,7 +482,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-1">Материалы</p>
-              <h2 style={{ color: '#1e3a5f' }} className="text-xl font-bold">Библиотека для подготовки к сессии</h2>
+              <h2 style={{ color: '#1e3a5f' }} className="text-xl font-bold">Материалы для самопонимания</h2>
             </div>
             <a href="/materials" style={{ color: '#2563eb' }} className="text-sm font-semibold hover:opacity-70 transition shrink-0">
               Смотреть все →
@@ -483,10 +512,10 @@ export default function LoginPage() {
       <section style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 60%, #06b6d4 100%)' }} className="py-12 px-4 text-center">
         <div className="max-w-lg mx-auto flex flex-col items-center gap-5">
           <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
-            Понимай себя между сессиями
+            Твой психолог видит тебя 1 час в неделю.<br />Metanoia — всё остальное время.
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.8)' }} className="text-base">
-            Ежедневный журнал · AI-ассистент · PDF для специалиста
+            Ежедневный журнал · AI-ассистент · Анализ перед каждой сессией
           </p>
           <button
             onClick={() => setShowModal(true)}
