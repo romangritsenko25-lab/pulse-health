@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { anthropic } from '@/lib/anthropic'
 import { createClient } from '@/lib/supabase/server'
 import { sendTelegram } from '@/lib/telegram'
+import { emailHtml } from '@/lib/email-template'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://pulse-health-smoky.vercel.app'
@@ -18,6 +19,7 @@ export async function GET(req: Request) {
     .from('profiles')
     .select('id, email, name')
     .not('email', 'is', null)
+    .eq('email_unsubscribed', false)
 
   if (!profiles?.length) return NextResponse.json({ sent: 0 })
 
@@ -36,9 +38,9 @@ export async function GET(req: Request) {
 
     if (!recent) continue
 
-    // Only nudge if last checkin was more than 20 hours ago
+    // Only nudge if last checkin was more than 48 hours ago (2 days)
     const lastCheckin = new Date(recent.created_at)
-    if (Date.now() - lastCheckin.getTime() < 20 * 60 * 60 * 1000) continue
+    if (Date.now() - lastCheckin.getTime() < 48 * 60 * 60 * 1000) continue
 
     const deepData = recent.deep_data as Record<string, unknown> | null
     const emotions: string[] = (deepData?.emotions as string[]) ?? (recent.mood ? [recent.mood] : [])
@@ -67,26 +69,14 @@ export async function GET(req: Request) {
     await resend.emails.send({
       from: 'Metanoia AI <noreply@metanoia.ai>',
       to: profile.email,
-      subject: isYesterday ? `${nudge}` : `Как ты сегодня, ${name}?`,
-      html: `
-<!DOCTYPE html>
-<html lang="ru">
-<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
-  <div style="max-width:480px;margin:40px auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
-    <div style="padding:28px 32px;">
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;color:#6366f1;letter-spacing:2px;text-transform:uppercase;">Metanoia AI</p>
-      <p style="margin:0 0 20px;font-size:16px;color:#1e293b;line-height:1.6;">${nudge}</p>
-      <a href="${SITE_URL}/checkin"
-         style="display:inline-block;background:#6366f1;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:12px 24px;border-radius:12px;">
-        Начать опрос →
-      </a>
-    </div>
-    <div style="padding:12px 32px;border-top:1px solid #f1f5f9;">
-      <p style="margin:0;font-size:11px;color:#94a3b8;">Metanoia AI · Не является медицинским заключением</p>
-    </div>
-  </div>
-</body>
-</html>`,
+      subject: isYesterday ? nudge : `Как ты сегодня, ${name}?`,
+      html: emailHtml({
+        title: `Привет, ${name}`,
+        body: `<p style="margin:0;font-size:15px;color:#475569;line-height:1.6;">${nudge}</p>`,
+        ctaText: 'Пройти опрос',
+        ctaUrl: `${SITE_URL}/checkin`,
+        userId: profile.id,
+      }),
     })
 
     sent++
