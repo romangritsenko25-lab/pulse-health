@@ -958,6 +958,7 @@ export default function CabinetClient() {
   const [pdfLoading, setPdfLoading] = useState(false)
   const [pdfError, setPdfError] = useState<string | null>(null)
   const [isPro, setIsPro] = useState(false)
+  const [pdfHistory, setPdfHistory] = useState<{ id: string; created_at: string; pdf_snapshot: PdfData | null }[]>([])
 
   // Review banner state
   const [reviewBanner, setReviewBanner] = useState<{
@@ -1030,6 +1031,14 @@ export default function CabinetClient() {
         .maybeSingle()
       setIsPro(!!sub)
 
+      const { data: pdfHist } = await supabase
+        .from('pdf_downloads')
+        .select('id, created_at, pdf_snapshot')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20)
+      if (pdfHist) setPdfHistory(pdfHist as { id: string; created_at: string; pdf_snapshot: PdfData | null }[])
+
       // Clinical: check which are due (never taken or > 30 days ago)
       const thirtyDaysAgo = new Date(Date.now() - 30 * 86_400_000).toISOString()
       const lastPHQ9 = clinical?.find(c => c.type === 'PHQ9')
@@ -1085,7 +1094,12 @@ export default function CabinetClient() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        await supabase.from('pdf_downloads').insert({ user_id: user.id })
+        const { data: newRow } = await supabase
+          .from('pdf_downloads')
+          .insert({ user_id: user.id, pdf_snapshot: data })
+          .select('id, created_at, pdf_snapshot')
+          .single()
+        if (newRow) setPdfHistory((prev) => [newRow as { id: string; created_at: string; pdf_snapshot: PdfData | null }, ...prev])
       }
     } catch (e) {
       setPdfError(e instanceof Error ? e.message : 'Неизвестная ошибка')
@@ -1734,6 +1748,42 @@ export default function CabinetClient() {
                     </>
                   )}
                 </button>
+
+                {pdfHistory.length > 0 && (
+                  <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: 20, marginTop: 4 }}>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Ранее созданные</p>
+                    <div className="flex flex-col gap-0">
+                      {pdfHistory.map((item, idx) => {
+                        const d = new Date(item.created_at)
+                        const dateLabel = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+                        const timeLabel = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+                        const specName = item.pdf_snapshot?.specialist?.name
+                        return (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between py-3"
+                            style={{ borderBottom: idx < pdfHistory.length - 1 ? '1px solid #f1f5f9' : 'none' }}
+                          >
+                            <div>
+                              <p className="text-sm font-semibold text-slate-800">{dateLabel}, {timeLabel}</p>
+                              {specName && <p className="text-xs text-slate-400 mt-0.5">Для {specName}</p>}
+                            </div>
+                            <button
+                              onClick={() => item.pdf_snapshot && generateProfessionalPdf(item.pdf_snapshot)}
+                              disabled={pdfLoading}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 border border-blue-200 rounded-xl hover:bg-blue-50 disabled:opacity-50 transition flex-shrink-0 ml-3"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                              </svg>
+                              Скачать
+                            </button>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
