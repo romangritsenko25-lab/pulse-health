@@ -613,105 +613,113 @@ async function generateProfessionalPdf(data: PdfData) {
   ].filter(Boolean)
   const energyStr = energyParts.length ? energyParts.join(' · ') : 'Не указано'
 
-  // Bug 1: anxiety/control — show "Не указано" when null
-  const anxietyStr = checkin.anxiety != null ? `${checkin.anxiety}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">Не указано</span>'
-  const controlStr = checkin.control != null ? `${checkin.control}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span>` : '<span style="font-size:13px;color:#94a3b8;">Не указано</span>'
-
-  const topicsHtml = topics.map((t, i) => `
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-      <div style="min-width:24px;height:24px;background:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;padding-top:1px;">${i + 1}</div>
-      <p style="font-size:13px;line-height:1.6;color:#1e3a5f;margin:3px 0 0;flex:1;">${t}</p>
-    </div>`).join('')
-
-  // Bug 6: specialist block only if specialist exists
-  const specialistBlock = specialist?.name
-    ? `<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
-        <div>
-          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для</p>
-          <p style="font-size:14px;font-weight:700;color:#1d4ed8;margin:0;">${specialist.name} · ${specialist.specialty}</p>
-        </div>
-      </div>`
-    : ''
-
-  // Bug 3: stressors — show only if not empty
-  const stressorsBlock = checkin.stressors?.length
-    ? `<div style="margin-bottom:${checkin.freeText ? '14px' : '0'};">
-        <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Стрессоры</p>
-        <p style="font-size:13px;color:#1e3a5f;margin:0;">${checkin.stressors.join(', ')}</p>
-      </div>`
-    : ''
-
   const nowStr = new Date().toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 
+  const scoreBar = (value: number | null | undefined): string => {
+    if (value == null) return '<span style="font-size:12px;color:#94a3b8;">—</span>'
+    const pct = Math.round((value / 10) * 100)
+    return `<div style="display:flex;align-items:center;gap:8px;"><div style="width:90px;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;flex-shrink:0;"><div style="height:5px;background:#2563eb;width:${pct}%;border-radius:3px;"></div></div><span style="font-size:13px;font-weight:600;color:#1e293b;">${value}<span style="font-size:10px;font-weight:400;color:#94a3b8;">/10</span></span></div>`
+  }
+
+  const specialistHtml = specialist?.name
+    ? `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:28px;">
+        <div style="width:3px;height:34px;background:#2563eb;border-radius:2px;flex-shrink:0;"></div>
+        <div>
+          <p style="font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для</p>
+          <p style="font-size:13px;font-weight:600;color:#1e293b;margin:0;">${specialist.name}<span style="font-weight:400;color:#64748b;"> · ${specialist.specialty || ''}</span></p>
+        </div>
+      </div>`
+    : ''
+
   const html = `
-    <div style="width:794px;padding:52px 60px 80px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e3a5f;box-sizing:border-box;">
+    <div style="width:794px;padding:52px 60px 80px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
+
       <!-- ШАПКА -->
-      <div style="border-bottom:2px solid #dbeafe;padding-bottom:22px;margin-bottom:28px;">
-        <p style="font-size:22px;font-weight:800;color:#2563eb;margin:0 0 4px;letter-spacing:-0.5px;">Metanoia AI</p>
-        <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0 0 6px;">Подготовка к приёму у специалиста</p>
-        <p style="font-size:11px;color:#94a3b8;margin:0;">${userName} · ${date}</p>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:20px;border-bottom:2px solid #1e293b;margin-bottom:30px;">
+        <div>
+          <p style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:4px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
+          <p style="font-size:20px;font-weight:700;color:#1e293b;margin:0 0 4px;letter-spacing:-0.5px;">Психологический профиль</p>
+          <p style="font-size:11px;color:#64748b;margin:0;">Подготовка к приёму у специалиста</p>
+        </div>
+        <div style="text-align:right;">
+          <p style="font-size:12px;font-weight:600;color:#1e293b;margin:0 0 3px;">${userName}</p>
+          <p style="font-size:11px;color:#64748b;margin:0 0 5px;">${date}</p>
+          <p style="font-size:8px;color:#94a3b8;margin:0;letter-spacing:2px;text-transform:uppercase;">Конфиденциально</p>
+        </div>
       </div>
 
-      ${specialistBlock}
+      ${specialistHtml}
 
-      <!-- 01 ЧЕК-ИН -->
-      <div style="margin-bottom:24px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">01 · Последний чек-ин <span style="color:#94a3b8;font-weight:400;font-size:9px;">${checkinDate}</span></p>
-        <div style="background:#f8fafc;border-radius:10px;padding:18px 20px;margin-bottom:14px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:12px;">
-            <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Самочувствие</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.wellbeing ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;">/10</span></p>
-            </div>
-            <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Тревога</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${anxietyStr}</p>
-            </div>
-            <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Сон</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${checkin.sleep ?? '—'}<span style="font-size:11px;font-weight:400;color:#94a3b8;"> ч</span></p>
-            </div>
-            <div>
-              <p style="font-size:10px;color:#64748b;margin:0 0 2px;">Контроль</p>
-              <p style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0;">${controlStr}</p>
-            </div>
+      <!-- 01 ПОКАЗАТЕЛИ -->
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:18px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">01</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Показатели состояния</span>
+          <span style="font-size:9px;color:#94a3b8;margin-left:4px;">${checkinDate}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;margin-bottom:18px;">
+          <div>
+            <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;">Самочувствие</p>
+            ${scoreBar(checkin.wellbeing)}
           </div>
-          <div style="border-top:1px solid #e2e8f0;padding-top:10px;margin-top:2px;">
-            <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Энергия (утро / день / вечер)</p>
-            <p style="font-size:13px;font-weight:600;color:#1e3a5f;margin:0;">${energyStr}</p>
+          <div>
+            <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;">Тревога</p>
+            ${scoreBar(checkin.anxiety)}
+          </div>
+          <div>
+            <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;">Сон</p>
+            <p style="font-size:13px;font-weight:600;color:#1e293b;margin:0;">${checkin.sleep != null ? `${checkin.sleep} ч` : '—'}</p>
+          </div>
+          <div>
+            <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;">Ощущение контроля</p>
+            ${scoreBar(checkin.control)}
           </div>
         </div>
-        <div style="margin-bottom:8px;">
-          <p style="font-size:10px;color:#64748b;margin:0 0 4px;">Эмоции</p>
-          <p style="font-size:13px;color:#1e3a5f;margin:0;">${emotionsStr}</p>
-        </div>
-        ${stressorsBlock}
-        ${checkin.freeText ? `<div style="background:#fffbeb;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:0 8px 8px 0;margin-top:8px;">
-          <p style="font-size:10px;font-weight:700;color:#92400e;margin:0 0 6px;">Своими словами:</p>
-          <p style="font-size:12px;line-height:1.65;color:#78350f;margin:0;">${checkin.freeText}</p>
+        ${energyParts.length ? `<div style="margin-bottom:14px;">
+          <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 5px;">Энергия</p>
+          <p style="font-size:12px;color:#1e293b;margin:0;">${energyStr}</p>
+        </div>` : ''}
+        ${checkin.emotions?.length ? `<div style="margin-bottom:14px;">
+          <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 5px;">Эмоции</p>
+          <p style="font-size:12px;color:#1e293b;margin:0;">${emotionsStr}</p>
+        </div>` : ''}
+        ${checkin.stressors?.length ? `<div style="${checkin.freeText ? 'margin-bottom:14px;' : ''}">
+          <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 5px;">Стрессоры</p>
+          <p style="font-size:12px;color:#1e293b;margin:0;">${checkin.stressors.join(', ')}</p>
+        </div>` : ''}
+        ${checkin.freeText ? `<div style="border-left:2px solid #2563eb;padding-left:14px;">
+          <p style="font-size:9px;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 5px;">Своими словами</p>
+          <p style="font-size:12px;line-height:1.75;color:#334155;font-style:italic;margin:0;">${checkin.freeText}</p>
         </div>` : ''}
       </div>
 
       <!-- 02 РЕЗЮМЕ -->
-      <div style="margin-bottom:24px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">02 · Резюме состояния</p>
-        <div style="background:#eff6ff;border-radius:10px;padding:18px 20px;border:1px solid #dbeafe;">
-          <p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;white-space:pre-wrap;">${cleanResume}</p>
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">02</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Резюме состояния</span>
+          <span style="font-size:9px;color:#94a3b8;margin-left:6px;">AI‑анализ</span>
         </div>
+        <p style="font-size:13px;line-height:1.8;color:#1e293b;margin:0;white-space:pre-wrap;">${cleanResume}</p>
       </div>
 
+      ${topics.length > 0 ? `
       <!-- 03 ТЕМЫ -->
-      ${topics.length > 0 ? `<div style="margin-bottom:28px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 14px;">03 · Темы для обсуждения</p>
-        <div style="background:#f8fafc;border-radius:10px;padding:16px 20px;">
-          ${topicsHtml}
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">03</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Темы для обсуждения</span>
         </div>
+        ${topics.map((t, i) => `<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:11px;">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:16px;margin-top:1px;flex-shrink:0;">${i + 1}</span>
+          <p style="font-size:13px;line-height:1.65;color:#1e293b;margin:0;flex:1;">${t}</p>
+        </div>`).join('')}
       </div>` : ''}
 
       <!-- ФУТЕР -->
-      <div style="border-top:1px solid #e2e8f0;padding-top:14px;margin-top:4px;">
-        <p style="font-size:11px;color:#94a3b8;margin:0 0 3px;">Составлено AI-ассистентом Metanoia AI · Не является медицинским заключением</p>
-        <p style="font-size:10px;color:#cbd5e1;margin:0;">${nowStr}</p>
+      <div style="border-top:1px solid #e2e8f0;padding-top:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+        <p style="font-size:9px;color:#94a3b8;margin:0;">Metanoia AI · Не является медицинским заключением</p>
+        <p style="font-size:9px;color:#94a3b8;margin:0;">${nowStr}</p>
       </div>
     </div>`
 
@@ -731,20 +739,16 @@ async function generateProfessionalPdf(data: PdfData) {
   const pageH = pdf.internal.pageSize.getHeight()
   const imgH = (canvas.height * pageW) / canvas.width
 
-  // Bug 5: page breaks — add white overlay at top of new pages to avoid cut text
-  const topMargin = 10
-  let remaining = imgH
-  let yPos = 0
-  pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
-  remaining -= pageH
+  const topMarginMm = 14
+  pdf.addImage(imgData, 'PNG', 0, 0, pageW, imgH)
 
-  while (remaining > 0) {
+  let pageStart = pageH
+  while (pageStart < imgH) {
     pdf.addPage()
-    yPos = -(imgH - remaining) + topMargin
-    pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
+    pdf.addImage(imgData, 'PNG', 0, topMarginMm - pageStart, pageW, imgH)
     pdf.setFillColor(255, 255, 255)
-    pdf.rect(0, 0, pageW, topMargin, 'F')
-    remaining -= pageH
+    pdf.rect(0, 0, pageW, topMarginMm, 'F')
+    pageStart += pageH
   }
 
   const filename = `metanoia-specialist-${new Date().toISOString().slice(0, 10)}.pdf`

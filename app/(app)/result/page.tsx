@@ -34,49 +34,108 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
     day: 'numeric', month: 'long', year: 'numeric',
   })
 
-  const specialist = (data.forSpecialist ?? [])
+  const specialistTopicsHtml = (data.forSpecialist ?? [])
     .map((t, i) => `
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
-        <div style="min-width:22px;height:22px;background:#fde68a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#92400e;padding-top:3px;text-align:center;">${i + 1}</div>
-        <p style="font-size:13px;line-height:1.6;color:#78350f;margin:2px 0 0;flex:1;">${t}</p>
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:11px;">
+        <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:16px;margin-top:1px;flex-shrink:0;">${i + 1}</span>
+        <p style="font-size:13px;line-height:1.65;color:#1e293b;margin:0;flex:1;">${t}</p>
       </div>`)
     .join('')
 
   const specialistBlock = specialistName
-    ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
-        <span style="font-size:20px;">👩‍⚕️</span>
+    ? `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:28px;">
+        <div style="width:3px;height:34px;background:#2563eb;border-radius:2px;flex-shrink:0;"></div>
         <div>
-          <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для специалиста</p>
-          <p style="font-size:13px;font-weight:700;color:#166534;margin:0;">${specialistName}${specialistSpecialty ? ` · ${specialistSpecialty}` : ''}</p>
+          <p style="font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:2px;text-transform:uppercase;margin:0 0 3px;">Подготовлено для</p>
+          <p style="font-size:13px;font-weight:600;color:#1e293b;margin:0;">${specialistName}${specialistSpecialty ? `<span style="font-weight:400;color:#64748b;"> · ${specialistSpecialty}</span>` : ''}</p>
         </div>
       </div>`
     : ''
 
+  const nowStr = new Date().toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+
   const html = `
-    <div style="width:794px;padding:56px 60px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
-      <div style="border-bottom:2px solid #e2e8f0;padding-bottom:20px;margin-bottom:32px;">
-        <p style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
-        <h1 style="font-size:22px;font-weight:700;color:#0f172a;margin:0 0 6px;line-height:1.3;">Подготовка к приёму у специалиста</h1>
-        <p style="font-size:12px;color:#94a3b8;margin:0;">${date}</p>
-      </div>
-      ${specialistBlock}
-      ${data.reflection ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">01 · Отражение</p><p style="font-size:13px;line-height:1.75;color:#1e3a5f;margin:0;">${data.reflection}</p></div>` : ''}
-      ${data.patterns ? `<div style="margin-bottom:22px;padding:18px 20px;background:#eff6ff;border-radius:8px;border-left:4px solid #14b8a6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">02 · Паттерны</p><p style="font-size:13px;line-height:1.75;color:#134e4a;margin:0;">${data.patterns}</p></div>` : ''}
-      ${data.hypothesis ? `<div style="margin-bottom:22px;padding:18px 20px;background:#f5f3ff;border-radius:8px;border-left:4px solid #8b5cf6;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">03 · Гипотеза</p><p style="font-size:13px;line-height:1.75;color:#3b0764;font-style:italic;margin:0;">${data.hypothesis}</p></div>` : ''}
-      ${specialist ? `<div style="margin-bottom:22px;padding:18px 20px;background:#fffbeb;border-radius:8px;border-left:4px solid #f59e0b;"><p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">04 · Темы для специалиста</p>${specialist}</div>` : ''}
-      ${data.support ? `<div style="margin-bottom:32px;padding:18px 20px;background:#2563eb;border-radius:8px;"><p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">05 · Поддержка</p><p style="font-size:13px;line-height:1.75;color:#ffffff;margin:0;">${data.support}</p></div>` : ''}
-      ${journalData && journalData.count > 0 ? `
-      <div style="margin-bottom:22px;padding:18px 20px;background:#f8fafc;border-radius:8px;border-left:4px solid #64748b;">
-        <p style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px;">Из дневника за 30 дней · ${journalData.count} записей</p>
-        ${journalData.summary ? `<p style="font-size:13px;line-height:1.75;color:#334155;margin:0 0 12px;">${journalData.summary.replace(/\n/g, '<br/>')}</p>` : ''}
-        ${journalData.themes.length > 0 ? `
+    <div style="width:794px;padding:52px 60px 80px;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1e293b;box-sizing:border-box;">
+
+      <!-- ШАПКА -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:20px;border-bottom:2px solid #1e293b;margin-bottom:30px;">
         <div>
-          <p style="font-size:11px;font-weight:600;color:#64748b;margin:0 0 8px;">Темы из дневника:</p>
-          ${journalData.themes.slice(0, 3).map((t, i) => `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;"><div style="min-width:18px;height:18px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#64748b;">${i + 1}</div><p style="font-size:12px;line-height:1.5;color:#475569;margin:2px 0 0;flex:1;">${t}</p></div>`).join('')}
-        </div>` : ''}
+          <p style="font-size:9px;font-weight:700;color:#2563eb;letter-spacing:4px;text-transform:uppercase;margin:0 0 8px;">Metanoia AI</p>
+          <p style="font-size:20px;font-weight:700;color:#1e293b;margin:0 0 4px;letter-spacing:-0.5px;">Анализ состояния</p>
+          <p style="font-size:11px;color:#64748b;margin:0;">Результат AI‑опроса</p>
+        </div>
+        <div style="text-align:right;">
+          <p style="font-size:11px;color:#64748b;margin:0 0 5px;">${date}</p>
+          <p style="font-size:8px;color:#94a3b8;margin:0;letter-spacing:2px;text-transform:uppercase;">Конфиденциально</p>
+        </div>
+      </div>
+
+      ${specialistBlock}
+
+      ${data.reflection ? `
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">01</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Отражение</span>
+        </div>
+        <p style="font-size:13px;line-height:1.8;color:#1e293b;margin:0;">${data.reflection}</p>
       </div>` : ''}
-      <div style="border-top:1px solid #e2e8f0;padding-top:14px;">
-        <p style="font-size:10px;color:#94a3b8;line-height:1.6;margin:0;">Составлено AI-ассистентом Metanoia AI. Не является медицинским заключением и не заменяет консультацию специалиста.</p>
+
+      ${data.patterns ? `
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">02</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Паттерны</span>
+        </div>
+        <p style="font-size:13px;line-height:1.8;color:#1e293b;margin:0;">${data.patterns}</p>
+      </div>` : ''}
+
+      ${data.hypothesis ? `
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">03</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Гипотеза</span>
+        </div>
+        <p style="font-size:13px;line-height:1.8;color:#1e293b;font-style:italic;margin:0;">${data.hypothesis}</p>
+      </div>` : ''}
+
+      ${specialistTopicsHtml ? `
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">04</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Темы для специалиста</span>
+        </div>
+        ${specialistTopicsHtml}
+      </div>` : ''}
+
+      ${data.support ? `
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#2563eb;letter-spacing:3px;">05</span>
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Поддержка</span>
+        </div>
+        <div style="border-left:2px solid #2563eb;padding-left:14px;">
+          <p style="font-size:13px;line-height:1.8;color:#334155;font-style:italic;margin:0;">${data.support}</p>
+        </div>
+      </div>` : ''}
+
+      ${journalData && journalData.count > 0 ? `
+      <div style="border-top:1.5px solid #94a3b8;padding-top:20px;margin-bottom:28px;">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+          <span style="font-size:10px;font-weight:700;color:#64748b;letter-spacing:2px;text-transform:uppercase;">Из дневника</span>
+          <span style="font-size:9px;color:#94a3b8;">за 30 дней · ${journalData.count} записей</span>
+        </div>
+        ${journalData.summary ? `<p style="font-size:13px;line-height:1.8;color:#1e293b;margin:0 0 14px;">${journalData.summary.replace(/\n/g, '<br/>')}</p>` : ''}
+        ${journalData.themes.length > 0 ? journalData.themes.slice(0, 3).map((t, i) => `<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:16px;margin-top:1px;flex-shrink:0;">${i + 1}</span>
+          <p style="font-size:12px;line-height:1.6;color:#475569;margin:0;flex:1;">${t}</p>
+        </div>`).join('') : ''}
+      </div>` : ''}
+
+      <!-- ФУТЕР -->
+      <div style="border-top:1px solid #e2e8f0;padding-top:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+        <p style="font-size:9px;color:#94a3b8;margin:0;">Metanoia AI · Не является медицинским заключением</p>
+        <p style="font-size:9px;color:#94a3b8;margin:0;">${nowStr}</p>
       </div>
     </div>`
 
@@ -96,16 +155,16 @@ async function generatePdf(data: AnalysisData, specialistName?: string, speciali
   const pageH = pdf.internal.pageSize.getHeight()
   const imgH = (canvas.height * pageW) / canvas.width
 
-  let remaining = imgH
-  let yPos = 0
-  pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
-  remaining -= pageH
+  const topMarginMm = 14
+  pdf.addImage(imgData, 'PNG', 0, 0, pageW, imgH)
 
-  while (remaining > 0) {
-    yPos -= pageH
+  let pageStart = pageH
+  while (pageStart < imgH) {
     pdf.addPage()
-    pdf.addImage(imgData, 'PNG', 0, yPos, pageW, imgH)
-    remaining -= pageH
+    pdf.addImage(imgData, 'PNG', 0, topMarginMm - pageStart, pageW, imgH)
+    pdf.setFillColor(255, 255, 255)
+    pdf.rect(0, 0, pageW, topMarginMm, 'F')
+    pageStart += pageH
   }
 
   pdf.save(`metanoia-${new Date().toISOString().slice(0, 10)}.pdf`)
@@ -329,6 +388,9 @@ function ResultContent() {
   const [journalLimitReached, setJournalLimitReached] = useState(false)
   const [specialistName, setSpecialistName] = useState<string | undefined>()
   const [specialistSpecialty, setSpecialistSpecialty] = useState<string | undefined>()
+  const [progressData, setProgressData] = useState<{
+    streak: number; thisWeekAvg: number | null; delta: number | null
+  } | null>(null)
 
   useEffect(() => {
     if (!id) { router.replace('/checkin'); return }
@@ -366,6 +428,40 @@ function ResultContent() {
       }
     }
     loadSpecialist()
+  }, [])
+
+  useEffect(() => {
+    async function loadProgress() {
+      try {
+        const { createClient } = await import('@/lib/supabase/client')
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        const { data: chk } = await supabase
+          .from('checkins')
+          .select('wellbeing, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(14)
+        if (!chk || chk.length < 2) return
+        // streak
+        const dates = new Set(chk.map((c) => new Date(c.created_at).toLocaleDateString('ru-RU')))
+        const today = new Date()
+        let streak = 0
+        for (let i = 0; i < 30; i++) {
+          const d = new Date(today); d.setDate(d.getDate() - i)
+          if (dates.has(d.toLocaleDateString('ru-RU'))) streak++
+          else break
+        }
+        const thisWeek = chk.slice(0, 7).map((c) => c.wellbeing).filter((v): v is number => v !== null)
+        const lastWeek = chk.slice(7).map((c) => c.wellbeing).filter((v): v is number => v !== null)
+        const thisWeekAvg = thisWeek.length ? parseFloat((thisWeek.reduce((a, b) => a + b, 0) / thisWeek.length).toFixed(1)) : null
+        const lastWeekAvg = lastWeek.length ? parseFloat((lastWeek.reduce((a, b) => a + b, 0) / lastWeek.length).toFixed(1)) : null
+        const delta = thisWeekAvg !== null && lastWeekAvg !== null ? parseFloat((thisWeekAvg - lastWeekAvg).toFixed(1)) : null
+        setProgressData({ streak, thisWeekAvg, delta })
+      } catch { /* non-blocking */ }
+    }
+    loadProgress()
   }, [])
 
   async function handleDownloadPdf() {
@@ -490,6 +586,42 @@ function ResultContent() {
               05 · Поддержка
             </p>
             <p className="text-sm leading-relaxed font-medium">{data.support}</p>
+          </div>
+        )}
+
+        {/* Progress card */}
+        {progressData && (progressData.streak >= 2 || progressData.thisWeekAvg !== null) && (
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex flex-col gap-3">
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#2563eb' }}>
+              📈 Твой прогресс
+            </p>
+            <div className="flex gap-4 flex-wrap">
+              {progressData.streak >= 2 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🔥</span>
+                  <div>
+                    <p className="text-base font-bold text-slate-800 leading-none">{progressData.streak} {progressData.streak === 1 ? 'день' : progressData.streak < 5 ? 'дня' : 'дней'} подряд</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Streak</p>
+                  </div>
+                </div>
+              )}
+              {progressData.thisWeekAvg !== null && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">💙</span>
+                  <div>
+                    <p className="text-base font-bold text-slate-800 leading-none">
+                      {progressData.thisWeekAvg}/10
+                      {progressData.delta !== null && Math.abs(progressData.delta) > 0.1 && (
+                        <span className="ml-1.5 text-sm font-semibold" style={{ color: progressData.delta > 0 ? '#16a34a' : '#ef4444' }}>
+                          {progressData.delta > 0 ? '↗' : '↘'} {progressData.delta > 0 ? '+' : ''}{progressData.delta}
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">Самочувствие (7 дней)</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
