@@ -498,6 +498,44 @@ export default function LoginPage() {
         </div>
       </section>
 
+      {/* ── Отзывы ─────────────────────────────────────────────────── */}
+      <section className="py-16 px-4" style={{ background: '#f8fafc' }}>
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-10">
+            <p style={{ color: '#2563eb' }} className="text-xs font-bold uppercase tracking-widest mb-2">Отзывы</p>
+            <h2 style={{ color: '#1e3a5f' }} className="text-2xl font-bold">Что говорят пользователи</h2>
+          </div>
+          <div className="flex flex-col gap-4">
+            {[
+              { text: 'Наконец смогла объяснить психологу что происходит — раньше уходило полсессии на введение. Пришла с готовым анализом и сразу начали работать.', name: 'Алина', city: 'Алматы' },
+              { text: 'Думала что не смогу описать своё состояние — слишком запутанно. Но вопросы помогли разложить всё по полочкам. Специалист сказал что так удобнее работать.', name: 'Карина', city: 'Астана' },
+              { text: 'Пришёл с готовым резюме на первую сессию. Психолог удивился — говорит обычно первые два часа уходят на сбор истории. Мы сразу перешли к делу.', name: 'Дмитрий', city: 'Москва' },
+            ].map((r) => (
+              <div key={r.name} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+                <div className="flex gap-1 mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p style={{ color: '#1e3a5f' }} className="text-sm leading-relaxed mb-4">«{r.text}»</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                    style={{ background: 'linear-gradient(135deg, #2563eb, #06b6d4)' }}>
+                    {r.name[0]}
+                  </div>
+                  <div>
+                    <p style={{ color: '#1e3a5f' }} className="text-sm font-semibold">{r.name}</p>
+                    <p style={{ color: '#94a3b8' }} className="text-xs">{r.city}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Footer ─────────────────────────────────────────────────── */}
       <footer className="border-t border-gray-100 py-8 bg-white">
         <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
