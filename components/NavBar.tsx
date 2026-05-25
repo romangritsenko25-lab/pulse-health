@@ -10,6 +10,7 @@ import LoginModal from './LoginModal'
 const NAV_LINKS = [
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
+  { label: 'Гид', href: '/guide' },
   { label: 'О нас', href: '/about' },
 ]
 
