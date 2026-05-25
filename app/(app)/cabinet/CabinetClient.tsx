@@ -10,10 +10,427 @@ import {
 import PersonalAI from '@/components/PersonalAI'
 import CalendarTab from '@/components/CalendarTab'
 
+// ── Homework ───────────────────────────────────────────────────────────────
+interface HomeworkItem {
+  id: string
+  template: string
+  title: string
+  description: string | null
+  due_date: string | null
+  status: 'assigned' | 'completed' | 'skipped'
+  assigned_at: string
+  completed_at: string | null
+}
+
+const HOMEWORK_TEMPLATES: Record<string, { icon: string; desc: string }> = {
+  breathing_478: { icon: '🌬️', desc: '4 сек вдох — 7 задержка — 8 выдох. Повторите 4 цикла.' },
+  breathing_box: { icon: '⬜', desc: '4 сек вдох — 4 задержка — 4 выдох — 4 задержка. 5 циклов.' },
+  cpt_diary:     { icon: '📝', desc: '' },
+  act_defusion:  { icon: '🍃', desc: '' },
+  act_values:    { icon: '🧭', desc: '' },
+  custom:        { icon: '📋', desc: '' },
+}
+
+// ── HomeworkCompleteModal ──────────────────────────────────────────────────
+function HomeworkCompleteModal({
+  hw,
+  onClose,
+  onDone,
+}: {
+  hw: HomeworkItem
+  onClose: () => void
+  onDone: () => void
+}) {
+  const isBreathing = hw.template === 'breathing_478' || hw.template === 'breathing_box'
+  const isCpt = hw.template === 'cpt_diary'
+  const totalCycles = hw.template === 'breathing_478' ? 4 : 5
+
+  // Breathing state
+  const phases478 = [
+    { label: 'Вдох', dur: 4, color: '#a78bfa' },
+    { label: 'Задержка', dur: 7, color: '#818cf8' },
+    { label: 'Выдох', dur: 8, color: '#6366f1' },
+  ]
+  const phasesBox = [
+    { label: 'Вдох', dur: 4, color: '#a78bfa' },
+    { label: 'Задержка', dur: 4, color: '#818cf8' },
+    { label: 'Выдох', dur: 4, color: '#6366f1' },
+    { label: 'Задержка', dur: 4, color: '#7c3aed' },
+  ]
+  const phases = hw.template === 'breathing_478' ? phases478 : phasesBox
+
+  const [phaseIdx, setPhaseIdx] = useState(0)
+  const [phaseTimer, setPhaseTimer] = useState(phases[0].dur)
+  const [cycle, setCycle] = useState(1)
+  const [running, setRunning] = useState(false)
+  const [breathingDone, setBreathingDone] = useState(false)
+
+  useEffect(() => {
+    if (!running || !isBreathing || breathingDone) return
+    const interval = setInterval(() => {
+      setPhaseTimer((t) => {
+        if (t <= 1) {
+          const nextPhase = (phaseIdx + 1) % phases.length
+          if (nextPhase === 0) {
+            if (cycle >= totalCycles) {
+              setBreathingDone(true)
+              setRunning(false)
+              return 0
+            }
+            setCycle((c) => c + 1)
+          }
+          setPhaseIdx(nextPhase)
+          return phases[nextPhase].dur
+        }
+        return t - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [running, phaseIdx, cycle, breathingDone, isBreathing, phases, totalCycles])
+
+  // CPT state
+  const [situation, setSituation] = useState('')
+  const [thought, setThought] = useState('')
+  const [emotion, setEmotion] = useState('')
+  const [alternative, setAlternative] = useState('')
+
+  // Free text state
+  const [freeNote, setFreeNote] = useState('')
+
+  const [submitting, setSubmitting] = useState(false)
+  const [done, setDone] = useState(false)
+
+  async function submit(note?: string) {
+    setSubmitting(true)
+    await fetch('/api/homework/complete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ homework_id: hw.id, client_note: note }),
+    })
+    setSubmitting(false)
+    setDone(true)
+  }
+
+  const tmpl = HOMEWORK_TEMPLATES[hw.template] ?? HOMEWORK_TEMPLATES.custom
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col overflow-hidden max-h-[88dvh]">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl">{tmpl.icon}</span>
+            <div>
+              <p className="text-sm font-bold text-slate-800">{hw.title}</p>
+              <p className="text-xs font-bold text-violet-600 uppercase tracking-widest">Задание</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="overflow-y-auto flex-1">
+          {done ? (
+            <div className="flex flex-col items-center gap-4 p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-3xl">🌿</div>
+              <p className="text-lg font-bold text-slate-800">Отлично!</p>
+              <p className="text-sm text-slate-500">Задание выполнено. Специалист увидит результат.</p>
+              <button
+                onClick={onDone}
+                className="w-full py-3 bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold rounded-xl transition"
+              >
+                Закрыть
+              </button>
+            </div>
+          ) : isBreathing ? (
+            <div className="flex flex-col items-center gap-6 p-8">
+              {breathingDone ? (
+                <div className="flex flex-col items-center gap-4 text-center">
+                  <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center text-3xl">✨</div>
+                  <p className="text-base font-bold text-slate-800">Все {totalCycles} цикла завершены</p>
+                  <button
+                    onClick={() => submit()}
+                    disabled={submitting}
+                    className="w-full py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition"
+                  >
+                    {submitting ? 'Сохраняем…' : 'Отметить выполненным'}
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* Animated circle */}
+                  <div className="relative w-36 h-36">
+                    <div
+                      className="w-36 h-36 rounded-full flex items-center justify-center transition-all duration-1000"
+                      style={{
+                        background: phases[phaseIdx].color,
+                        transform: running && phases[phaseIdx].label === 'Вдох' ? 'scale(1.15)' : 'scale(1)',
+                        opacity: running ? 1 : 0.5,
+                      }}
+                    >
+                      <div className="text-center text-white">
+                        <p className="text-sm font-semibold">{phases[phaseIdx].label}</p>
+                        <p className="text-3xl font-bold">{phaseTimer}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-slate-500">Цикл {cycle} из {totalCycles}</p>
+
+                  {!running ? (
+                    <button
+                      onClick={() => setRunning(true)}
+                      className="px-8 py-3 bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold rounded-xl transition"
+                    >
+                      {cycle === 1 ? 'Начать' : 'Продолжить'}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setRunning(false)}
+                      className="px-8 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-semibold rounded-xl transition"
+                    >
+                      Пауза
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          ) : isCpt ? (
+            <div className="flex flex-col gap-4 p-6">
+              <p className="text-xs text-slate-500 bg-slate-50 rounded-xl p-3 leading-relaxed">
+                Опишите ситуацию, которая вас взволновала, и пройдите через 4 шага КПТ.
+              </p>
+              {[
+                { label: '1. Ситуация', placeholder: 'Что произошло? Когда и где?', value: situation, onChange: setSituation },
+                { label: '2. Автоматическая мысль', placeholder: 'Что пришло в голову в тот момент?', value: thought, onChange: setThought },
+                { label: '3. Эмоции и интенсивность', placeholder: 'Тревога 7/10, злость 5/10...', value: emotion, onChange: setEmotion },
+                { label: '4. Альтернативная мысль', placeholder: 'Более взвешенный взгляд на ситуацию...', value: alternative, onChange: setAlternative },
+              ].map((f) => (
+                <div key={f.label}>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">{f.label}</label>
+                  <textarea
+                    value={f.value}
+                    onChange={(e) => f.onChange(e.target.value)}
+                    placeholder={f.placeholder}
+                    rows={2}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-violet-400 resize-none"
+                  />
+                </div>
+              ))}
+              <button
+                onClick={() => submit(JSON.stringify({ situation, thought, emotion, alternative }))}
+                disabled={!situation.trim() || submitting}
+                className="w-full py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition"
+              >
+                {submitting ? 'Сохраняем…' : 'Отправить специалисту'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4 p-6">
+              {hw.description && (
+                <div className="bg-violet-50 border border-violet-100 rounded-xl p-4">
+                  <p className="text-sm text-slate-700 leading-relaxed">{hw.description}</p>
+                </div>
+              )}
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  Ваши мысли и наблюдения <span className="font-normal text-slate-400">(необязательно)</span>
+                </label>
+                <textarea
+                  value={freeNote}
+                  onChange={(e) => setFreeNote(e.target.value)}
+                  placeholder="Что заметили? Что было сложно или легко?"
+                  rows={4}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-violet-400 resize-none"
+                />
+              </div>
+              <button
+                onClick={() => submit(freeNote.trim() || undefined)}
+                disabled={submitting}
+                className="w-full py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition"
+              >
+                {submitting ? 'Сохраняем…' : 'Отметить выполненным'}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Clinical scales ────────────────────────────────────────────────────────
+const PHQ9_QUESTIONS = [
+  'Мало интереса или удовольствия от дел',
+  'Подавленность, безнадёжность',
+  'Проблемы со сном (трудно заснуть, прерывистый или избыточный сон)',
+  'Усталость, нехватка энергии',
+  'Плохой аппетит или переедание',
+  'Плохое мнение о себе, ощущение неудачи',
+  'Трудности с концентрацией',
+  'Замедленность или, наоборот, беспокойство (замечают другие)',
+  'Мысли о том, что лучше умереть или причинить себе вред',
+]
+const GAD7_QUESTIONS = [
+  'Нервозность, тревога, состояние «на взводе»',
+  'Невозможность остановить или контролировать беспокойство',
+  'Чрезмерное беспокойство о разных вещах',
+  'Трудно расслабиться',
+  'Такое беспокойство, что трудно усидеть на месте',
+  'Раздражительность',
+  'Страх, что может произойти что-то ужасное',
+]
+const CLINICAL_OPTIONS = ['Совсем нет', 'Несколько дней', 'Больше половины дней', 'Почти каждый день']
+
+function getPhq9Severity(score: number) {
+  if (score < 5)  return { label: 'Норма',         color: 'text-green-600',  bg: 'bg-green-50'  }
+  if (score < 10) return { label: 'Лёгкая',        color: 'text-yellow-600', bg: 'bg-yellow-50' }
+  if (score < 15) return { label: 'Умеренная',     color: 'text-orange-500', bg: 'bg-orange-50' }
+  if (score < 20) return { label: 'Умер. тяжёлая', color: 'text-red-500',    bg: 'bg-red-50'    }
+  return               { label: 'Тяжёлая',         color: 'text-red-700',    bg: 'bg-red-100'   }
+}
+function getGad7Severity(score: number) {
+  if (score < 5)  return { label: 'Норма',     color: 'text-green-600',  bg: 'bg-green-50'  }
+  if (score < 10) return { label: 'Лёгкая',    color: 'text-yellow-600', bg: 'bg-yellow-50' }
+  if (score < 15) return { label: 'Умеренная', color: 'text-orange-500', bg: 'bg-orange-50' }
+  return               { label: 'Тяжёлая',    color: 'text-red-600',    bg: 'bg-red-100'   }
+}
+
+// ── ClinicalModal ──────────────────────────────────────────────────────────
+function ClinicalModal({
+  type,
+  specialistId,
+  onClose,
+  onDone,
+}: {
+  type: 'PHQ9' | 'GAD7'
+  specialistId: string
+  onClose: () => void
+  onDone: (score: number) => void
+}) {
+  const questions = type === 'PHQ9' ? PHQ9_QUESTIONS : GAD7_QUESTIONS
+  const [step, setStep] = useState(0)
+  const [answers, setAnswers] = useState<number[]>([])
+  const [submitting, setSubmitting] = useState(false)
+  const [result, setResult] = useState<number | null>(null)
+
+  async function handleAnswer(val: number) {
+    const newAnswers = [...answers, val]
+    if (step < questions.length - 1) {
+      setAnswers(newAnswers)
+      setStep(step + 1)
+    } else {
+      setSubmitting(true)
+      const score = newAnswers.reduce((a, b) => a + b, 0)
+      await fetch('/api/clinical/assess', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, answers: newAnswers, specialist_id: specialistId }),
+      })
+      setSubmitting(false)
+      setResult(score)
+    }
+  }
+
+  const severity = result !== null
+    ? (type === 'PHQ9' ? getPhq9Severity(result) : getGad7Severity(result))
+    : null
+
+  const progress = ((step) / questions.length) * 100
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-20 sm:pb-0">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
+          <div>
+            <p className="text-xs font-bold text-purple-600 uppercase tracking-widest">
+              {type === 'PHQ9' ? 'PHQ-9 · Депрессия' : 'GAD-7 · Тревога'}
+            </p>
+            {result === null && (
+              <p className="text-xs text-slate-400 mt-0.5">
+                Вопрос {step + 1} из {questions.length}
+              </p>
+            )}
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {result === null ? (
+          <div className="flex flex-col gap-5 p-6">
+            {/* Progress bar */}
+            <div className="w-full bg-slate-100 rounded-full h-1.5">
+              <div
+                className="bg-purple-500 h-1.5 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            {/* Question */}
+            <p className="text-base font-semibold text-slate-800 leading-snug min-h-[3rem]">
+              {questions[step]}
+            </p>
+            <p className="text-xs text-slate-400 -mt-3">
+              Насколько часто за последние 2 недели?
+            </p>
+
+            {/* Options */}
+            <div className="flex flex-col gap-2">
+              {CLINICAL_OPTIONS.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => !submitting && handleAnswer(i)}
+                  disabled={submitting}
+                  className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl border border-slate-200 hover:border-purple-400 hover:bg-purple-50 text-sm text-slate-700 font-medium transition disabled:opacity-50"
+                >
+                  <span className="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">
+                    {i}
+                  </span>
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4 p-8 text-center">
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${severity!.bg}`}>
+              <span className={severity!.color}>{result}</span>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-slate-800">
+                {type === 'PHQ9' ? 'PHQ-9' : 'GAD-7'}: {result} / {type === 'PHQ9' ? 27 : 21}
+              </p>
+              <p className={`text-sm font-semibold mt-1 ${severity!.color}`}>{severity!.label}</p>
+            </div>
+            <p className="text-xs text-slate-400 max-w-xs">
+              Результат сохранён и виден вашему специалисту. Следующий опросник — через месяц.
+            </p>
+            <button
+              onClick={() => onDone(result)}
+              className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-xl transition"
+            >
+              Готово
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Profile { name: string | null; email: string | null }
 interface CheckinRow {
   id: string; wellbeing: number | null; mood: string | null; created_at: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  deep_data?: any
 }
 interface JournalEntry {
   id: string; content: string; mood: string | null; voice_input: boolean; created_at: string
@@ -469,6 +886,53 @@ function IconMore({ active }: { active: boolean }) {
   )
 }
 
+// ── Dynamics helpers ───────────────────────────────────────────────────────
+type MetricId = 'wellbeing' | 'anxiety' | 'sleep' | 'energy'
+const METRIC_CONFIG: Record<MetricId, {
+  label: string; color: string; unit: string
+  lowerIsBetter: boolean; yDomain: [number, number]
+}> = {
+  wellbeing: { label: 'Самочувствие', color: '#2563eb', unit: '/ 10', lowerIsBetter: false, yDomain: [0, 10] },
+  anxiety:   { label: 'Тревога',      color: '#f97316', unit: '/ 10', lowerIsBetter: true,  yDomain: [0, 10] },
+  sleep:     { label: 'Сон',          color: '#7c3aed', unit: 'ч',    lowerIsBetter: false, yDomain: [0, 12] },
+  energy:    { label: 'Энергия',      color: '#16a34a', unit: '/ 5',  lowerIsBetter: false, yDomain: [0, 5]  },
+}
+function getMetricValue(c: CheckinRow, metric: MetricId): number | null {
+  const dd = c.deep_data
+  switch (metric) {
+    case 'wellbeing': return c.wellbeing ?? null
+    case 'anxiety':   return dd?.anxietyLevel ?? null
+    case 'sleep':     return dd?.sleepHours ?? null
+    case 'energy': {
+      const m = dd?.energyMorning, a = dd?.energyAfternoon, e = dd?.energyEvening
+      if (m == null && a == null && e == null) return null
+      return ((m ?? 0) + (a ?? 0) + (e ?? 0)) / 3
+    }
+  }
+}
+function avgMetric(list: CheckinRow[], metric: MetricId): number | null {
+  const vals = list.map(c => getMetricValue(c, metric)).filter((v): v is number => v !== null)
+  if (!vals.length) return null
+  return parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2))
+}
+function metricTrend(delta: number | null, lowerIsBetter: boolean) {
+  if (delta === null) return null
+  if (Math.abs(delta) <= 0.1) return { icon: '→', color: '#94a3b8', deltaStr: '' }
+  const improved = lowerIsBetter ? delta < 0 : delta > 0
+  return { icon: delta > 0 ? '↗' : '↘', color: improved ? '#16a34a' : '#ef4444', deltaStr: (delta > 0 ? '+' : '') + delta.toFixed(1) }
+}
+function TinySparkline({ data, color }: { data: number[]; color: string }) {
+  if (data.length < 2) return null
+  const max = Math.max(...data), min = Math.min(...data), range = max - min || 1
+  const w = 72, h = 28, step = w / (data.length - 1)
+  const pts = data.map((v, i) => `${i * step},${h - ((v - min) / range) * h}`).join(' ')
+  return (
+    <svg width={w} height={h} className="overflow-visible">
+      <polyline points={pts} fill="none" stroke={color} strokeWidth={1.5} strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────
 export default function CabinetClient() {
   const router = useRouter()
@@ -500,6 +964,23 @@ export default function CabinetClient() {
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
   const [reviewDismissed, setReviewDismissed] = useState(false)
 
+  // Clinical scales state
+  const [clinicalDue, setClinicalDue] = useState<Array<'PHQ9' | 'GAD7'>>([])
+  const [clinicalHistory, setClinicalHistory] = useState<{
+    PHQ9: Array<{ score: number; created_at: string }>
+    GAD7: Array<{ score: number; created_at: string }>
+  }>({ PHQ9: [], GAD7: [] })
+  const [clinicalModal, setClinicalModal] = useState<'PHQ9' | 'GAD7' | null>(null)
+  const [linkedSpecialistId, setLinkedSpecialistId] = useState<string | null>(null)
+
+  // Homework state
+  const [homework, setHomework] = useState<HomeworkItem[]>([])
+  const [completingHw, setCompletingHw] = useState<HomeworkItem | null>(null)
+
+  // Dynamics state
+  const [dynamicsPeriod, setDynamicsPeriod] = useState<30 | 90>(30)
+  const [selectedMetric, setSelectedMetric] = useState<MetricId>('wellbeing')
+
   useEffect(() => {
     async function load() {
       const supabase = createClient()
@@ -509,21 +990,54 @@ export default function CabinetClient() {
 
       const sevenDaysAgo = new Date(Date.now() - 7 * 86_400_000).toISOString()
 
-      const [{ data: prof }, { data: chk }, { data: ent }, { data: links }] = await Promise.all([
+      const [{ data: prof }, { data: chk }, { data: ent }, { data: links }, { data: clinical }, { data: hw }] = await Promise.all([
         supabase.from('profiles').select('name, email').eq('id', user.id).single(),
-        supabase.from('checkins').select('id, wellbeing, mood, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(30),
+        supabase.from('checkins').select('id, wellbeing, mood, created_at, deep_data').eq('user_id', user.id).order('created_at', { ascending: false }).limit(90),
         supabase.from('journal_entries').select('id, content, mood, voice_input, created_at').order('created_at', { ascending: false }).limit(50),
         supabase.from('specialist_clients')
-          .select('specialist_id, connected_at, specialists(id, name)')
+          .select('specialist_id, created_at, specialists(id, name)')
           .eq('client_id', user.id)
-          .lt('connected_at', sevenDaysAgo)
+          .lt('created_at', sevenDaysAgo)
           .limit(1),
+        supabase.from('clinical_assessments')
+          .select('type, total_score, created_at')
+          .eq('client_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20),
+        supabase.from('homework')
+          .select('id, template, title, description, due_date, status, assigned_at, completed_at')
+          .eq('client_id', user.id)
+          .order('assigned_at', { ascending: false })
+          .limit(20),
       ])
 
       setProfile(prof)
       setCheckins(chk ?? [])
       setEntries(ent ?? [])
+      setHomework((hw ?? []) as HomeworkItem[])
       setLoading(false)
+
+      // Clinical: check which are due (never taken or > 30 days ago)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86_400_000).toISOString()
+      const lastPHQ9 = clinical?.find(c => c.type === 'PHQ9')
+      const lastGAD7 = clinical?.find(c => c.type === 'GAD7')
+      const due: Array<'PHQ9' | 'GAD7'> = []
+      if (!lastPHQ9 || lastPHQ9.created_at < thirtyDaysAgo) due.push('PHQ9')
+      if (!lastGAD7 || lastGAD7.created_at < thirtyDaysAgo) due.push('GAD7')
+      setClinicalDue(due)
+      setClinicalHistory({
+        PHQ9: (clinical ?? []).filter(c => c.type === 'PHQ9').slice(0, 6).reverse().map(c => ({ score: c.total_score, created_at: c.created_at })),
+        GAD7: (clinical ?? []).filter(c => c.type === 'GAD7').slice(0, 6).reverse().map(c => ({ score: c.total_score, created_at: c.created_at })),
+      })
+
+      // Save linked specialist id (from any link, not just old ones)
+      const { data: anyLink } = await supabase
+        .from('specialist_clients')
+        .select('specialist_id')
+        .eq('client_id', user.id)
+        .limit(1)
+        .single()
+      if (anyLink?.specialist_id) setLinkedSpecialistId(anyLink.specialist_id)
 
       // Check if review banner should show
       if (links && links.length > 0) {
@@ -787,6 +1301,84 @@ export default function CabinetClient() {
               </div>
             )}
 
+            {/* Clinical scale banners */}
+            {clinicalDue.length > 0 && linkedSpecialistId && clinicalDue.map((type) => (
+              <div key={type} className="bg-white border border-purple-200 rounded-2xl p-5 flex flex-col gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">
+                      {type === 'PHQ9' ? 'PHQ-9: опросник депрессии' : 'GAD-7: опросник тревоги'}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      ~2 минуты · {type === 'PHQ9' ? '9' : '7'} вопросов · раз в месяц
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setClinicalModal(type)}
+                  className="self-start px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-xl transition"
+                >
+                  Пройти опросник →
+                </button>
+              </div>
+            ))}
+
+            {/* Homework cards */}
+            {homework.filter((h) => {
+              if (h.status === 'assigned') return true
+              if (h.status === 'completed' && h.completed_at) {
+                return new Date(h.completed_at).toDateString() === new Date().toDateString()
+              }
+              return false
+            }).map((hw) => {
+              const tmpl = HOMEWORK_TEMPLATES[hw.template] ?? HOMEWORK_TEMPLATES.custom
+              const isDone = hw.status === 'completed'
+              return (
+                <div key={hw.id} className={`border rounded-2xl p-5 flex items-start gap-4 ${
+                  isDone ? 'bg-green-50 border-green-200 opacity-80' : 'bg-white border-violet-200'
+                }`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 mt-0.5 ${
+                    isDone ? 'bg-green-100' : 'bg-violet-100'
+                  }`}>
+                    {isDone ? '✅' : tmpl.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-semibold ${isDone ? 'text-slate-400' : 'text-slate-800'}`}>{hw.title}</p>
+                    {!isDone && tmpl.desc && !hw.description && (
+                      <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{tmpl.desc}</p>
+                    )}
+                    {!isDone && hw.description && (
+                      <p className="text-xs text-slate-400 mt-0.5 leading-relaxed line-clamp-2">{hw.description}</p>
+                    )}
+                    {isDone ? (
+                      <p className="text-xs text-green-600 mt-1 font-medium">Выполнено сегодня ✓</p>
+                    ) : hw.due_date && (
+                      <p className="text-xs text-violet-400 mt-1 font-medium">
+                        до {new Date(hw.due_date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
+                      </p>
+                    )}
+                  </div>
+                  {isDone ? (
+                    <span className="shrink-0 px-3 py-2 bg-green-100 text-green-700 text-xs font-semibold rounded-xl mt-0.5">
+                      ✓ Готово
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setCompletingHw(hw)}
+                      className="shrink-0 px-3 py-2 bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold rounded-xl transition mt-0.5"
+                    >
+                      Выполнить
+                    </button>
+                  )}
+                </div>
+              )
+            })}
+
             {/* 4. Блок чек-ина */}
             {todayCheckin ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-5">
@@ -879,37 +1471,178 @@ export default function CabinetClient() {
         {/* ── ДИНАМИКА ── */}
         {tab === 'dynamics' && (
           <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-bold text-slate-900">Динамика</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-900">Динамика</h2>
+              {checkins.length >= 2 && (
+                <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
+                  {([30, 90] as const).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => setDynamicsPeriod(p)}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${
+                        dynamicsPeriod === p ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                    >
+                      {p} дней
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {checkins.length < 2 ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center">
                 <p className="text-slate-400 text-sm">Нужно минимум 2 чек-ина для графика</p>
                 <a href="/checkin" className="mt-3 inline-flex text-blue-600 text-sm font-semibold hover:text-blue-500">Пройти чек-ин →</a>
               </div>
             ) : (
-              <div className="bg-white border border-slate-100 rounded-2xl p-5 min-w-0 overflow-hidden">
-                <p className="text-sm font-semibold text-slate-700 mb-4">Самочувствие (30 дней)</p>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
-                    <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Line type="monotone" dataKey="wellbeing" stroke="#2563eb" strokeWidth={2} dot={{ r: 3, fill: '#2563eb' }} activeDot={{ r: 5 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              <>
+                {/* Stats */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+                    <p className="text-2xl font-bold text-slate-800">{checkins.length}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Чек-инов всего</p>
+                  </div>
+                  <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
+                    <p className="text-2xl font-bold text-slate-800">🔥 {streak}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Дней подряд</p>
+                  </div>
+                </div>
+
+                {/* 4 metric cards */}
+                <div className="grid grid-cols-2 gap-3">
+                  {(Object.keys(METRIC_CONFIG) as MetricId[]).map((metric) => {
+                    const cfg = METRIC_CONFIG[metric]
+                    const curr = checkins.slice(0, dynamicsPeriod)
+                    const prev = checkins.slice(dynamicsPeriod, dynamicsPeriod * 2)
+                    const currAvg = avgMetric(curr, metric)
+                    const prevAvg = avgMetric(prev, metric)
+                    const delta = currAvg !== null && prevAvg !== null ? currAvg - prevAvg : null
+                    const trend = metricTrend(delta, cfg.lowerIsBetter)
+                    const sparkData = [...curr].reverse().map(c => getMetricValue(c, metric)).filter((v): v is number => v !== null)
+                    const isSelected = selectedMetric === metric
+                    return (
+                      <button
+                        key={metric}
+                        onClick={() => setSelectedMetric(metric)}
+                        className={`bg-white rounded-2xl p-4 text-left flex flex-col gap-1.5 transition border-2 ${
+                          isSelected ? 'shadow-sm' : 'border-transparent border hover:border-slate-200'
+                        }`}
+                        style={isSelected ? { borderColor: cfg.color } : { borderColor: 'transparent' }}
+                      >
+                        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">{cfg.label}</p>
+                        {currAvg !== null ? (
+                          <>
+                            <p className="text-2xl font-bold text-slate-800 leading-none">
+                              {currAvg.toFixed(1)}
+                              <span className="text-sm font-normal text-slate-400 ml-1">{cfg.unit}</span>
+                            </p>
+                            {trend && trend.deltaStr && (
+                              <p className="text-xs font-semibold" style={{ color: trend.color }}>
+                                {trend.icon} {trend.deltaStr} vs ранее
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-sm text-slate-400">нет данных</p>
+                        )}
+                        {sparkData.length >= 2 && (
+                          <TinySparkline data={sparkData} color={isSelected ? cfg.color : '#cbd5e1'} />
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Detailed chart */}
+                <div className="bg-white border border-slate-100 rounded-2xl p-5 min-w-0 overflow-hidden">
+                  <p className="text-sm font-semibold text-slate-700 mb-4">
+                    {METRIC_CONFIG[selectedMetric].label} · {dynamicsPeriod} дней
+                  </p>
+                  {(() => {
+                    const cfg = METRIC_CONFIG[selectedMetric]
+                    const detailData = [...checkins.slice(0, dynamicsPeriod)].reverse().map((c) => ({
+                      date: new Date(c.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }),
+                      value: getMetricValue(c, selectedMetric),
+                    })).filter((d): d is { date: string; value: number } => d.value !== null)
+                    if (detailData.length < 2) return <p className="text-sm text-slate-400">Недостаточно данных для этой метрики</p>
+                    return (
+                      <ResponsiveContainer width="100%" height={200}>
+                        <LineChart data={detailData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
+                          <YAxis domain={cfg.yDomain} tick={{ fontSize: 10, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
+                          <Tooltip
+                            content={({ active, payload }) => {
+                              if (!active || !payload?.length) return null
+                              const v = payload[0].value as number
+                              return (
+                                <div className="bg-white border border-slate-100 rounded-xl px-3 py-2 shadow-lg text-xs">
+                                  <p className="font-semibold text-slate-800">{v.toFixed(1)} {cfg.unit}</p>
+                                  <p className="text-slate-400">{payload[0].payload.date}</p>
+                                </div>
+                              )
+                            }}
+                          />
+                          <Line type="monotone" dataKey="value" stroke={cfg.color} strokeWidth={2} dot={{ r: 3, fill: cfg.color }} activeDot={{ r: 5 }} connectNulls />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    )
+                  })()}
+                </div>
+              </>
             )}
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-                <p className="text-2xl font-bold text-slate-800">{checkins.length}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Чек-инов всего</p>
+            {/* Clinical scales history */}
+            {(clinicalHistory.PHQ9.length > 0 || clinicalHistory.GAD7.length > 0) && (
+              <div className="bg-white border border-slate-100 rounded-2xl p-5">
+                <p className="text-sm font-semibold text-slate-700 mb-4">Клинические шкалы</p>
+                {clinicalHistory.PHQ9.length > 0 && (() => {
+                  const latest = clinicalHistory.PHQ9[clinicalHistory.PHQ9.length - 1]
+                  const sev = getPhq9Severity(latest.score)
+                  return (
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-slate-500 mb-1">PHQ-9 (депрессия · макс. 27)</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono text-sm text-slate-700">
+                            {clinicalHistory.PHQ9.map(h => h.score).join(' → ')}
+                          </span>
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${sev.bg} ${sev.color}`}>
+                            {sev.label}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={`w-10 h-10 rounded-xl ${sev.bg} flex items-center justify-center shrink-0`}>
+                        <span className={`text-sm font-bold ${sev.color}`}>{latest.score}</span>
+                      </div>
+                    </div>
+                  )
+                })()}
+                {clinicalHistory.GAD7.length > 0 && (() => {
+                  const latest = clinicalHistory.GAD7[clinicalHistory.GAD7.length - 1]
+                  const sev = getGad7Severity(latest.score)
+                  return (
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-slate-500 mb-1">GAD-7 (тревога · макс. 21)</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono text-sm text-slate-700">
+                            {clinicalHistory.GAD7.map(h => h.score).join(' → ')}
+                          </span>
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${sev.bg} ${sev.color}`}>
+                            {sev.label}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={`w-10 h-10 rounded-xl ${sev.bg} flex items-center justify-center shrink-0`}>
+                        <span className={`text-sm font-bold ${sev.color}`}>{latest.score}</span>
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
-              <div className="bg-white border border-slate-100 rounded-2xl p-4 text-center">
-                <p className="text-2xl font-bold text-slate-800">🔥 {streak}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Дней подряд</p>
-              </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -982,6 +1715,37 @@ export default function CabinetClient() {
         )}
         </div>
       </div>
+
+      {completingHw && (
+        <HomeworkCompleteModal
+          hw={completingHw}
+          onClose={() => setCompletingHw(null)}
+          onDone={() => {
+            const id = completingHw.id
+            setHomework((prev) => prev.map((h) =>
+              h.id === id ? { ...h, status: 'completed', completed_at: new Date().toISOString() } : h
+            ))
+            setCompletingHw(null)
+          }}
+        />
+      )}
+
+      {clinicalModal && linkedSpecialistId && (
+        <ClinicalModal
+          type={clinicalModal}
+          specialistId={linkedSpecialistId}
+          onClose={() => setClinicalModal(null)}
+          onDone={(score) => {
+            const type = clinicalModal
+            setClinicalDue((prev) => prev.filter((t) => t !== type))
+            setClinicalHistory((prev) => ({
+              ...prev,
+              [type]: [...prev[type], { score, created_at: new Date().toISOString() }],
+            }))
+            setClinicalModal(null)
+          }}
+        />
+      )}
 
       {showNewEntry && (
         <NewEntryModal
