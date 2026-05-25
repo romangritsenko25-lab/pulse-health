@@ -76,7 +76,13 @@ export async function POST(req: NextRequest) {
       const fullName = [profile.name, profile.last_name].filter(Boolean).join(' ')
       const genderStr = profile.gender === 'male' ? 'мужчина' : profile.gender === 'female' ? 'женщина' : ''
       const parts = [fullName && `Имя: ${fullName}`, genderStr && `Пол: ${genderStr}`].filter(Boolean)
-      if (parts.length) profileCtx = `ПОЛЬЗОВАТЕЛЬ: ${parts.join(', ')}. Обращение: на ${profile.address_style ?? 'ты'}.`
+      if (parts.length) {
+        const addrStyle = profile.address_style ?? 'ты'
+        const addrBan = addrStyle === 'ты'
+          ? 'ЗАПРЕЩЕНО использовать "вы", "вас", "ваш", "вам" — только "ты", "тебя", "твой", "тебе".'
+          : 'ЗАПРЕЩЕНО использовать "ты", "тебя", "твой" — только "вы", "вас", "ваш", "вам".'
+        profileCtx = `ПОЛЬЗОВАТЕЛЬ: ${parts.join(', ')}. Обращение: на ${addrStyle}. ${addrBan}`
+      }
     }
   }
 
