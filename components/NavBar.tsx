@@ -7,19 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Logo } from '@/components/Logo'
 import LoginModal from './LoginModal'
 
-const PUBLIC_LINKS = [
-  { label: 'Специалисты', href: '/specialists' },
-  { label: 'Материалы', href: '/materials' },
-  { label: 'О нас', href: '/about' },
-]
-
-const USER_LINKS = [
-  { label: 'Специалисты', href: '/specialists' },
-  { label: 'Материалы', href: '/materials' },
-  { label: 'О нас', href: '/about' },
-]
-
-const SPECIALIST_LINKS = [
+const NAV_LINKS = [
   { label: 'Специалисты', href: '/specialists' },
   { label: 'Материалы', href: '/materials' },
   { label: 'О нас', href: '/about' },
@@ -48,9 +36,9 @@ export default function NavBar() {
     window.location.href = '/'
   }
 
-  const navLinks = role === 'user' ? USER_LINKS : role === 'specialist' ? SPECIALIST_LINKS : PUBLIC_LINKS
+  const navLinks = NAV_LINKS
   const ctaHref = role === 'user' ? '/cabinet' : role === 'specialist' ? '/specialist/dashboard' : null
-  const ctaLabel = role === 'user' || role === 'specialist' ? 'В кабинет' : 'Войти'
+  const ctaLabel = role === 'user' || role === 'specialist' ? 'В кабинет' : 'Начать бесплатно'
 
   return (
     <>
@@ -165,7 +153,7 @@ export default function NavBar() {
             ) : (
               <button onClick={() => { setOpen(false); setShowLogin(true) }}
                 className="mt-2 flex items-center justify-center w-full px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition">
-                Войти
+                {ctaLabel}
               </button>
             )}
           </div>
